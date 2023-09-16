@@ -1,0 +1,39 @@
+
+generator client  {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+model User {
+  id                String         @id @default(cuid())
+  email              String         @unique
+  username           String         @unique
+  name               String?
+  title              String?      
+  surname            String?
+  phone              String?        @unique
+  age                Int?
+  password           String
+  salt               String
+  current_logged_in_at   DateTime
+  last_logged_in_at      DateTime
+  created_at          DateTime       @default(now())
+  updated_at          DateTime @updatedAt
+
+}
+
+ model SageAPITokens {
+  id            Int      @id @default(autoincrement())
+  PeopleEssUser String   
+  XSRFTOKEN     String   
+  expiryDate    DateTime @default(now())
+  createdAt     DateTime @default(now())
+}
+
