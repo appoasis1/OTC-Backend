@@ -10,11 +10,11 @@ export const useMemberStore = defineStore('member', {
         phone: "",
         email: "",
         home_address: "",
-        memberList: [],
+        dependants: [],
     }),
     actions: {
         async create(){
-            const createMember = await $fetch('/https://rapisopilotrun.frappe.cloud/api/method/create-member/', { 
+            const createMember = await $fetch('', { 
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
