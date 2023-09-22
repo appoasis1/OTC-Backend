@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     typescript: {
         strict: false
     },
-    
+
     css: [
         "@andresouzaabreu/vue-data-table/dist/DataTable.css",
         'maz-ui/css/main.css',

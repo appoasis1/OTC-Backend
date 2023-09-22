@@ -5,8 +5,8 @@
         <img width="180" src="/images/" alt="Rapiso" style="margin-top: 10%; margin-bottom: 5px;">
       </div>
       <nav  class="sidebar-nav">
-        <!-- <PanelMenu v-if="role == 'ADMIN'" :model="admin_menus" />
-        <PanelMenu v-if="role === 'HR_OFFICER'" :model="officer_menus" />
+        <PanelMenu :model="admin_menus" />
+        <!-- <PanelMenu v-if="role === 'HR_OFFICER'" :model="officer_menus" />
         <PanelMenu v-if="role === 'HR_DIRECTOR'" :model="approval_menus"/>
         <PanelMenu v-if="role === 'HR_MANAGER'" :model="approval_menus"/>
         <PanelMenu v-if="role === 'FINANCE'" :model="approval_menus"/> -->
@@ -53,19 +53,19 @@
   const admin_menus = ref([
             {
                 key: '1',
-                label: 'Admin Menu',
+                label: 'Member Onboarding',
                 icon: 'pi pi-fw pi-cog',
                 items: [{
                         key: '1_0',
-                        label: 'Register Users',
+                        label: 'Register Members',
                         icon: 'pi pi-fw pi-user-plus',
-                        to: '/admin/register'
+                        to: '/members/create'
                     },
                     {
                         key: '1_1',
-                        label: 'Create Routing',
+                        label: 'Members List',
                         icon: 'pi pi-fw pi-arrows-h',
-                        to: '/admin/createRouting'
+                        to: '/members/list'
                     }
                 ]
             },
