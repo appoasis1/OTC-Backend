@@ -109,25 +109,26 @@
 </template>
 
 <script setup lang="ts">
-    import { useMemberStore } from '~/stores/members';
     import { storeToRefs } from "pinia";
     import { useToast } from "primevue/usetoast";
     import Swal from "sweetalert2";
+    import { useMemberStore } from '~/stores/members';
     import Dropdown from 'primevue/dropdown';
 
     const toast = useToast();
     const memberStore = useMemberStore();
 
-    const name = storeToRefs(useMemberStore).name;
-    const surname = storeToRefs(useMemberStore).surname;
-    const email = storeToRefs(useMemberStore).email;
-    const national_id = storeToRefs(useMemberStore).national_id;
-    const date_of_birth = storeToRefs(useMemberStore).date_of_birth;
-    const sex = storeToRefs(useMemberStore).sex;
-    const phone = storeToRefs(useMemberStore).phone;
-    const home_address = storeToRefs(useMemberStore).home_address
+    const name = storeToRefs(memberStore).name;
+    const surname = storeToRefs(memberStore).surname;
+    const email = storeToRefs(memberStore).email;
+    const national_id = storeToRefs(memberStore).national_id;
+    const date_of_birth = storeToRefs(memberStore).date_of_birth;
+    const sex = storeToRefs(memberStore).sex;
+    const phone = storeToRefs(memberStore).phone;
+    const home_address = storeToRefs(memberStore).home_address
     
     const clearModal = () => {
+        
         name.value = null;
         surname.value = null;
         email.value = null;
@@ -139,16 +140,17 @@
      }
 
     const createMember = async () => {
-        const { success, error, message } = await memberStore.create();
+        
+        let result: any = await memberStore.create();
 
-        if(success){
+        if(result?.data?.success){
             
             toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
             clearModal();
         }else{
            
-            toast.add({severity: 'warn', summary: 'Create Member', detail: "Member creation failed", life: 6000});
-            console.log({ error, message });
+            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
+            console.log("error",result?.data?.error);
         }
     }
     
