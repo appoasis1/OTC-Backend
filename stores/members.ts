@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 
 export const useMemberStore = defineStore('member', {
     state: () => ({
@@ -14,27 +15,29 @@ export const useMemberStore = defineStore('member', {
     }),
     actions: {
         async create(){
-            const createMember = await $fetch('', { 
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: this.name,
-                        surname: this.surname,
-                        national_id: this.national_id,
-                        date_of_birth: this.date_of_birth,
-                        sex: this.sex,
-                        phone: this.phone,
-                        email: this.email,
-                        home_address: this.home_address
-                    })
-            }).then((data)=>{ 
-                return data;
-            }).catch((error)=>{
-                return error
+            const createMember = await axios.post('https://rapiso-backend.oacey.com/api/swagger/members/create/', {
+                name: "Nyasha",
+                surname: "Karata",
+                national_id: "3887867654",
+                date_of_birth: "2023-09-22T08:22:42.133000Z" ,
+                sex: "male",
+                phone: "077886564",
+                email: "nyasha@gmail.com",
+                home_address: "Harare"
+            }, {
+                headers: {
+                    'accept': 'application/json', 
+                      'Content-Type': 'application/json',
+                         'X-CSRFToken': 'NMcimPVHOeQd41jNtS3S4xqfR0DmBbxg4dkEvDc1M5rv2OiCxXhGQyV4AHRFqSse',   
+                         'Access-Control-Allow-Origin': '*'
+                  },
+            }).then(response => {
+                return response.data;
+            }).catch(error => {
+                return error;
             });
 
             return createMember;
-        },   
+        },
     }
 });
-
