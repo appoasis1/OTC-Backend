@@ -2,7 +2,7 @@
   <div>
     <aside class="sidebar-nav-wrapper">
       <div @click="goToHome()" class="navbar-logo">
-        <img width="180" src="/images/" alt="Rapiso" style="margin-top: 10%; margin-bottom: 5px;">
+        <img width="160" src="/images/murare.png" alt="Murare" style="margin-top: 10%; margin-bottom: 5px;">
       </div>
       <nav  class="sidebar-nav">
         <PanelMenu :model="admin_menus" />
@@ -53,19 +53,19 @@
   const admin_menus = ref([
             {
                 key: '1',
-                label: 'Member Onboarding',
+                label: 'Invoicing',
                 icon: 'pi pi-fw pi-cog',
                 items: [{
                         key: '1_0',
-                        label: 'Register Members',
+                        label: 'Sales Invoice',
                         icon: 'pi pi-fw pi-user-plus',
-                        to: '/members/create'
+                        to: '/sales_invoice/create'
                     },
                     {
                         key: '1_1',
-                        label: 'Members List',
+                        label: 'Quotation',
                         icon: 'pi pi-fw pi-arrows-h',
-                        to: '/members/list'
+                        to: '/quotation/create'
                     }
                 ]
             },
