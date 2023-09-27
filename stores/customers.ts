@@ -11,24 +11,44 @@ export const useCustomerStore = defineStore('customer', {
         phone: "",
         email: "",
         home_address: "",
-        dependants: [],
+        items: [],
     }),
     actions: {
-        async getBankAccounts() {
-            try {
-              const productList = await $fetch('/vendor_management/products/list', {
-                method: "GET",
-                headers: { "Content-Type": "application/json" },
-              });
+        async getCustomers(){
+   
+               const config = {
+                  method: 'post',
+                  url: '/get-customers',
+                  headers: { 
+                     'Accept': '/',
+                     'Cache-Control': 'no-cache',
+                     'Content-Type': 'application/json'
+                  },
+                
+               }; 
+    
+               
+               const result: any = await axios(config).then(function (response) {
+                  console.log("Customers");
+                  console.log(JSON.stringify(response.data));
+                  return {
+                     
+                     data: response.data,
+                     success: true
+                     
+                  }
+                  
+               }).catch(function (error) {
+                  console.log(error);
+   
+                  return {
+                     success: false
+                  }
+               });
+   
+               return result;
           
-              this.productList = productList;
-
-             // console.log(productList)
-              return productList;
-            } catch (error) {
-              console.error(error);
-              throw error;
-            }
-          },
+         },
     }
 });
+

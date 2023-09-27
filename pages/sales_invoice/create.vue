@@ -75,36 +75,35 @@
     import { useToast } from "primevue/usetoast";
     import Swal from "sweetalert2";
     import { useItemStore } from '~/stores/items';
+    import { useBankStore } from '~/stores/banking_details';
+    import { useCostStore } from '~/stores/cost_center';
+    import { useCurrencyStore } from '~/stores/currency';
+    import { useCustomerStore } from '~/stores/customers';
+    import { useSeriesStore } from '~/stores/series';
     
 
     const toast = useToast();
     const itemStore = useItemStore();
-
-    // const name = storeToRefs(memberStore).name;
-    // const surname = storeToRefs(memberStore).surname;
-    // const email = storeToRefs(memberStore).email;
-    // const national_id = storeToRefs(memberStore).national_id;
-    // const date_of_birth = storeToRefs(memberStore).date_of_birth;
-    // const sex = storeToRefs(memberStore).sex;
-    // const phone = storeToRefs(memberStore).phone;
-    // const home_address = storeToRefs(memberStore).home_address
+    const bankStore = useBankStore();
+    const costStore = useCostStore();
+    const currencyStore = useCurrencyStore();
+    const customerStore = useCustomerStore();
+    const seriesStore = useSeriesStore();
     
     const clearModal = () => {
-        
-        // name.value = null;
-        // surname.value = null;
-        // email.value = null;
-        // national_id.value = null;
-        // sex.value = null;
-        // phone.value = null;
-        // home_address.value = null;
-        // date_of_birth.value = null;
+   
      }
-     const loadItems = async () => {
+     
+     const loadData = async () => {
         await itemStore.getItems();
+        await bankStore.getBanks();
+        await costStore.getCostCenters();
+        await currencyStore.getCurrency();
+        await customerStore.getCustomers();
+        await seriesStore.getSeries();
     };
 
-    onMounted(loadItems);
+    onMounted(loadData);
 
     const createInvoice = async () => {
         

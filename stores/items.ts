@@ -14,27 +14,41 @@ export const useItemStore = defineStore('item', {
         items: [],
     }),
     actions: {
-        async getItems() {
-          var config = {
-            method: 'get',
-            url: 'https://murarecarrental.frappe.cloud/api/method/get-items',
-        };
-  
-        const result: any = await axios(config).then(function (response) {
-            return {
-                data: response.data,
-                success: true
-             }
-        })
-        .catch(function (error) {
-            console.log(error);
-            return {
-                success: false
+        async getItems(){
+   
+               const config = {
+                  method: 'post',
+                  url: '/get-items',
+                  headers: { 
+                     'Accept': '/',
+                     'Cache-Control': 'no-cache',
+                     'Content-Type': 'application/json'
+                  },
                 
-             }
-        });
-        return result;
-        },
+               }; 
+    
+               
+               const result: any = await axios(config).then(function (response) {
+                  console.log("Items")  
+                  console.log(JSON.stringify(response.data));
+                  return {
+                     
+                     data: response.data,
+                     success: true
+                     
+                  }
+                  
+               }).catch(function (error) {
+                  console.log(error);
+   
+                  return {
+                     success: false
+                  }
+               });
+   
+               return result;
+          
+         },
     }
 });
 
