@@ -3,15 +3,7 @@ import axios from "axios";
 
 export const useBankStore = defineStore('BankAccount', {
     state: () => ({
-        name: "",
-        surname: "",
-        national_id: "",
-        date_of_birth: "",
-        sex: "",
-        phone: "",
-        email: "",
-        home_address: "",
-        items: [],
+        accountsList: [],
     }),
     actions: {
         async getBanks(){
@@ -49,6 +41,21 @@ export const useBankStore = defineStore('BankAccount', {
                return result;
           
          },
+
+         async listAccounts() {
+            try {
+              const accountsList = await $fetch('/bank-list', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              });
+          
+              this.accountsList = accountsList;
+              return accountsList;
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
     }
 });
 

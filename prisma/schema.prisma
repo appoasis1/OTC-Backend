@@ -8,8 +8,8 @@ generator erd {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./dev.db"
 }
 model User {
   id                String         @id @default(cuid())
@@ -29,11 +29,61 @@ model User {
 
 }
 
- model SageAPITokens {
-  id            Int      @id @default(autoincrement())
-  PeopleEssUser String   
-  XSRFTOKEN     String   
-  expiryDate    DateTime @default(now())
-  createdAt     DateTime @default(now())
+model Item {
+  id                String         @id @default(cuid())
+  item_code    String?
+  item_name    String?
+  item_group   String?
+  stock_uom    String?
+  description  String?
+}
+
+model Currency {
+  id                String         @id @default(cuid())
+  name    String?
+  fraction    String?
+  symbol   String?
+}
+
+model Customer {
+  id                String         @id @default(cuid())
+  name    String?
+  customer_name    String?
+  email_id   String?
+  default_price_list   String?
+  default_currency   String?
+  customer_primary_contact   String?
+}
+
+model Bank {
+  id                String         @id @default(cuid())
+  account_name    String?
+  bank    String?
+  account_type   String?
+  bank_account_no   String?
+  
+}
+
+
+model Series {
+  id                String         @id @default(cuid())
+  naming_series    String?  
+}
+
+model Cost {
+  id                String         @id @default(cuid())
+  name    String?
+  cost_center_name String?
+  parent_cost_center String?   
+}
+
+model Invoice {
+  id                String         @id @default(cuid())
+  name    String?
+  customer String?
+  number String?
+  date  DateTime?
+  
+
 }
 

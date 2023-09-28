@@ -1,17 +1,11 @@
 import { defineStore } from "pinia";
 import axios from "axios";
+import currencyList from "~/server/routes/currency-list";
 
 export const useCurrencyStore = defineStore('currency', {
     state: () => ({
-        name: "",
-        surname: "",
-        national_id: "",
-        date_of_birth: "",
-        sex: "",
-        phone: "",
-        email: "",
-        home_address: "",
-        items: [],
+      
+        currencyList: [],
     }),
     actions: {
         async getCurrency(){
@@ -49,6 +43,21 @@ export const useCurrencyStore = defineStore('currency', {
                return result;
           
          },
+
+         async listCurrency() {
+            try {
+              const currencyList = await $fetch('/currency-list', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              });
+          
+              this.currencyList = currencyList;
+              return currencyList;
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
     }
 });
 

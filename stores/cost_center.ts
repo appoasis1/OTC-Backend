@@ -3,15 +3,7 @@ import axios from "axios";
 
 export const useCostStore = defineStore('Cost', {
     state: () => ({
-        name: "",
-        surname: "",
-        national_id: "",
-        date_of_birth: "",
-        sex: "",
-        phone: "",
-        email: "",
-        home_address: "",
-        items: [],
+        costList: [],
     }),
     actions: {
         async getCostCenters(){
@@ -49,6 +41,20 @@ export const useCostStore = defineStore('Cost', {
                return result;
           
          },
+         async listCostCenters() {
+            try {
+              const costList = await $fetch('/cost-list', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              });
+          
+              this.costList = costList;
+              return costList;
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
     }
 });
 

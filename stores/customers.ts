@@ -3,15 +3,8 @@ import axios from "axios";
 
 export const useCustomerStore = defineStore('customer', {
     state: () => ({
-        name: "",
-        surname: "",
-        national_id: "",
-        date_of_birth: "",
-        sex: "",
-        phone: "",
-        email: "",
-        home_address: "",
-        items: [],
+     
+        customerList: [],
     }),
     actions: {
         async getCustomers(){
@@ -49,6 +42,23 @@ export const useCustomerStore = defineStore('customer', {
                return result;
           
          },
+
+         
+         async listCustomers() {
+            try {
+              const customerList = await $fetch('/customer-list', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              });
+          
+              this.customerList = customerList;
+              console.log(customerList);
+              return customerList;
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
     }
 });
 

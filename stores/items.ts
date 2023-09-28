@@ -3,14 +3,6 @@ import axios from "axios";
 
 export const useItemStore = defineStore('item', {
     state: () => ({
-        name: "",
-        surname: "",
-        national_id: "",
-        date_of_birth: "",
-        sex: "",
-        phone: "",
-        email: "",
-        home_address: "",
         items: [],
     }),
     actions: {
@@ -49,6 +41,21 @@ export const useItemStore = defineStore('item', {
                return result;
           
          },
+
+         async listItems() {
+            try {
+              const itemList = await $fetch('/item-list', {
+                method: "GET",
+                headers: { "Content-Type": "application/json" },
+              });
+          
+              this.items = itemList;
+              return itemList;
+            } catch (error) {
+              console.error(error);
+              throw error;
+            }
+          }
     }
 });
 
