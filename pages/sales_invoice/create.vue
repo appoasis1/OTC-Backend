@@ -89,6 +89,13 @@
     const currencyStore = useCurrencyStore();
     const customerStore = useCustomerStore();
     const seriesStore = useSeriesStore();
+
+    const customers = customerStore.customerList;
+    const items = itemStore.items;
+    const series = seriesStore.series;
+    const currency = currencyStore.currencyList;
+    const cost_centers = costStore.costList;
+    const accounts = bankStore.accountsList;
     
     const clearModal = () => {
    
@@ -101,23 +108,30 @@
         await currencyStore.getCurrency();
         await customerStore.getCustomers();
         await seriesStore.getSeries();
+        //from DB
+        await itemStore.listItems();
+        await bankStore.listAccounts();
+        await costStore.listCostCenters();
+        await currencyStore.listCurrency();
+        await customerStore.listCustomers();
+        await seriesStore.listSeries();
     };
 
     onMounted(loadData);
 
     const createInvoice = async () => {
         
-        let result: any = await useItemStore.create();
+        // let result: any = await useItemStore.create();
 
-        if(result?.data?.success){
+        // if(result?.data?.success){
             
-            toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
-            clearModal();
-        }else{
+        //     toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
+        //     clearModal();
+        // }else{
            
-            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
-            console.log("error",result?.data?.error);
-        }
+        //     toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
+        //     console.log("error",result?.data?.error);
+        // }
     }
 
 </script>
