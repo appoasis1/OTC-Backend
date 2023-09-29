@@ -59,6 +59,12 @@
                         key: '1_0',
                         label: 'Sales Invoice',
                         icon: 'pi pi-fw pi-user-plus',
+                        to: '/sales_invoice/list'
+                    },
+                    {
+                        key: '1_0',
+                        label: 'Sales Order',
+                        icon: 'pi pi-fw pi-user-plus',
                         to: '/sales_invoice/create'
                     },
                     {

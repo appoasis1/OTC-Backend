@@ -1,6 +1,6 @@
 <template>
     <NuxtLayout name="dashboard">
-        <section class="section">
+        <section class="section" style="padding-top: 40px;">
             <div class="container-fluid">
                     <div class="block-section"><div class="block-header">
 
@@ -12,40 +12,47 @@
                                     <div class="surface-card p-4 shadow-2 border-round p-fluid">
                                         <div class="grid formgrid p-fluid">
                                             <div class="field mb-4 col-12 md:col-4">
-                                                <label for="company_name" class="font-medium text-900">Series</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="company_name" type="text"></div>
+                                                <label for="company_name" class="font-medium text-900">Series</label><DropDown v-model="selectedSeries" :options="seriesNames"  placeholder="Select Naming Series" class="w-full md:w-34rem" /></div>
                                                 <div class="field mb-4 col-12 md:col-4">
-                                                    <label for="invoice_id" class="font-medium text-900">Date</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="invoice_id" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="invoice_id" type="text"></div>
+                                                    <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="quantity" type="text"></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"></div>
                                                         <div class="field mb-4 col-12 md:col-4">
 
                                                         </div>
-                                                                <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div><div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="quantity" type="text"></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
+                                                                <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div><div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
                                                                         </div></div><div class="field mb-4 col-12 md:col-6">
                                                                         </div>
-                                                                        
-                                                                                        <div class="field mb-4 col-12 flex align-items-center">
-                                                                                            <DataTable :value="items" resizableColumns columnResizeMode="expand" showGridlines tableStyle="min-width: 50rem">
-                                                                                                <Column field="code" header="Code"></Column>
-                                                                                                <Column field="name" header="Name"></Column>
-                                                                                                <Column field="category" header="Category"></Column>
-                                                                                                <Column field="quantity" header="Quantity"></Column>
-                                                                                            </DataTable>
-                                                                                        </div>
+                                                                                    <div class="block-header">
+                                                                                        <div style="padding-left: 13px;"><h4>Items</h4></div>
+                                                                                        
+                                                                                    </div>
+                                                                                    <div class="field mb-4 col-12 flex align-items-center">
+                                                                                            <div class="table-wrapper">
+                                                                                                <DataTable :value="items" resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
+                                                                                                <Column field="code" header="Item"></Column>
+                                                                                                <Column field="name" header="Quantity"></Column>
+                                                                                                <Column field="category" header="Rate"></Column>
+                                                                                                <Column field="quantity" header="Amount"></Column>
+                                                                                                </DataTable>
+                                                                                               
+                                                                                            </div>
+                                                                                            </div>
+                                                                                            <Button @click="addItem"  class="add-item-button" style="padding-left: 13px;">/>
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
                                                                                                 <div class="p-checkbox p-component" data-pc-name="checkbox" data-pc-section="root">
                                                                                                     <div class="p-hidden-accessible" data-pc-section="hiddeninputwrapper" data-p-hidden-accessible="true"><input type="checkbox" data-pc-section="hiddeninput"></div><div class="p-checkbox-box" data-pc-section="input" data-p-highlight="false" data-p-disabled="false" data-p-focused="false"><!----></div></div>
-                                                                                                    <span class="ml-2 text-900">Taxable (VAT 18%)</span>
+                                                                                                    <span class="ml-2 text-900">Taxable (VAT 15%)</span>
                                                                                                     </div>
                                                                                                         <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
                                                                                                         </div>
-                                                                                                            <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Notes</label>
+                                                                                                            <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
                                                                                                                 <textarea class="p-inputtextarea p-inputtext p-component p-inputtextarea-resizable" data-pc-name="textarea" data-pc-section="root" id="notes" rows="5" style="height: calc(133.6px); overflow: hidden;"></textarea>
                                                                                 </div>
                                                                               <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
@@ -73,15 +80,15 @@
 <script setup lang="ts">
     import { storeToRefs } from "pinia";
     import { useToast } from "primevue/usetoast";
-    import Swal from "sweetalert2";
     import { useItemStore } from '~/stores/items';
     import { useBankStore } from '~/stores/banking_details';
     import { useCostStore } from '~/stores/cost_center';
     import { useCurrencyStore } from '~/stores/currency';
     import { useCustomerStore } from '~/stores/customers';
     import { useSeriesStore } from '~/stores/series';
-    
+    import { useInvoiceStore } from '~/stores/sales_invoice';
 
+    const invoiceStore = useInvoiceStore();
     const toast = useToast();
     const itemStore = useItemStore();
     const bankStore = useBankStore();
@@ -89,25 +96,30 @@
     const currencyStore = useCurrencyStore();
     const customerStore = useCustomerStore();
     const seriesStore = useSeriesStore();
-
-    const customers = customerStore.customerList;
-    const items = itemStore.items;
-    const series = seriesStore.series;
-    const currency = currencyStore.currencyList;
-    const cost_centers = costStore.costList;
-    const accounts = bankStore.accountsList;
-    
-    const clearModal = () => {
    
-     }
-     
-     const loadData = async () => {
-        await itemStore.getItems();
-        await bankStore.getBanks();
-        await costStore.getCostCenters();
-        await currencyStore.getCurrency();
-        await customerStore.getCustomers();
-        await seriesStore.getSeries();
+    //Sales Invoice data
+    let selectedCustomer = storeToRefs(invoiceStore).selectedCustomer;
+    let selectedCurrency = storeToRefs(invoiceStore).currency;
+    let selectedSeries = storeToRefs(invoiceStore).series;
+    let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
+    let selectedCost = storeToRefs(invoiceStore).cost_centre;
+    const date = storeToRefs(invoiceStore).date;
+
+
+    let customers = ref([]);
+    let currencies = ref([]);
+    let items = ref([]);
+    let series = ref([]);
+    let cost_centers = ref([]);
+    let accounts = ref([]);
+
+    const loadData = async () => {
+        // await itemStore.getItems();
+        // await bankStore.getBanks();
+        // await costStore.getCostCenters();
+        // await currencyStore.getCurrency();
+        // await customerStore.getCustomers();
+        // await seriesStore.getSeries();
         //from DB
         await itemStore.listItems();
         await bankStore.listAccounts();
@@ -115,9 +127,44 @@
         await currencyStore.listCurrency();
         await customerStore.listCustomers();
         await seriesStore.listSeries();
+
+        customers.value = await customerStore.customerList.data;
+        currencies.value = await currencyStore.currencyList.data;
+        items.value = await itemStore.listItems.data;
+        series.value = await seriesStore.listSeries.data;
+        cost_centers.value = await costStore.listCostCenters.data;
+        accounts.value = bankStore.accountsList;
+        console.log(currencies.value);
+        console.log(items.value);
+        console.log(series.value);
+        console.log(cost_centers.value);
+        console.log(accounts.value);
     };
 
+
+
     onMounted(loadData);
+        
+    const customerNames = computed(() => {
+        return customers.value.map(customer => customer.customer_name);
+    });
+
+    const accountNames = computed(() => {
+    // return accounts.value.map(account => account.account_name);
+    });
+
+    const currencyNames = computed(() => {
+    return currencies.value.map(currency => currency.name);
+    });
+
+    const seriesNames = computed(() => {
+    // return series.value.map(series => series.naming_series);
+    });
+
+    const costNames = computed(() => {
+    // return cost_centers.value.map(cost_center => cost_center.cost_center_name);
+    });
+
 
     const createInvoice = async () => {
         
@@ -137,6 +184,14 @@
 </script>
 
 <style>
+    .table-wrapper {
+        width: 100%;
+    }
+
+    .full-width-table {
+        width: 100% !important;
+    }   
+
     .p-add-chip {
         margin-top: 0.1rem !important;
         background: var(--green-500) !important;

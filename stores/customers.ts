@@ -52,7 +52,7 @@ export const useCustomerStore = defineStore('customer', {
               });
           
               this.customerList = customerList;
-              console.log(customerList);
+             // console.log(customerList);
               return customerList;
             } catch (error) {
               console.error(error);
