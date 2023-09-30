@@ -2,9 +2,14 @@
     <NuxtLayout name="dashboard">
         <section class="section" style="padding-top: 40px;">
             <div class="container-fluid">
-                    
-                            <div>
+               
+                        <div>
                             <div class="card-style">
+                                <div>
+                                    <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
+                                        <i class="pi pi-plus"></i> New Invoice
+                                    </nuxt-link>
+                                </div>
                                     <DataTable :value="invoices" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"
                                           filterDisplay="row"
                                         :globalFilterFields="['name','country.name', 'company', 'representative.name']"
