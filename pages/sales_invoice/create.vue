@@ -2,9 +2,7 @@
     <NuxtLayout name="dashboard">
         <section class="section" style="padding-top: 40px;">
             <div class="container-fluid">
-                    <div class="block-section"><div class="block-header">
-
-                    </div>
+                    <div class="block-section">
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
@@ -22,32 +20,50 @@
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"></div>
-                                                        <div class="field mb-4 col-12 md:col-4">
-
-                                                        </div>
-                                                                <div class="surface-border border-top-1 opacity-50 mb-4 col-12"></div><div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
-                                                                        </div></div><div class="field mb-4 col-12 md:col-6">
-                                                                        </div>
-                                                                                    <div class="block-header">
+                                                        <div class="field mb-4 col-12 md:col-4"></div>
+                                                                <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
+                                                                </div>
+                                                                <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
+                                                                        </div></div><div class="field mb-4 col-12 md:col-6"></div>
+                                                                            <div class="block-header">
                                                                                         <div style="padding-left: 13px;"><h4>Items</h4></div>
-                                                                                        
-                                                                                    </div>
+                                                                                        </div>
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
                                                                                                 <DataTable :value="items" resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
-                                                                                                <Column field="code" header="Item"></Column>
-                                                                                                <Column field="name" header="Quantity"></Column>
-                                                                                                <Column field="category" header="Rate"></Column>
-                                                                                                <Column field="quantity" header="Amount"></Column>
+                                                                                                    <Column field="item" header="Item"></Column>
+                                                                                                    <Column field="quantity" header="Quantity"></Column>
+                                                                                                    <Column field="rate" header="Rate"></Column>
+                                                                                                    <Column field="amount" header="Amount"></Column>
+                                                                                                    <Column header="Actions" :style="{ width: '3vw' }">
+                                                                                                        <template #body="rowData">
+                                                                                                            <Button @click="EditItem" label="Edit"  class="small" :style="{ width: '7vw' }"/>
+                                                                                                        </template>
+                                                                                                    </Column>
                                                                                                 </DataTable>
-                                                                                               
                                                                                             </div>
+                                                                                        </div>
+                                                                                            <div style="padding-left: 13px;">
+                                                                                            <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="visible = true" />
                                                                                             </div>
-                                                                                            <Button @click="addItem"  class="add-item-button" style="padding-left: 13px;">/>
+                                                                                            <Dialog v-model:visible="visible" modal header="Add Item" :style="{ width: '50vw' }">
+                                                                                                <div class="grid formgrid p-fluid">
+                                                                                               <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Item</label> 
+                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Vehicle</label> 
+                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                </div>
+                                                                                                </div>
+                                                                                                <Button @click="addItem" label="Add" icon="pi pi-plus" />
+                                                                                            </Dialog>
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
                                                                                                 <div class="p-checkbox p-component" data-pc-name="checkbox" data-pc-section="root">
-                                                                                                    <div class="p-hidden-accessible" data-pc-section="hiddeninputwrapper" data-p-hidden-accessible="true"><input type="checkbox" data-pc-section="hiddeninput"></div><div class="p-checkbox-box" data-pc-section="input" data-p-highlight="false" data-p-disabled="false" data-p-focused="false"><!----></div></div>
-                                                                                                    <span class="ml-2 text-900">Taxable (VAT 15%)</span>
+                                                                                                  </div>
+                                                                                                   
                                                                                                     </div>
                                                                                                         <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
@@ -69,7 +85,7 @@
                                            </button>
                                       </div>
                                   </div>
-                             </div><!---->
+                             </div>
                          </div>
                     </div>
                 </div>
@@ -87,6 +103,7 @@
     import { useCustomerStore } from '~/stores/customers';
     import { useSeriesStore } from '~/stores/series';
     import { useInvoiceStore } from '~/stores/sales_invoice';
+    import { ref } from 'vue';
 
     const invoiceStore = useInvoiceStore();
     const toast = useToast();
@@ -104,15 +121,16 @@
     let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
     const date = storeToRefs(invoiceStore).date;
-
+    const visible = ref(false);
 
     let customers = ref([]);
     let currencies = ref([]);
-    let items = ref([]);
+    
     let series = ref([]);
     let cost_centers = ref([]);
     let accounts = ref([]);
-
+    const items = ref([]);
+    //const { items }= storeToRefs(itemStore)
     const loadData = async () => {
         // await itemStore.getItems();
         // await bankStore.getBanks();
@@ -130,12 +148,12 @@
 
         customers.value = await customerStore.customerList.data;
         currencies.value = await currencyStore.currencyList.data;
-        items.value = await itemStore.listItems.data;
+       // items.value = await itemStore.listItems.data;
         series.value = await seriesStore.listSeries.data;
         cost_centers.value = await costStore.listCostCenters.data;
         accounts.value = bankStore.accountsList;
         console.log(currencies.value);
-        console.log(items.value);
+        console.log(items);
         console.log(series.value);
         console.log(cost_centers.value);
         console.log(accounts.value);
@@ -165,6 +183,19 @@
     // return cost_centers.value.map(cost_center => cost_center.cost_center_name);
     });
 
+  
+    const addItem = () => {
+            const newItem = {
+            item: selectedCustomer,
+            quantity: 1,
+            rate: 0, 
+            amount: 0 
+        };
+        
+        items.value.push(newItem); 
+    };
+
+    
 
     const createInvoice = async () => {
         
