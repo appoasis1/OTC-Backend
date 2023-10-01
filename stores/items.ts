@@ -21,17 +21,16 @@ export const useItemStore = defineStore('item', {
     
                
                const result: any = await axios(config).then(function (response) {
-                  console.log("Items")  
+                  console.log("Items ------------->")  
                   console.log(JSON.stringify(response.data));
                   return {
                      
                      data: response.data,
-                     success: true
-                     
+                     success: true  
                   }
                   
                }).catch(function (error) {
-                  console.log(error);
+                  console.log('errrrrrooooorrr', error);
    
                   return {
                      success: false

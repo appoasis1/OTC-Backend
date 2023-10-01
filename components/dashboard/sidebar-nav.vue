@@ -72,7 +72,13 @@
                         label: 'Quotation',
                         icon: 'pi pi-fw pi-arrows-h',
                         to: '/quotation/create'
-                    }
+                    },
+                    {
+                        key: '1_1',
+                        label: 'Quotation-list',
+                        icon: 'pi pi-fw pi-arrows-h',
+                        to: '/quotation/list'
+                    },
                 ]
             },
            
