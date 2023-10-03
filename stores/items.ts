@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const useItemStore = defineStore('item', {
     state: () => ({
-        items: [],
+        itemList: [],
     }),
     actions: {
         async getItems(){
@@ -48,8 +48,9 @@ export const useItemStore = defineStore('item', {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
               });
-          
-              this.items = itemList;
+              
+              this.itemList = itemList;
+              
               return itemList;
             } catch (error) {
               console.error(error);

@@ -14,7 +14,7 @@
                                                 <div class="field mb-4 col-12 md:col-4">
                                                     <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
@@ -30,36 +30,97 @@
                                                                                         </div>
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
-                                                                                                <DataTable :value="items" resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
+                                                                                                <DataTable :value="itemsTable"  resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
                                                                                                     <Column field="item" header="Item"></Column>
                                                                                                     <Column field="quantity" header="Quantity"></Column>
                                                                                                     <Column field="rate" header="Rate"></Column>
                                                                                                     <Column field="amount" header="Amount"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
                                                                                                         <template #body="rowData">
-                                                                                                            <Button @click="EditItem" label="Edit"  class="small" :style="{ width: '7vw' }"/>
+                                                                                                            <Button @click="editDialog = true" label="Edit"  class="small" :style="{ width: '7vw' }"/>
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                 </DataTable>
                                                                                             </div>
                                                                                         </div>
                                                                                             <div style="padding-left: 13px;">
-                                                                                            <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="visible = true" />
+                                                                                            <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="addDialog = true" />
                                                                                             </div>
-                                                                                            <Dialog v-model:visible="visible" modal header="Add Item" :style="{ width: '50vw' }">
+                                                                                            <Dialog v-model:visible="addDialog" modal header="Add Item" :style="{ width: '50vw' }">
                                                                                                 <div class="grid formgrid p-fluid">
                                                                                                <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Item</label> 
-                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
+                                                                                                    <DropDown v-model="selectedItem" :options="itemsNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Vehicle</label> 
-                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                    <DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
                                                                                                 </div>
                                                                                                 </div>
-                                                                                                <Button @click="addItem" label="Add" icon="pi pi-plus" />
+                                                                                                <Button on @click="addItem" label="Add" icon="pi pi-plus" />
                                                                                             </Dialog>
+
+                                                                                            <Dialog v-model:visible="editDialog" modal header="Edit Item" :style="{ width: '50vw' }">
+                                                                                                <div class="grid formgrid p-fluid">
+                                                                                               <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Opening Mileage</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="opening_mileage" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Date Outgoing</label> 
+                                                                                                    <Calendar v-model="date_outgoing" showIcon />
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Closing Mileage</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="closing_mileage" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Date Incoming</label> 
+                                                                                                    <Calendar v-model="date_incoming" showIcon />
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Actual Mileage</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="actual_milege" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Duration</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="duration" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Total Free Mileage</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Confirmed Quantity</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="duration" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Chargeable Mileage</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="chargeable_mileage" data-pc-section="root" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Rate</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="rate" id="customer_name" type="text">
+                                                                                                </div>
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Unit of Measure</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="uom" id="customer_name" type="text">
+                                                                                                </div>
+                                                                                                </div>
+                                                                                                <Button label="Save" @click="editItem" icon="pi pi-plus" />
+                                                                                            </Dialog>
+
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
                                                                                                 <div class="p-checkbox p-component" data-pc-name="checkbox" data-pc-section="root">
                                                                                                   </div>
@@ -120,8 +181,24 @@
     let selectedSeries = storeToRefs(invoiceStore).series;
     let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
+    let selectedItem = ref('')
+    
+    let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
     const date = storeToRefs(invoiceStore).date;
-    const visible = ref(false);
+    const date_incoming = storeToRefs(invoiceStore).date_incoming;
+    const date_outgoing = storeToRefs(invoiceStore).date_outgoing;
+    const opening_mileage = storeToRefs(invoiceStore).opening_mileage;
+    const closing_mileage = storeToRefs(invoiceStore).closing_mileage;
+    const actual_milege = ref(0);
+    const total_free_mileage = storeToRefs(invoiceStore).total_free_mileage;
+    const chargeable_mileage = ref(0);
+    const duration =  ref(0);
+    const rate = storeToRefs(invoiceStore).rate;
+    const uom = storeToRefs(invoiceStore).uom;
+
+    //dialog states
+    const addDialog = ref(false);
+    const editDialog = ref(false);
 
     let customers = ref([]);
     let currencies = ref([]);
@@ -129,13 +206,16 @@
     let series = ref([]);
     let cost_centers = ref([]);
     let accounts = ref([]);
-    const items = ref([]);
-    //const { items }= storeToRefs(itemStore)
+    let items = ref([]);
+
+
+    const itemsTable = ref([]);
+    //const { items } = storeToRefs(itemStore)
     const loadData = async () => {
         // await itemStore.getItems();
         // await bankStore.getBanks();
         // await costStore.getCostCenters();
-        // await currencyStore.getCurrency();
+        // await currencyStore.getCurrency(); 
         // await customerStore.getCustomers();
         // await seriesStore.getSeries();
         //from DB
@@ -148,15 +228,11 @@
 
         customers.value = await customerStore.customerList.data;
         currencies.value = await currencyStore.currencyList.data;
-       // items.value = await itemStore.listItems.data;
-        series.value = await seriesStore.listSeries.data;
-        cost_centers.value = await costStore.listCostCenters.data;
-        accounts.value = bankStore.accountsList;
-        console.log(currencies.value);
-        console.log(items);
-        console.log(series.value);
-        console.log(cost_centers.value);
-        console.log(accounts.value);
+        items.value = await itemStore.itemList.data;
+        series.value = await seriesStore.series.data;
+        cost_centers.value = await costStore.costList.data;
+        accounts.value = await bankStore.accountsList.data;
+    
     };
 
 
@@ -164,38 +240,93 @@
     onMounted(loadData);
         
     const customerNames = computed(() => {
-        return customers.value.map(customer => customer.customer_name);
+        return customers.value.map(data => data.customer_name);
     });
 
     const accountNames = computed(() => {
-    // return accounts.value.map(account => account.account_name);
+        return accounts.value.map(account => account.account_name);
     });
 
     const currencyNames = computed(() => {
-    return currencies.value.map(currency => currency.name);
+        return currencies.value.map(currency => currency.name);
     });
 
     const seriesNames = computed(() => {
-    // return series.value.map(series => series.naming_series);
+        return series.value.map(series => series.naming_series);
     });
 
     const costNames = computed(() => {
-    // return cost_centers.value.map(cost_center => cost_center.cost_center_name);
+        return cost_centers.value.map(cost_center => cost_center.cost_center_name);
     });
 
-  
+    const _items = computed(() => {
+        return customers.value.map(customer => customer.customer_name);
+    });
+
     const addItem = () => {
             const newItem = {
-            item: selectedCustomer,
+            item: selectedItem,
             quantity: 1,
-            rate: 0, 
+            rate: '', 
             amount: 0 
         };
         
-        items.value.push(newItem); 
+        itemsTable.value.push(newItem); 
     };
 
+    const editItem = () => {
+        const index = itemsTable.value.findIndex(item => item.item === selectedItem);
+
+            // Update the rate value of the selected item with the value from the Dialog
+            itemsTable.value[index].rate = rate ;
+
+            // Reset the rate value in the Dialog to 0
     
+
+            // Close the Dialog
+            editDialog.value = false;
+    };
+
+    const calculateDuration = () => {
+        const incoming = new Date(date_incoming.value);
+        const outgoing = new Date(date_outgoing.value);
+        const diffTime = Math.abs(incoming.getTime() - outgoing.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        duration.value = diffDays;
+    }; 
+
+    watchEffect(() => {
+        calculateDuration();
+    });
+
+    
+    const calculateActualMileage = () => {
+        const opening = Number(opening_mileage.value);
+        const closing = Number(closing_mileage.value);
+        const actual = closing - opening;
+        actual_milege.value = actual;
+    }; 
+
+    watchEffect(() => {
+        calculateActualMileage();
+    });
+
+
+    const calculateChargeableMileage = () => {
+        const total_free = Number(total_free_mileage.value);
+        const actual = Number(actual_milege.value);
+        const chargeable = actual - total_free;
+        chargeable_mileage.value = chargeable;
+    }; 
+
+    watchEffect(() => {
+        calculateChargeableMileage();
+    });
+   
+    const itemsNames = computed(() => {
+        console.log(items.value);
+        return items.value.map(item => item.item_name);
+    });
 
     const createInvoice = async () => {
         

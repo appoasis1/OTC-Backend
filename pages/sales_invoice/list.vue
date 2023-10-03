@@ -44,22 +44,16 @@
     import { useInvoiceStore } from '~/stores/sales_invoice';
 
     const invoiceStore = useInvoiceStore();
-    const invoices = ref();
+    let invoices =ref([]);
 
     const loadData = async () => {
         
     };
 
                         onMounted(async () => {
-                    try {
-                        const data = await invoiceStore.listInvoice();
-                        invoices.value = data;
-                        console.log(data);
-                     
-                    } catch (error) {
-                        console.error(error);
-                         
-                    }
+                            invoices.value = await invoiceStore.listInvoice.data;
+                            console.log(invoices.value)
+                    
                     });
 
 
