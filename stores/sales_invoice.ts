@@ -73,5 +73,10 @@ export const useInvoiceStore = defineStore('invoice', {
               throw error;
             }
           }
+    },
+    getters: {
+        getItems() {
+            return this.$state.items;
+        },
     }
 });

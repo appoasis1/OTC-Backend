@@ -134,7 +134,7 @@
     const loadData = async () => {
         // await itemStore.getItems();
         // await bankStore.getBanks();
-        // await costStore.getCostCenters();
+        // await costStore.getCostCenters(); 
         // await currencyStore.getCurrency();
         // await customerStore.getCustomers();
         // await seriesStore.getSeries();
