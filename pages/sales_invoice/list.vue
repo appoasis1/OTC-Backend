@@ -13,13 +13,12 @@
                             <div class="card-style">
   
                                 <div>
-  
-                                    <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
-  
+                                    <!-- <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
                                         <i class="pi pi-plus"></i> New Invoice
-  
-                                    </nuxt-link>
-  
+                                    </nuxt-link> -->
+                                    <a href="/sales_invoice/create">
+                                    <Button label="New Invoice" icon="pi pi-book" class="mb-3" />
+                                    </a>
                                 </div>
   
                                     <DataTable :value="invoices" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"
@@ -35,35 +34,26 @@
                                         </Column>
   
                                         <Column field="name" header="Title" filterMatchMode="startsWith" sortable>
-  
-                                                <!-- <template #filter="{filterModel,filterCallback}">
-  
-                                                    <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Search"/>
-  
-                                                </template> -->
-  
+                                            <template #body="slotProps">
+                                            {{slotProps.data.name}}
+                                        </template>
                                         </Column>
   
                                         <Column field="country.name" header="Date" filterField="country.name" filterMatchMode="contains" sortable>
-  
-                                                                            <li v-for="item in items" :key="item.id">
-  
-                                            <nuxt-link :to="`sales_invoice/list/${item.id}`">{{ item.name }}</nuxt-link>
-  
-                                          </li>
-  
+                                            <template #body="slotProps">
+                                            {{slotProps.data.date}}
+                                        </template>
                                         </Column>
   
                                         <Column field="company" header="Cost Center" filterMatchMode="contains" sortable>
-  
-                                     
-  
+                                            <template #body="slotProps">
+                                            {{slotProps.data.cost_center}}
+                                        </template>
                                         </Column>
-  
-                                        <Column field="representative.name" header="Grand Total" filterField="representative.name" sortable>
-  
-                                         
-  
+                                        <Column field="invoices.series" header="Grand Total" filterField="representative.name" sortable>
+                                            <template #body="slotProps">
+                                           $ 300
+                                        </template>
                                         </Column>
   
                                     </DataTable>
@@ -77,67 +67,61 @@
         </section>
   
     </NuxtLayout>
-  
-  </template>
-  
-   
-  
-  <script setup lang="ts">
-  
+</template>
+
+<script setup lang="ts">
     import { storeToRefs } from "pinia";
-  
     import { ref, onMounted } from 'vue';
-  
     import { useInvoiceStore } from '~/stores/sales_invoice';
-  
-   
-  
+    import axios from 'axios';
+
     const invoiceStore = useInvoiceStore();
-  
-    //const invoices = ref([]);
-  
-    const { invoiceList }= storeToRefs(invoiceStore)
-  
-   
-  
-    const loadData = async () => {
-  
-       // invoices.value = await invoiceStore.invoiceList.data;
-  
-        console.log(invoiceList);
-  
-    };
-  
-   
-  
-      onMounted(loadData);
-  
-   
-  
-   
-  
-  const dt = ref();
-  
-  const filters = ref({
-  
+    let invoices =ref([]);
+
+    onMounted(async () => {
+
+        const getInvoiceList = async () => {
+
+            var config = {
+              method: 'post',
+              url: '/invoice/list',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+             
+            };
+
+            const result: any = await axios(config).then(function (response) {
+              console.log(JSON.stringify(response.data));
+              invoices.value = response.data.data;
+              return {
+                  data: response.data,
+                  success: true
+                  }
+            })
+            .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+            });
+            return result;
+            }
+            getInvoiceList();
+    });
+
+
+const dt = ref();
+const filters = ref({
     'name': {value: '', matchMode: 'contains'},
-  
     'country.name': {value: '', matchMode: 'contains'},
-  
     'company': {value: '', matchMode: 'contains'},
-  
     'representative.name': {value: '', matchMode: 'contains'},
-  
-  });
-  
-   
-  
-  </script>
-  
-   
-  
-  <style>
-  
+});
+
+</script>
+
+<style>
     .p-add-chip {
   
         margin-top: 0.1rem !important;
