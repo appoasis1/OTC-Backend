@@ -125,7 +125,7 @@
                                                                                                     <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="uom" id="customer_name" type="text">
                                                                                                 </div>
                                                                                                 </div>
-                                                                                                <Button label="Save" @click="editItem" icon="pi pi-plus" />
+                                                                                                <Button label="Save" @click="editItem(itemsTable?.id)" icon="pi pi-plus" />
                                                                                             </Dialog>
 
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
@@ -209,11 +209,8 @@
     let cost_centers = ref([]);
     let accounts = ref([]);
     let items = ref([]);
-
-
     const itemsTable = ref([]);
     //const { items } = storeToRefs(itemStore)
-
 
     const printPreview = () => {
         const invoiceData = {
@@ -256,8 +253,6 @@
     
     };
 
-
-
     onMounted(loadData);
         
     const customerNames = computed(() => {
@@ -280,7 +275,6 @@
         return cost_centers.value.map(cost_center => cost_center.cost_center_name);
     });
 
-
     const addItem = () => {
             const newItem = {
             item: selectedItem,
@@ -291,15 +285,18 @@
         
         itemsTable.value.push(newItem); 
     };
-
-    const editItem = (itemId) => {
+            const editItem = (itemId) => {
         const index = itemsTable.value.findIndex(item => item.id === itemId);
 
         if (index !== -1) {
-        itemsTable.value[index].rate = rate;
+            itemsTable.value.splice(index, 1, {
+            ...itemsTable.value[index],
+            rate,
+            });
         }
+
         editDialog.value = false;
-    };
+        };
 
     const calculateDuration = () => {
         const incoming = new Date(date_incoming.value);
