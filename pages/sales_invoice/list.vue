@@ -6,9 +6,12 @@
                         <div>
                             <div class="card-style">
                                 <div>
-                                    <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
+                                    <!-- <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
                                         <i class="pi pi-plus"></i> New Invoice
-                                    </nuxt-link>
+                                    </nuxt-link> -->
+                                    <a href="/sales_invoice/create">
+                                    <Button label="New Invoice" icon="pi pi-book" class="mb-3" />
+                                    </a>
                                 </div>
                                     <DataTable :value="invoices" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"
                                           filterDisplay="row"
@@ -42,6 +45,7 @@
     import { storeToRefs } from "pinia";
     import { ref, onMounted } from 'vue';
     import { useInvoiceStore } from '~/stores/sales_invoice';
+    import axios from 'axios';
 
     const invoiceStore = useInvoiceStore();
     let invoices =ref([]);
@@ -50,11 +54,37 @@
         
     };
 
-                        onMounted(async () => {
-                            invoices.value = await invoiceStore.listInvoice.data;
-                            console.log(invoices.value)
-                    
-                    });
+    onMounted(async () => {
+
+        const getInvoiceList = async () => {
+
+            var config = {
+              method: 'post',
+              url: '/invoice/list',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+             
+            };
+
+            const result: any = await axios(config).then(function (response) {
+              console.log(JSON.stringify(response.data));
+              invoices.value = response.data.data;
+              return {
+                  data: response.data,
+                  success: true
+                  }
+            })
+            .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+            });
+            return result;
+            }
+            getInvoiceList();
+    });
 
 
 const dt = ref();
@@ -65,12 +95,6 @@ const filters = ref({
     'representative.name': {value: '', matchMode: 'contains'},
 });
 
-
-
-
-
-
-   
 </script>
 
 <style>

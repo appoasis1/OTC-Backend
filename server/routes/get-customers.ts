@@ -29,6 +29,7 @@ export default defineEventHandler(async (event) => {
           email_id: customer.email_id,
           default_price_list: customer.default_price_list,
           default_currency: customer.default_currency,
+          primary_address: customer.primary_address,
           customer_primary_contact: customer.customer_primary_contact,
         },
       });

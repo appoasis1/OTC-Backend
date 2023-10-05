@@ -57,10 +57,8 @@ model Invoice {
   series           String?
   currency         String?
   date              DateTime?
-  customer          Customer       @relation(fields: [customerId], references: [id])
-  customerId        String
-  bank              Bank           @relation(fields: [bankId], references: [id])
-  bankId            String
+  customer         String?
+  bank              String?         
   items             Item[]         @relation("InvoiceItem")
 }
 
@@ -71,8 +69,8 @@ model Customer {
   email_id          String?
   default_price_list String?
   default_currency  String?
+  primary_address   String?
   customer_primary_contact String?
-  invoices          Invoice[]     // One-to-Many relationship with Invoice
 }
 
 model Bank {
@@ -81,7 +79,6 @@ model Bank {
   bank              String?
   account_type      String?
   bank_account_no   String?
-  invoices          Invoice[]     // One-to-Many relationship with Invoice
 }
 
 model Item {

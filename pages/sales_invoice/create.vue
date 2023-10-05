@@ -7,7 +7,14 @@
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
                                     <div class="text-900 font-medium text-xl mb-3">Sales Invoice</div>
+                                    <div class="d-flex justify-content-end mb-3">
+                                        
+                                        <Button @click="printPreview" label="Print" icon="pi pi-print" />
+                                        
+                                        <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" />
+                                    </div>
                                     <div class="surface-card p-4 shadow-2 border-round p-fluid">
+                                      
                                         <div class="grid formgrid p-fluid">
                                             <div class="field mb-4 col-12 md:col-4">
                                                 <label for="company_name" class="font-medium text-900">Series</label><DropDown v-model="selectedSeries" :options="seriesNames"  placeholder="Select Naming Series" class="w-full md:w-34rem" /></div>
@@ -136,14 +143,7 @@
 
                                                                          </div>
                                                                     </div>
-                                                                <button class="p-button p-component w-auto" type="button" aria-label="Create Invoice" data-pc-name="button" data-pc-section="root" data-pd-ripple="true"><span class="p-button-icon p-button-icon-left pi pi-file" data-pc-section="icon">
-
-                                                            </span> 
-                                                        <span class="p-button-label" data-pc-section="label">Save</span><!---->
-                                                     <span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root">
-
-                                                </span>
-                                           </button>
+                                                              
                                       </div>
                                   </div>
                              </div>
@@ -165,7 +165,9 @@
     import { useSeriesStore } from '~/stores/series';
     import { useInvoiceStore } from '~/stores/sales_invoice';
     import { ref } from 'vue';
+    import { useRouter } from 'vue-router';
 
+    const router = useRouter();
     const invoiceStore = useInvoiceStore();
     const toast = useToast();
     const itemStore = useItemStore();
@@ -211,6 +213,25 @@
 
     const itemsTable = ref([]);
     //const { items } = storeToRefs(itemStore)
+
+
+    const printPreview = () => {
+        const invoiceData = {
+            selectedCustomer: selectedCustomer.value,
+            selectedSeries: selectedSeries.value,
+            selectedAccount: selectedAccount.value,
+            date: date.value,
+
+        };
+
+        router.push({
+        path: '/sales_invoice/print_preview',
+        query: {
+        invoiceData: JSON.stringify(invoiceData)
+     }
+    });
+    };
+
     const loadData = async () => {
         // await itemStore.getItems();
         // await bankStore.getBanks();
@@ -244,7 +265,7 @@
     });
 
     const accountNames = computed(() => {
-        return accounts.value.map(account => account.account_name);
+        return accounts.value.map(account => account.bank);
     });
 
     const currencyNames = computed(() => {
@@ -259,9 +280,6 @@
         return cost_centers.value.map(cost_center => cost_center.cost_center_name);
     });
 
-    const _items = computed(() => {
-        return customers.value.map(customer => customer.customer_name);
-    });
 
     const addItem = () => {
             const newItem = {
@@ -274,17 +292,13 @@
         itemsTable.value.push(newItem); 
     };
 
-    const editItem = () => {
-        const index = itemsTable.value.findIndex(item => item.item === selectedItem);
+    const editItem = (itemId) => {
+        const index = itemsTable.value.findIndex(item => item.id === itemId);
 
-            // Update the rate value of the selected item with the value from the Dialog
-            itemsTable.value[index].rate = rate ;
-
-            // Reset the rate value in the Dialog to 0
-    
-
-            // Close the Dialog
-            editDialog.value = false;
+        if (index !== -1) {
+        itemsTable.value[index].rate = rate;
+        }
+        editDialog.value = false;
     };
 
     const calculateDuration = () => {
@@ -328,19 +342,36 @@
         return items.value.map(item => item.item_name);
     });
 
-    const createInvoice = async () => {
-        
-        // let result: any = await useItemStore.create();
-
-        // if(result?.data?.success){
+    // const createInvoice = async () => {
+    //     let data = {
+    //         name: "Invoice",
+    //         number: 1,
+    //         currency: selectedCurrency.value,
+    //         series: selectedSeries.value,
+    //         date: date.value,
+    //         customer: selectedCustomer.value,
+    //         bank: selectedAccount.value,
+    //         cost_center: selectedCost.value
+    //     }
+    //     let result = await invoiceStore.create(data)
+    //     if (result.data.success) {
             
-        //     toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
-        //     clearModal();
-        // }else{
-           
-        //     toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
-        //     console.log("error",result?.data?.error);
-        // }
+    //         toast.add({severity:'success', summary: 'Success', detail:'Invoice Succesfully Created', life: 3000});
+    //     }
+    //     else {
+    //         toast.add({severity:'warn', summary: 'Failed', detail:'Creation Failed', life: 3000});
+    //     }
+    // }
+
+    const createInvoice = async () => {
+        let result: any = await invoiceStore.createInvoice();
+        if(result?.data?.success){
+            toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
+        
+        }else{
+            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
+            console.log("error",result?.data?.error);
+        }
     }
 
 </script>
