@@ -14,7 +14,7 @@ export const useInvoiceStore = defineStore('invoice', {
         cost_centre: "",
         series: "",
         items: [],
-        invoiceList: null,
+        invoiceList: [],
     }),
     actions: {
         async createInvoice() {
@@ -66,7 +66,8 @@ export const useInvoiceStore = defineStore('invoice', {
               });
           
               this.invoiceList = invoiceList;
-             // console.log(invoiceList); 
+              console.log('store invoices ------>', invoiceList); 
+              
               return invoiceList;
             } catch (error) {
               console.error(error);
