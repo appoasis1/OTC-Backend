@@ -20,18 +20,24 @@
                                         <Column selectionMode="multiple" headerStyle="width: 3rem">
                                         </Column>
                                         <Column field="name" header="Title" filterMatchMode="startsWith" sortable>
-                                                <!-- <template #filter="{filterModel,filterCallback}">
-                                                    <InputText type="text" v-model="filterModel.value" @keydown.enter="filterCallback()" class="p-column-filter" placeholder="Search"/>
-                                                </template> -->
+                                            <template #body="slotProps">
+                                            {{slotProps.data.name}}
+                                        </template>
                                         </Column>
                                         <Column field="country.name" header="Date" filterField="country.name" filterMatchMode="contains" sortable>
-                                           
+                                            <template #body="slotProps">
+                                            {{slotProps.data.date}}
+                                        </template>
                                         </Column>
                                         <Column field="company" header="Cost Center" filterMatchMode="contains" sortable>
-                                      
+                                            <template #body="slotProps">
+                                            {{slotProps.data.cost_center}}
+                                        </template>
                                         </Column>
-                                        <Column field="representative.name" header="Grand Total" filterField="representative.name" sortable>
-                                          
+                                        <Column field="invoices.series" header="Grand Total" filterField="representative.name" sortable>
+                                            <template #body="slotProps">
+                                           $ 300
+                                        </template>
                                         </Column>
                                     </DataTable>
                                 </div>
@@ -49,10 +55,6 @@
 
     const invoiceStore = useInvoiceStore();
     let invoices =ref([]);
-
-    const loadData = async () => {
-        
-    };
 
     onMounted(async () => {
 
