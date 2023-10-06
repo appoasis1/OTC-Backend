@@ -75,7 +75,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Vehicle</label> 
-                                                                                                    <DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                    <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
                                                                                                 </div>
                                                                                                 </div>
                                                                                                 <Button on @click="addItem" label="Add" icon="pi pi-plus" />
@@ -364,8 +364,13 @@
     });
    
     const itemsNames = computed(() => {
-        console.log(items.value);
+      
         return items.value.map(item => item.item_name);
+    });
+
+    const vehicles = computed(() => {
+   
+        return items.value.map(item => item.item_code);
     });
 
     // const createInvoice = async () => {
