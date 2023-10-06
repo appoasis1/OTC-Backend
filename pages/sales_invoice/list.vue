@@ -17,7 +17,7 @@
                                         <i class="pi pi-plus"></i> New Invoice
                                     </nuxt-link> -->
                                     <a href="/sales_invoice/create">
-                                    <Button label="New Invoice" icon="pi pi-book" class="mb-3" />
+                                    <Button label="New Sales Invoice" icon="pi pi-book" class="mb-3" />
                                     </a>
                                 </div>
   

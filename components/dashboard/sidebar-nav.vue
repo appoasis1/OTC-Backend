@@ -57,6 +57,12 @@
                 icon: 'pi pi-fw pi-cog',
                 items: [{
                         key: '1_0',
+                        label: 'Dashboard',
+                        icon: 'pi pi-fw pi-user-plus',
+                        to: '/'
+                    },
+                    {
+                        key: '1_0',
                         label: 'Sales Invoice',
                         icon: 'pi pi-fw pi-user-plus',
                         to: '/sales_invoice/list'
@@ -65,20 +71,14 @@
                         key: '1_0',
                         label: 'Sales Order',
                         icon: 'pi pi-fw pi-user-plus',
-                        to: '/sales_invoice/create'
+                        to: '/sales_order/list'
                     },
                     {
                         key: '1_1',
                         label: 'Quotation',
                         icon: 'pi pi-fw pi-arrows-h',
-                        to: '/quotation/create'
-                    },
-                    {
-                        key: '1_1',
-                        label: 'Quotation-list',
-                        icon: 'pi pi-fw pi-arrows-h',
                         to: '/quotation/list'
-                    },
+                    }
                 ]
             },
            

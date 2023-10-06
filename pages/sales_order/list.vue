@@ -9,8 +9,8 @@
                                     <!-- <nuxt-link to="/sales_invoice/create" class="btn btn-primary mb-3">
                                         <i class="pi pi-plus"></i> New Invoice
                                     </nuxt-link> -->
-                                    <a href="/quotation/create">
-                                    <Button label="New Quotation" icon="pi pi-book" class="mb-3" />
+                                    <a href="/sales_order/create">
+                                    <Button label="New Sales Order " icon="pi pi-book" class="mb-3" />
                                     </a>
                                 </div>
                                     <DataTable :value="invoices" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"

@@ -8,8 +8,11 @@ generator erd {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+
+  provider = "mysql"
+
+  url      = env("DATABASE_URL")
+
 }
 model User {
   id                String         @id @default(cuid())
@@ -59,7 +62,7 @@ model Invoice {
   date              DateTime?
   customer         String?
   bank              String?         
-  items             Item[]         @relation("InvoiceItem")
+  items         Json?
 }
 
 // model Quotation {
@@ -72,7 +75,7 @@ model Invoice {
 model Customer {
   id                String         @id @default(cuid())
   name              String?
-  customer_name     String?
+  customer_name     String
   email_id          String?
   default_price_list String?
   default_currency  String?
@@ -82,8 +85,8 @@ model Customer {
 
 model Bank {
   id                String         @id @default(cuid())
-  account_name      String?
-  bank              String?
+  account_name      String
+  bank              String
   account_type      String?
   bank_account_no   String?
 }
@@ -95,5 +98,4 @@ model Item {
   item_group        String?
   stock_uom         String?
   description       String?
-  invoices          Invoice[]     @relation("InvoiceItem") // Many-to-One relationship with Invoice
 }

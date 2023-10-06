@@ -6,7 +6,7 @@
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
-                                    <div class="text-900 font-medium text-xl mb-1"><h1>Sales Invoice</h1></div>
+                                    <div class="text-900 font-medium text-xl mb-1"><h1>Sales Order</h1></div>
                                     <div class="d-flex justify-content-end mb-3">
                                         
                                         <Button @click="printPreview" label="Print" icon="pi pi-print" />
@@ -47,26 +47,20 @@
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
                                                                                                 <DataTable :value="itemsTable"  resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
-                                                                                                    <Column header="Item" >
+                                                                                                    <Column header="Item" :style="{ width: '3vw' }">
                                                                                                         <template #body="slotProps">
                                                                                                             {{ slotProps.data.item }}
                                                                                                         </template>
                                                                                                     </Column>
-                                                                                                    <Column header="Vehicle">
-                                                                                                        <template #body="slotProps">
-                                                                                                            {{ slotProps.data.vehicle }}
-                                                                                                        </template>
-                                                                                                    </Column>
-                                                                                                    <Column field="quantity" header="Quantity" :style="{ width: '9vw' }"></Column>
-                                                                                                    <Column field="rate" header="Rate" :style="{ width: '9vw' }"></Column>
-                                                                                                    <Column field="amount" header="Amount" :style="{ width: '9vw' }"></Column>
+                                                                                                    <Column field="quantity" header="Quantity"></Column>
+                                                                                                    <Column field="rate" header="Rate"></Column>
+                                                                                                    <Column field="amount" header="Amount"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
                                                                                                         <template #body="slotProps">
                                                                                                             <Button @click="openModal(slotProps.index)" label="Edit"  class="small" :style="{ width: '7vw' }"/>
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                 </DataTable>
-                                                                                                
                                                                                             </div>
                                                                                         </div>
                                                                                             <div style="padding-left: 13px;">
@@ -81,7 +75,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Vehicle</label> 
-                                                                                                    <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                    <DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
                                                                                                 </div>
                                                                                                 </div>
                                                                                                 <Button on @click="addItem" label="Add" icon="pi pi-plus" />
@@ -219,7 +213,6 @@
     const non_taxable_amount = storeToRefs(invoiceStore).non_taxable_amount;
     const advance_payment = storeToRefs(invoiceStore).advance_payment;
     const grand_total = storeToRefs(invoiceStore).grand_total;
-    const itemList = storeToRefs(invoiceStore).items;
     const uom = storeToRefs(invoiceStore).uom;
 
     //dialog states
@@ -246,7 +239,7 @@
         };
 
         router.push({
-        path: '/sales_invoice/print_preview',
+        path: '/sales_order/print_preview',
         query: {
         invoiceData: JSON.stringify(invoiceData)
      }
@@ -302,43 +295,14 @@
     const addItem = () => {
             const newItem = {
             item: selectedItem.value,
-            vehicle: selectedVehicle.value,
-            quantity: 1.2,
+            quantity: 1,
             rate: '', 
             amount: 0 
         };
         
         itemsTable.value.push(newItem); 
         addDialog.value = false;
-        calculateTotalQuantity();
-        retrieveItemData();
     };
-
-    const calculateTotalQuantity = () =>  {
-        taxable_amount.value = 0;
-        for (const item of itemsTable.value) {
-            taxable_amount.value += item.quantity;
-            console.log("total", taxable_amount.value);
-        }
-    }
-
-    const itemData = ref([]);
-    const retrieveItemData = () =>  {
-        itemData.value = itemsTable.value.map(item => {
-            const data = {
-            Item: item.item,
-            Vehicle: item.vehicle,
-            Quantity: item.quantity,
-            Rate: item.rate,
-            Amount: item.amount
-            };
-           // console.log(data);
-            return data;
-        });
-
-        itemList.value = itemData.value;
-        console.log(itemList.value);
-    }
   
     // const editItem = (itemId) => {
     //     const item = itemsTable.value.find(item => item.id === itemId);
@@ -400,13 +364,8 @@
     });
    
     const itemsNames = computed(() => {
-        
+        console.log(items.value);
         return items.value.map(item => item.item_name);
-    });
-    
-    const vehicles = computed(() => {
-   
-        return items.value.map(item => item.item_code);
     });
 
     // const createInvoice = async () => {
@@ -433,10 +392,10 @@
     const createInvoice = async () => {
         let result: any = await invoiceStore.createInvoice();
         if(result?.data?.success){
-            toast.add({severity: 'success', summary: 'Create Invoice', detail: "Invoice was created successfully", life: 6000});
+            toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
         
         }else{
-            toast.add({severity: 'warn', summary: 'Create Invoice', detail: `Invoice creation failed : ${result?.data?.message}`, life: 6000});
+            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
             console.log("error",result?.data?.error);
         }
     }

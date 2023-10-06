@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-export const useInvoiceStore = defineStore('invoice', {
+export const useOrderStore = defineStore('order', {
     state: () => ({
         name: "",
         number: "",
@@ -30,13 +30,13 @@ export const useInvoiceStore = defineStore('invoice', {
         advance_payment: 0,
         amount_due: 0,
         items: [],
-        invoiceList: [],
+        orderList: [],
     }),
     actions: {
-        async createInvoice() {
+        async createOrder() {
 
             const data = { 
-                name: "Invoice",
+                name: "Order",
                 number: "001",
                 date: this.date,
                 customer: this.selectedCustomer,
@@ -48,7 +48,7 @@ export const useInvoiceStore = defineStore('invoice', {
             },
              config = {
                 method: 'post',
-                url: '/invoice/create',
+                url: '/order/create',
                 data: data,
                 headers: { 
                     'Accept': '/',
@@ -59,7 +59,7 @@ export const useInvoiceStore = defineStore('invoice', {
             }; 
     
             const result = await axios(config).then(function (response) {
-                console.log("Invoice created")  
+                console.log("Order created")  
                 console.log(JSON.stringify(response.data));
                 return {
                     data: response.data,
@@ -75,17 +75,16 @@ export const useInvoiceStore = defineStore('invoice', {
             return result;
         },
 
-        async listInvoice() {
+        async listOrder() {
             try {
-              const invoiceList = await $fetch('/invoice/list', {
+              const orderList = await $fetch('/order/list', {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
               });
           
-              this.invoiceList = invoiceList;
-              console.log('store invoices ------>', invoiceList); 
-              
-              return invoiceList;
+              this.orderList = orderList;
+             // console.log(invoiceList);
+              return orderList;
             } catch (error) {
               console.error(error);
               throw error;
