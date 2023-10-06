@@ -35,7 +35,7 @@
   
                                         <Column field="name" header="Title" filterMatchMode="startsWith" sortable>
                                             <template #body="slotProps">
-                                            {{slotProps.data.name}}
+                                         <NuxtLink :to="'/sales_invoice/' + slotProps.data.id">{{ slotProps.data.name }}</NuxtLink>
                                         </template>
                                         </Column>
   
@@ -61,7 +61,6 @@
                                 </div>
   
                             </div>
-  
                 </div>
   
         </section>
@@ -110,7 +109,6 @@
             getInvoiceList();
     });
 
-
 const dt = ref();
 const filters = ref({
     'name': {value: '', matchMode: 'contains'},
@@ -118,6 +116,7 @@ const filters = ref({
     'company': {value: '', matchMode: 'contains'},
     'representative.name': {value: '', matchMode: 'contains'},
 });
+
 
 </script>
 
@@ -132,8 +131,6 @@ const filters = ref({
   
     }
   
-   
-  
     .p-add-chip-disabled {
   
         margin-top: 0.1rem !important;
@@ -144,8 +141,6 @@ const filters = ref({
   
     }
   
-   
-  
     .p-chips-token {
   
         margin-top: 0.1rem !important;
@@ -155,8 +150,6 @@ const filters = ref({
         color: var(--primary-color-text) !important;
   
     }
-  
-   
   
     .p-dialog-mask.p-component-overlay.p-component-overlay-enter {
   
@@ -176,16 +169,11 @@ const filters = ref({
   
     }
   
-   
-  
     small {
   
         margin-top: 0.4rem;
-  
     }
-  
    
-  
     .flex {
   
         display: flex;
