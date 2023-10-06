@@ -6,7 +6,7 @@
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
-                                    <div class="text-900 font-medium text-xl mb-3">Sales Invoice</div>
+                                    <div class="text-900 font-medium text-xl mb-1"><h1>Sales Invoice</h1></div>
                                     <div class="d-flex justify-content-end mb-3">
                                         
                                         <Button @click="printPreview" label="Print" icon="pi pi-print" />
@@ -31,20 +31,33 @@
                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
                                                                 </div>
                                                                 <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
-                                                                        </div></div><div class="field mb-4 col-12 md:col-6"></div>
+                                                                        </div></div><div class="field mb-4 col-12 md:col-6">  
+                                                                            <div class="card flex flex-column align-items-cente">
+                                                                            <div class="flex flex-wrap gap-2 mb-8">
+                                                                            <h4>Taxable Amount</h4>
+                                                                                
+                                                                            </div>
+                                                                            
+                                                                        </div>
+
+                                                                        </div>
                                                                             <div class="block-header">
                                                                                         <div style="padding-left: 13px;"><h4>Items</h4></div>
                                                                                         </div>
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
                                                                                                 <DataTable :value="itemsTable"  resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
-                                                                                                    <Column field="item" header="Item"></Column>
+                                                                                                    <Column header="Item" :style="{ width: '3vw' }">
+                                                                                                        <template #body="slotProps">
+                                                                                                            {{ slotProps.data.item }}
+                                                                                                        </template>
+                                                                                                    </Column>
                                                                                                     <Column field="quantity" header="Quantity"></Column>
                                                                                                     <Column field="rate" header="Rate"></Column>
                                                                                                     <Column field="amount" header="Amount"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
-                                                                                                        <template #body="rowData">
-                                                                                                            <Button @click="editDialog = true" label="Edit"  class="small" :style="{ width: '7vw' }"/>
+                                                                                                        <template #body="slotProps">
+                                                                                                            <Button @click="openModal(slotProps.index)" label="Edit"  class="small" :style="{ width: '7vw' }"/>
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                 </DataTable>
@@ -125,7 +138,7 @@
                                                                                                     <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="uom" id="customer_name" type="text">
                                                                                                 </div>
                                                                                                 </div>
-                                                                                                <Button label="Save" @click="editItem(itemsTable?.id)" icon="pi pi-plus" />
+                                                                                                <Button label="Save" :onClick="(e) => editItem(e, slotProps.index)" icon="pi pi-plus" />
                                                                                             </Dialog>
 
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
@@ -138,12 +151,11 @@
                                                                                                         </div>
                                                                                                             <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
                                                                                                                 <textarea class="p-inputtextarea p-inputtext p-component p-inputtextarea-resizable" data-pc-name="textarea" data-pc-section="root" id="notes" rows="5" style="height: calc(133.6px); overflow: hidden;"></textarea>
-                                                                                </div>
-                                                                              <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
+                                                                                                                 </div>
+                                                                                                                <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
-                                                                         </div>
-                                                                    </div>
-                                                              
+                                                    </div>
+                                            </div>               
                                       </div>
                                   </div>
                              </div>
@@ -183,8 +195,7 @@
     let selectedSeries = storeToRefs(invoiceStore).series;
     let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
-    let selectedItem = ref('')
-    
+    let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
     const date = storeToRefs(invoiceStore).date;
     const date_incoming = storeToRefs(invoiceStore).date_incoming;
@@ -195,7 +206,13 @@
     const total_free_mileage = storeToRefs(invoiceStore).total_free_mileage;
     const chargeable_mileage = ref(0);
     const duration =  ref(0);
-    const rate = storeToRefs(invoiceStore).rate;
+    const rate = ref(0);
+    const itemsTable = ref([]);
+    const taxable_amount = storeToRefs(invoiceStore).taxable_amount;
+    const total_charges = storeToRefs(invoiceStore).total_charges;
+    const non_taxable_amount = storeToRefs(invoiceStore).non_taxable_amount;
+    const advance_payment = storeToRefs(invoiceStore).advance_payment;
+    const grand_total = storeToRefs(invoiceStore).grand_total;
     const uom = storeToRefs(invoiceStore).uom;
 
     //dialog states
@@ -209,7 +226,7 @@
     let cost_centers = ref([]);
     let accounts = ref([]);
     let items = ref([]);
-    const itemsTable = ref([]);
+    
     //const { items } = storeToRefs(itemStore)
 
     const printPreview = () => {
@@ -277,27 +294,39 @@
 
     const addItem = () => {
             const newItem = {
-            item: selectedItem,
+            item: selectedItem.value,
             quantity: 1,
             rate: '', 
             amount: 0 
         };
         
         itemsTable.value.push(newItem); 
+        addDialog.value = false;
     };
-            const editItem = (itemId) => {
-        const index = itemsTable.value.findIndex(item => item.id === itemId);
+  
+    // const editItem = (itemId) => {
+    //     const item = itemsTable.value.find(item => item.id === itemId);
 
-        if (index !== -1) {
-            itemsTable.value.splice(index, 1, {
-            ...itemsTable.value[index],
-            rate,
-            });
-        }
+    //     if (item) {
+    //         item.rate = rate;
+    //     }
 
-        editDialog.value = false;
-        };
+    //     editDialog.value = false;
+    // };
+    
+    const editItem = (index) => {
+    const item = itemsTable.value[index];
 
+    if (item) {
+        item.rate = rate.value;
+    }
+
+    editDialog.value = false;
+};
+    const openModal = (myIndex) => {
+        editDialog.value = true
+        console.log("my index", myIndex)
+    }
     const calculateDuration = () => {
         const incoming = new Date(date_incoming.value);
         const outgoing = new Date(date_outgoing.value);
@@ -363,10 +392,10 @@
     const createInvoice = async () => {
         let result: any = await invoiceStore.createInvoice();
         if(result?.data?.success){
-            toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
+            toast.add({severity: 'success', summary: 'Create Invoice', detail: "Invoice was created successfully", life: 6000});
         
         }else{
-            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
+            toast.add({severity: 'warn', summary: 'Create Invoice', detail: `Invoice creation failed : ${result?.data?.message}`, life: 6000});
             console.log("error",result?.data?.error);
         }
     }
@@ -403,6 +432,23 @@
     .p-dialog-mask.p-component-overlay.p-component-overlay-enter {
         z-index: 1101 !important;
     }
+
+    .my-table {
+    border-collapse: collapse;
+    width: 300px;
+  }
+
+  .my-table th,
+  .my-table td {
+    border: 1px solid black;
+    padding: 8px;
+    text-align: right;
+  }
+
+  .my-table th {
+    background-color: #f2f2f2;
+    text-align: left;
+  }
 </style>
 
 <style lang="scss" scoped>

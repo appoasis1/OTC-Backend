@@ -6,7 +6,7 @@
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
-                                    <div class="text-900 font-medium text-xl mb-1"><h1>Quotation</h1></div>
+                                    <div class="text-900 font-medium text-xl mb-1"><h1>Sales Order</h1></div>
                                     <div class="d-flex justify-content-end mb-3">
                                         
                                         <Button @click="printPreview" label="Print" icon="pi pi-print" />
@@ -175,12 +175,12 @@
     import { useCurrencyStore } from '~/stores/currency';
     import { useCustomerStore } from '~/stores/customers';
     import { useSeriesStore } from '~/stores/series';
-    import { useQuotationStore } from '~/stores/quotation';
+    import { useInvoiceStore } from '~/stores/sales_invoice';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
-    const quotationStore = useQuotationStore();
+    const invoiceStore = useInvoiceStore();
     const toast = useToast();
     const itemStore = useItemStore();
     const bankStore = useBankStore();
@@ -190,30 +190,30 @@
     const seriesStore = useSeriesStore();
    
     //Sales Invoice data
-    let selectedCustomer = storeToRefs(quotationStore).selectedCustomer;
-    let selectedCurrency = storeToRefs(quotationStore).currency;
-    let selectedSeries = storeToRefs(quotationStore).series;
-    let selectedAccount = storeToRefs(quotationStore).selectedAccount;
-    let selectedCost = storeToRefs(quotationStore).cost_centre;
+    let selectedCustomer = storeToRefs(invoiceStore).selectedCustomer;
+    let selectedCurrency = storeToRefs(invoiceStore).currency;
+    let selectedSeries = storeToRefs(invoiceStore).series;
+    let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
+    let selectedCost = storeToRefs(invoiceStore).cost_centre;
     let selectedItem = ref()
-    let selectedVehicle = storeToRefs(quotationStore).selectedVehicle;
-    const date = storeToRefs(quotationStore).date;
-    const date_incoming = storeToRefs(quotationStore).date_incoming;
-    const date_outgoing = storeToRefs(quotationStore).date_outgoing;
-    const opening_mileage = storeToRefs(quotationStore).opening_mileage;
-    const closing_mileage = storeToRefs(quotationStore).closing_mileage;
+    let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
+    const date = storeToRefs(invoiceStore).date;
+    const date_incoming = storeToRefs(invoiceStore).date_incoming;
+    const date_outgoing = storeToRefs(invoiceStore).date_outgoing;
+    const opening_mileage = storeToRefs(invoiceStore).opening_mileage;
+    const closing_mileage = storeToRefs(invoiceStore).closing_mileage;
     const actual_milege = ref(0);
-    const total_free_mileage = storeToRefs(quotationStore).total_free_mileage;
+    const total_free_mileage = storeToRefs(invoiceStore).total_free_mileage;
     const chargeable_mileage = ref(0);
     const duration =  ref(0);
     const rate = ref(0);
     const itemsTable = ref([]);
-    const taxable_amount = storeToRefs(quotationStore).taxable_amount;
-    const total_charges = storeToRefs(quotationStore).total_charges;
-    const non_taxable_amount = storeToRefs(quotationStore).non_taxable_amount;
-    const advance_payment = storeToRefs(quotationStore).advance_payment;
-    const grand_total = storeToRefs(quotationStore).grand_total;
-    const uom = storeToRefs(quotationStore).uom;
+    const taxable_amount = storeToRefs(invoiceStore).taxable_amount;
+    const total_charges = storeToRefs(invoiceStore).total_charges;
+    const non_taxable_amount = storeToRefs(invoiceStore).non_taxable_amount;
+    const advance_payment = storeToRefs(invoiceStore).advance_payment;
+    const grand_total = storeToRefs(invoiceStore).grand_total;
+    const uom = storeToRefs(invoiceStore).uom;
 
     //dialog states
     const addDialog = ref(false);
@@ -239,7 +239,7 @@
         };
 
         router.push({
-        path: '/quotation/print_preview',
+        path: '/sales_order/print_preview',
         query: {
         invoiceData: JSON.stringify(invoiceData)
      }
@@ -379,7 +379,7 @@
     //         bank: selectedAccount.value,
     //         cost_center: selectedCost.value
     //     }
-    //     let result = await quotationStore.create(data)
+    //     let result = await invoiceStore.create(data)
     //     if (result.data.success) {
             
     //         toast.add({severity:'success', summary: 'Success', detail:'Invoice Succesfully Created', life: 3000});
@@ -390,12 +390,12 @@
     // }
 
     const createInvoice = async () => {
-        let result: any = await quotationStore.createQuotation();
+        let result: any = await invoiceStore.createInvoice();
         if(result?.data?.success){
-            toast.add({severity: 'success', summary: 'Create Quotation', detail: "Quotation  was created successfully", life: 6000});
+            toast.add({severity: 'success', summary: 'Create Member', detail: "Member was created successfully", life: 6000});
         
         }else{
-            toast.add({severity: 'warn', summary: 'Create Quotation', detail: `Quotation creation failed : ${result?.data?.message}`, life: 6000});
+            toast.add({severity: 'warn', summary: 'Create Member', detail: `Member creation failed : ${result?.data?.message}`, life: 6000});
             console.log("error",result?.data?.error);
         }
     }

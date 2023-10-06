@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
-export const useInvoiceStore = defineStore('invoice', {
+export const useQuotationStore = defineStore('quotation', {
     state: () => ({
         name: "",
         number: "",
@@ -30,13 +30,13 @@ export const useInvoiceStore = defineStore('invoice', {
         advance_payment: 0,
         amount_due: 0,
         items: [],
-        invoiceList: [],
+        quotationList: [],
     }),
     actions: {
-        async createInvoice() {
+        async createQuotation() {
 
             const data = { 
-                name: "Invoice",
+                name: "Quotation",
                 number: "001",
                 date: this.date,
                 customer: this.selectedCustomer,
@@ -48,7 +48,7 @@ export const useInvoiceStore = defineStore('invoice', {
             },
              config = {
                 method: 'post',
-                url: '/invoice/create',
+                url: '/quotation/create',
                 data: data,
                 headers: { 
                     'Accept': '/',
@@ -59,7 +59,7 @@ export const useInvoiceStore = defineStore('invoice', {
             }; 
     
             const result = await axios(config).then(function (response) {
-                console.log("Invoice created")  
+                console.log("Quotation created")  
                 console.log(JSON.stringify(response.data));
                 return {
                     data: response.data,
@@ -75,16 +75,16 @@ export const useInvoiceStore = defineStore('invoice', {
             return result;
         },
 
-        async listInvoice() {
+        async listQuotation() {
             try {
-              const invoiceList = await $fetch('/invoice/list', {
+              const quotationList = await $fetch('/invoice/list', {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
               });
           
-              this.invoiceList = invoiceList;
+              this.quotationList = quotationList;
              // console.log(invoiceList);
-              return invoiceList;
+              return quotationList;
             } catch (error) {
               console.error(error);
               throw error;
