@@ -58,7 +58,8 @@
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                     <Column field="quantity" header="Quantity" :style="{ width: '9vw' }"></Column>
-                                                                                                    <Column field="rate" header="Rate" :style="{ width: '9vw' }"></Column>
+                                                                                                    <Column field="rate" header="Rate" :style="{ width: '9vw' }">
+                                                                                                        </Column>
                                                                                                     <Column field="amount" header="Amount" :style="{ width: '9vw' }"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
                                                                                                         <template #body="slotProps">
@@ -136,7 +137,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Rate</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="rate" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="rate" id="rate" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
@@ -144,7 +145,9 @@
                                                                                                     <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="uom" id="customer_name" type="text">
                                                                                                 </div>
                                                                                                 </div>
-                                                                                                <Button label="Save" :onClick="(e) => editItem(e, slotProps.index)" icon="pi pi-plus" />
+                            
+                                                                                                <Button label="Save" @click="(e) => editItem()" icon="pi pi-plus" />
+                                                                                                
                                                                                             </Dialog>
 
                                                                                             <div class="field mb-4 col-12 flex align-items-center">
@@ -160,17 +163,17 @@
                                                                                                                  </div>
                                                                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
-                                                    </div>
-                                            </div>               
-                                      </div>
-                                  </div>
-                             </div>
-                         </div>
-                    </div>
-                </div>
-        </section>
-    </NuxtLayout>
-</template>
+                                                                                                    </div>
+                                                                                            </div>               
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                        </section>
+                                                    </NuxtLayout>
+                                                </template>
 
 <script setup lang="ts">
     import { storeToRefs } from "pinia";
@@ -339,27 +342,22 @@
         itemList.value = itemData.value;
         console.log(itemList.value);
     }
-  
-    // const editItem = (itemId) => {
-    //     const item = itemsTable.value.find(item => item.id === itemId);
+    const index = ref(null); 
 
-    //     if (item) {
-    //         item.rate = rate;
-    //     }
+    const editItem = () => {
+        console.log(index.value);
+        console.log(itemsTable.value);
+        const item = itemsTable.value[index.value];
 
-    //     editDialog.value = false;
-    // };
-    
-    const editItem = (index) => {
-    const item = itemsTable.value[index];
+        if (item) {
+            item.rate = rate.value;
+        }
 
-    if (item) {
-        item.rate = rate.value;
-    }
+        editDialog.value = false;
+        };
 
-    editDialog.value = false;
-};
     const openModal = (myIndex) => {
+        index.value = myIndex;
         editDialog.value = true
         console.log("my index", myIndex)
     }
@@ -409,26 +407,6 @@
         return items.value.map(item => item.item_code);
     });
 
-    // const createInvoice = async () => {
-    //     let data = {
-    //         name: "Invoice",
-    //         number: 1,
-    //         currency: selectedCurrency.value,
-    //         series: selectedSeries.value,
-    //         date: date.value,
-    //         customer: selectedCustomer.value,
-    //         bank: selectedAccount.value,
-    //         cost_center: selectedCost.value
-    //     }
-    //     let result = await invoiceStore.create(data)
-    //     if (result.data.success) {
-            
-    //         toast.add({severity:'success', summary: 'Success', detail:'Invoice Succesfully Created', life: 3000});
-    //     }
-    //     else {
-    //         toast.add({severity:'warn', summary: 'Failed', detail:'Creation Failed', life: 3000});
-    //     }
-    // }
 
     const createInvoice = async () => {
         let result: any = await invoiceStore.createInvoice();

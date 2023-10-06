@@ -21,6 +21,8 @@
     "nuxt-scheduler": "^0.0.16",
     "prisma": "^5.2.0",
     "prisma-erd-generator": "^1.6.2",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sass": "^1.68.0"
   },
   "dependencies": {
@@ -37,7 +39,7 @@
     "formidable": "^2.0.1",
     "fs": "^0.0.1-security",
     "h3-formidable": "^0.3.2",
-    "html-pdf-node": "1.0.7",
+    "html-pdf-node": "^1.0.7",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^9.0.0",
     "libphonenumber-js": "^1.10.14",
