@@ -86,7 +86,8 @@ export const useInvoiceStore = defineStore('invoice', {
               });
           
               this.invoiceList = invoiceList;
-             // console.log(invoiceList);
+              console.log('store invoices ------>', invoiceList); 
+              
               return invoiceList;
             } catch (error) {
               console.error(error);

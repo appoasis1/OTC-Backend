@@ -6,6 +6,7 @@
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
+                                    <div class="text-900 font-medium text-xl mb-3">Qoutation Form</div>
                                     <div class="text-900 font-medium text-xl mb-1"><h1>Quotation</h1></div>
                                     <div class="d-flex justify-content-end mb-3">
                                         
@@ -63,6 +64,26 @@
                                                                                                 </DataTable>
                                                                                             </div>
                                                                                         </div>
+                                                                                            <div style="padding-left: 13px;">
+                                                                                            <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="visible = true" />
+                                                                                            </div>
+                                                                                            <Dialog v-model:visible="visible" modal header="Add Item" :style="{ width: '50vw' }">
+                                                                                                <div class="grid formgrid p-fluid">
+                                                                                               <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Item</label> 
+                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
+                                                                                                </div>
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Vehicle</label> 
+                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                </div>
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Quantity</label> 
+                                                                                                    <DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                </div>
+                                                                                                </div>
+                                                                                                <Button @click="addItem" label="Add" icon="pi pi-plus" />
+                                                                                            </Dialog>
                                                                                             <div style="padding-left: 13px;">
                                                                                             <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="addDialog = true" />
                                                                                             </div>
