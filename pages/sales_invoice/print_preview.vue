@@ -40,7 +40,8 @@
                                         <tr>
                                             <td style="width: 6%;">Customer name: <br><br><br>  Contact Person:</td>
                                             <td style="width: 6%;"> <br> <br>  {{ invoiceData.selectedCustomer }} <h6 style="font-size: 13px;">
-                                                {{ primaryAddress }}
+                                                address: {{ formattedAddress }}
+                                              
                                                 
                                             
                                             </h6> <br> 200 </td>
@@ -98,7 +99,7 @@
   </template>
 
 <script setup lang="ts">
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, computed } from 'vue';
     import { useRoute } from 'vue-router';
     import axios from 'axios';
 
@@ -107,6 +108,7 @@
     const accountName = ref(null);
     const accountType = ref(null);
     const accountNumber = ref(null);
+    const formattedAddress = ref(null)
     const invoiceData = ref({
         selectedCustomer: null,
         selectedSeries: null,
@@ -141,6 +143,7 @@
             const result: any = await axios(config).then(function (response) {
                 //console.log(JSON.stringify(response.data));
                 primaryAddress.value = response.data.data;
+
                 return {
                     data: response.data,
                     success: true
@@ -154,6 +157,15 @@
             });
             return result;
             }
+            
+            formattedAddress.value = computed(() => {
+                let address = primaryAddress.value.replace(/<br>|(\r\n|\n|\r)/gm, ', ')
+                address = address.replace(/,\s*,/g, ',')
+                address = address.replace(/(^,)|(,$)/g, '')
+                address = address.replace(/,(?=\s*$)/, '') // Remove last comma
+                address = address.replace(/"/g, '') // Remove double quotes
+                return address
+            })
 
             const getBankingDetails = async () => {
           
@@ -212,6 +224,7 @@
         printWindow.print();
         printWindow.close();
 }
+
 </script>
 
 <style>

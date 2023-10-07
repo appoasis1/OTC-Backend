@@ -21,9 +21,9 @@
                                                 <div class="field mb-4 col-12 md:col-4">
                                                     <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="posting_date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="due_date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"></div>
@@ -31,18 +31,18 @@
                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
                                                                 </div>
                                                                 <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
-                                                                        </div></div><div class="field mb-4 col-12 md:col-6">  
+                                                                        </div></div><div class="field mb-4 ml-220 col-6 md:col-3">  
                                                                             <div class="card flex flex-column align-items-cente">
                                                                             <div class="flex flex-wrap gap-2 mb-8">
-                                                                            <h4>Taxable Amount</h4>
-                                                                                
+                                                                            <h4>Taxable Amount:   $ {{ taxable_amount }}</h4> <br><br>
+                                                                            
                                                                             </div>
                                                                             
                                                                         </div>
 
                                                                         </div>
                                                                             <div class="block-header">
-                                                                                        <div style="padding-left: 13px;"><h4>Items</h4></div>
+                                                                                        <div style="padding-left: 13px;"></div>
                                                                                         </div>
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
@@ -58,9 +58,9 @@
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                     <Column field="quantity" header="Quantity" :style="{ width: '9vw' }"></Column>
-                                                                                                    <Column field="rate" header="Rate" :style="{ width: '9vw' }">
+                                                                                                    <Column field="rate" header="Rate $ " :style="{ width: '9vw' }">
                                                                                                         </Column>
-                                                                                                    <Column field="amount" header="Amount" :style="{ width: '9vw' }"></Column>
+                                                                                                    <Column field="amount" header="Amount $" :style="{ width: '9vw' }"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
                                                                                                         <template #body="slotProps">
                                                                                                             <Button @click="openModal(slotProps.index)" label="Edit"  class="small" :style="{ width: '7vw' }"/>
@@ -207,6 +207,9 @@
     let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
     const date = storeToRefs(invoiceStore).date;
+    const posting_date = storeToRefs(invoiceStore).posting_date;
+    const due_date = storeToRefs(invoiceStore).due_date;
+
     const date_incoming = storeToRefs(invoiceStore).date_incoming;
     const date_outgoing = storeToRefs(invoiceStore).date_outgoing;
     const opening_mileage = storeToRefs(invoiceStore).opening_mileage;
@@ -236,8 +239,6 @@
     let cost_centers = ref([]);
     let accounts = ref([]);
     let items = ref([]);
-    
-    //const { items } = storeToRefs(itemStore)
 
     const printPreview = () => {
         const invoiceData = {
@@ -306,21 +307,23 @@
             const newItem = {
             item: selectedItem.value,
             vehicle: selectedVehicle.value,
-            quantity: 1.2,
-            rate: '', 
-            amount: 0 
+            quantity: 1,
+            rate: 0.00, 
+            amount: 0.00 
         };
         
         itemsTable.value.push(newItem); 
         addDialog.value = false;
-        calculateTotalQuantity();
+        selectedItem.value = null;
+        selectedVehicle.value = null;
+        calculateTotal();
         retrieveItemData();
     };
 
-    const calculateTotalQuantity = () =>  {
+    const calculateTotal = () =>  {
         taxable_amount.value = 0;
         for (const item of itemsTable.value) {
-            taxable_amount.value += item.quantity;
+            taxable_amount.value += item.amount;
             console.log("total", taxable_amount.value);
         }
     }
@@ -351,8 +354,15 @@
 
         if (item) {
             item.rate = rate.value;
+            
+            if (Number.isNaN(duration.value)){
+                item.quantity = 1;
+            } else {
+                item.quantity = duration.value;
+            }
+            item.amount = rate.value * item.quantity;
         }
-
+        calculateTotal();
         editDialog.value = false;
         };
 
@@ -361,6 +371,7 @@
         editDialog.value = true
         console.log("my index", myIndex)
     }
+
     const calculateDuration = () => {
         const incoming = new Date(date_incoming.value);
         const outgoing = new Date(date_outgoing.value);

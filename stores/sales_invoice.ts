@@ -1,11 +1,14 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 
+
 export const useInvoiceStore = defineStore('invoice', {
     state: () => ({
         name: "",
         number: "",
-        date: "",
+        date: new Date().toISOString().substr(0, 10),
+        posting_date: "",
+        due_date: "",
         date_incoming: "",
         date_outgoing: "",
         opening_mileage: "",
