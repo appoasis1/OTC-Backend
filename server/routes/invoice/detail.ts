@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     if (!bank) {
       return {
         data: null,
-        message: "Account not found",
+        message: "Account not found", 
         error: true,
         success: false,
       };
