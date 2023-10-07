@@ -65,6 +65,13 @@ model Invoice {
   items         Json?
 }
 
+// model Quotation {
+//   id      String    @id @default(cuid())
+//   name    String?
+//   number  String?
+
+// }
+
 model Customer {
   id                String         @id @default(cuid())
   name              String?
