@@ -7,10 +7,7 @@
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
                                     <div class="text-900 font-medium text-xl mb-1"><h1>Sales Invoice</h1></div>
-                                    <div class="d-flex justify-content-end mb-3">
-                                        
-                                        <Button @click="printPreview" label="Print" icon="pi pi-print" />
-                                        
+                                    <div class="d-flex justify-content-end mb-3">    
                                         <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" />
                                     </div>
                                     <div class="surface-card p-4 shadow-2 border-round p-fluid">
@@ -30,22 +27,25 @@
                                                         <div class="field mb-4 col-12 md:col-4"></div>
                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
                                                                 </div>
-                                                                <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
-                                                                        </div></div><div class="field mb-4 ml-220 col-6 md:col-3">  
-                                                                            <!-- <div class="card flex flex-column align-items-cente">
+                                                                <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">  <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Advance Payment</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="advance_payment" id="customer_name" type="text">
+                                                                                                </div>
+                                                                        </div></div>
+                                                                        <div class="field mb-4 ml-220 col-6 md:col-3">  
+                                                                            <div class="card flex flex-column align-items-cente">
                                                                             <div class="flex flex-wrap gap-2 mb-8">
-                                                                            <h4>Taxable Amount:   $ {{ taxable_amount }} <br>VAT @ 15%:   $ {{ vat }}
-                                                                                <br> Non Taxable Amount:   $ {{ non_taxable_amount }}
-                                                                                <br> Total Charges:   $ {{ total_charges }}
-                                                                                <br> Adavnce Payment:   $ {{ advance_payment }}
-                                                                                <br> Amount Due:   $ {{ amount_due }}
+                                                                            <h4>Taxable Amount:   $ {{ taxable_amount.toFixed(2) }} <br> <br>VAT @ 15%:   $ {{ vat.toFixed(2) }} <br>
+                                                                                <br> Non Taxable Amount:   $ {{ non_taxable_amount.toFixed(2) }} <br>
+                                                                                <br> Total Charges:   $ {{ total_charges.toFixed(2) }} <br>
+                                                                                <br> Adavnce Payment:   $ {{ advance_payment }}<br>
+                                                                                <br> Amount Due:   $ {{ amount_due.toFixed(2) }}
                                                                             </h4> 
                                                                           
-                                                                            
-
+        
                                                                             </div>
                                                                             
-                                                                        </div> -->
+                                                                        </div>
 
                                                                         </div>
                                                                             <div class="block-header">
@@ -164,9 +164,16 @@
                                                                                                 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Taxable?</label> 
-                                                                                                    <v-if>
+                                                                                                  
                                                                                                     <Checkbox v-model="is_taxable" :binary="true" />
-                                                                                                    </v-if>
+                                                                                                    
+                                                                                                </div>
+
+                                                                                              
+
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Choose Tax</label> 
+                                                                                                    <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
                                                                                                 </div>
 
                                                                                                 </div>
@@ -184,7 +191,8 @@
 
                                                                                                         </div>
                                                                                                             <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
-                                                                                                                <textarea class="p-inputtextarea p-inputtext p-component p-inputtextarea-resizable" data-pc-name="textarea" data-pc-section="root" id="notes" rows="5" style="height: calc(133.6px); overflow: hidden;"></textarea>
+                                          
+                                                                                                                <DropDown v-model="selectedItem" :options="itemsNames"  placeholder="Choose Item" style="height: calc(133.6px); overflow: hidden;" class="w-full md:w-34rem" />
                                                                                                                  </div>
                                                                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
@@ -267,6 +275,7 @@
     let accounts = ref([]);
     let items = ref([]);
 
+
     const printPreview = () => {
         const invoiceData = {
             selectedCustomer: selectedCustomer.value,
@@ -331,50 +340,63 @@
     });
 
     const addItem = () => {
-            const newItem = {
-            item: selectedItem.value,
-            vehicle: selectedVehicle.value,
-            quantity: 1,
-            rate: 0.00, 
-            amount: 0.00 ,
-            chargeable_mileage: 0,
-            opening_mileage: 0,
-            closing_mileage: 0,
-            actual_milege: 0,
-            total_free_mileage: 0,
-            uom: 0,
-            date_outgoing: 0,
-            date_incoming: 0,
-            duration: 0
-        };
-        
-        itemsTable.value.push(newItem); 
-        addDialog.value = false;
-        selectedItem.value = null;
-        selectedVehicle.value = null;
-        calculateTotal();
-        retrieveItemData();
-    };
+  // Check if either selectedItem or selectedVehicle is empty
+  if (!selectedItem.value || !selectedVehicle.value) {
+    // Display an error message or perform any other action
+    alert('Please select both item and vehicle');
+    return;
+  }
 
+  const newItem = {
+    item: selectedItem.value,
+    vehicle: selectedVehicle.value,
+    quantity: 1,
+    rate: 0.00, 
+    amount: 0.00 ,
+    chargeable_mileage: 0,
+    opening_mileage: 0,
+    closing_mileage: 0,
+    actual_milege: 0,
+    total_free_mileage: 0,
+    uom: "Days",
+    date_outgoing: 0,
+    date_incoming: 0,
+    duration: 0
+  };
+  
+  itemsTable.value.push(newItem); 
+  addDialog.value = false;
+  selectedItem.value = null;
+  selectedVehicle.value = null;
+  calculateTotal();
+  retrieveItemData();
+};
     const calculateTotal = () =>  {
         non_taxable_amount.value = 0;
         vat.value = 0;
         amount_due.value = 0;
         total_charges.value = 0;
-        advance_payment.value = 0;
+        //advance_payment.value = 0;
         taxable_amount.value = 0;
 //cal vat
-        if (is_taxable.value = true){
+        if (is_taxable.value === true){
             for (const item of itemsTable.value) {
                 let tax = 0.05 * item.amount;
+                vat.value += tax;
                 taxable_amount.value += (item.amount + tax);
                 non_taxable_amount.value += 0;
-        }
+                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
+                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
+        }   
 
         } else {
+            
                for (const item of itemsTable.value) {
-                taxable_amount.value += item.amount;
-                non_taxable_amount.value += 0;
+                vat.value = 0;
+                taxable_amount.value += 0;
+                non_taxable_amount.value += item.amount;
+                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
+                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
         }
         }
      
@@ -493,6 +515,12 @@
     const createInvoice = async () => {
         let result: any = await invoiceStore.createInvoice();
         if(result?.data?.success){
+            const invoiceId = result.data.data.id;
+
+            // Redirect to the sales_invoice/detail-[id] route
+          //  const router = useRouter();
+          console.log("id is the following", invoiceId)
+            router.push(`/sales_invoice/detail-${invoiceId}`);
             toast.add({severity: 'success', summary: 'Create Invoice', detail: "Invoice was created successfully", life: 6000});
         
         }else{

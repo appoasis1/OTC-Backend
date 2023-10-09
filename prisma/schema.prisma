@@ -62,13 +62,14 @@ model Invoice {
   date              DateTime?
   customer         String?
   bank              String? 
-  taxable_amount    String?
-  total_charges     String?
-  non_taxable_amount String?
-  advance_payment    String?
-  amount_due         String?
-  vat                String?
-  items         Json?
+  taxable_amount    Float?
+  total_charges     Float?
+  non_taxable_amount Float?
+  advance_payment    Float?
+  amount_due         Float?
+  vat                Float?
+  terms              String?
+  items              Json?
 }
 
 // model Quotation {
@@ -88,6 +89,7 @@ model Customer {
   primary_address   String?
   customer_primary_contact String?
 }
+
 
 model Bank {
   id                String         @id @default(cuid())

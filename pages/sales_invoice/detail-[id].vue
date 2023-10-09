@@ -4,6 +4,7 @@
       <div class="container-fluid">
         <div class="card-style">
           <div class="header">
+            <Button @click="pdfPrint" label="Print" icon="pi pi-print" />
             <h1>Invoice</h1>
           </div>
           <div class="body">
@@ -105,6 +106,23 @@ onMounted(() => {
 
  
   });
+
+      const pdfPrint = async (id) => {
+
+      console.log("jjjjjjjjjjjjjj",id)
+      const { data: { value } }: any = await useFetch('/export/invoice', {
+          method: 'POST',
+          responseType: 'blob',
+          body: {
+              id
+          }
+      });
+      //Open the pdf in another tab
+      const file = new Blob([value], { type: 'application/pdf' });
+      const fileURL = URL.createObjectURL(file);
+      window.open(fileURL);
+    }
+
    const deleteInvoice = () => {
     //  TODO: Implement invoice deletion
   }

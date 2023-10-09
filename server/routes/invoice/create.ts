@@ -4,7 +4,6 @@ export default defineEventHandler(async (event) => {
   const { name, number, date, customer, bank, currency, cost_centre, series, items, taxable_amount, total_charges, non_taxable_amount, advance_payment, amount_due } = await readBody(event);
 
   let json = items.map((item) => ({
-   
     item: item.item,
     vehicle: item.vehicle,
     quantity: item.quantity,
@@ -20,10 +19,9 @@ export default defineEventHandler(async (event) => {
     date_incoming: item.date_incoming,
     duration: item.duration
 
-    
   }));
 
-  const createdInvoice = await prisma.invoice.create({
+  const createInvoice = await prisma.invoice.create({
       data: {
         name: name,
         number: number,
@@ -33,12 +31,13 @@ export default defineEventHandler(async (event) => {
         date: date,
         customer: customer,
         bank: bank,
-        items: json,
-        taxable_amount: taxable_amount,
+        // taxable_amount: taxable_amount,
         total_charges: total_charges,
         non_taxable_amount: non_taxable_amount,
         advance_payment: advance_payment,
         amount_due: amount_due,
+        items: json,
+
       },
     }).catch((error) => {
       console.error(error);
@@ -48,7 +47,7 @@ export default defineEventHandler(async (event) => {
     });
     console.log("Items are", items);
     return {
-      data: createdInvoice,
+      data: createInvoice,
       success: true
     };
 });
