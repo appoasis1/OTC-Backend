@@ -29,13 +29,15 @@
   
                                          @row-select="onRowSelect" @row-unselect="onRowUnselect" tableStyle="min-width: 75rem">
   
-                                        <Column selectionMode="multiple" headerStyle="width: 3rem">
+                                        <!-- <Column selectionMode="multiple" headerStyle="width: 3rem">
   
-                                        </Column>
+                                        </Column> -->
   
                                         <Column field="name" header="Title" filterMatchMode="startsWith" sortable>
                                             <template #body="slotProps">
-                                         <NuxtLink :to="'/sales_invoice/' + slotProps.data.id">{{ slotProps.data.name }}</NuxtLink>
+                                         <!-- <NuxtLink :to="'/sales_invoice/' + slotProps.data.id"> {{ slotProps.data.name }}</NuxtLink> -->
+                                         <!-- <a href="" @click="invoiceDetail"> {{ slotProps.data.name }} </a>  -->
+                                          <NuxtLink :to="`/sales_invoice/detail-${slotProps.data?.id}` + slotProps.data.id"> {{ slotProps.data.name }}</NuxtLink>
                                         </template>
                                         </Column>
   
@@ -50,9 +52,9 @@
                                             {{slotProps.data.cost_center}}
                                         </template>
                                         </Column>
-                                        <Column field="invoices.series" header="Grand Total" filterField="representative.name" sortable>
+                                        <Column field="invoices.series" header="Amount Due" filterField="representative.name" sortable>
                                             <template #body="slotProps">
-                                           $ 300
+                                                {{slotProps.data.amount_due}}
                                         </template>
                                         </Column>
   
@@ -73,9 +75,11 @@
     import { ref, onMounted } from 'vue';
     import { useInvoiceStore } from '~/stores/sales_invoice';
     import axios from 'axios';
+    import { useRouter } from 'vue-router';
 
-    const invoiceStore = useInvoiceStore();
+    const router = useRouter();
     let invoices =ref([]);
+    let id = ref();
 
     onMounted(async () => {
 
@@ -93,6 +97,8 @@
             const result: any = await axios(config).then(function (response) {
               console.log(JSON.stringify(response.data));
               invoices.value = response.data.data;
+              id.value = response.data.data.id;
+              console.log(id.value);
               return {
                   data: response.data,
                   success: true
@@ -108,6 +114,21 @@
             }
             getInvoiceList();
     });
+
+    const invoiceDetail = () => {
+        console.log("This is my iddddddddddddddddddddddddddddddddddddd", id.value);
+        const invoiceId = {
+         id: id.value,
+
+        };
+
+        router.push({
+        path: '/sales_invoice/' + id.value,
+        query: {
+        invoiceID: JSON.stringify(invoiceId)
+     }
+    });
+    };
 
 const dt = ref();
 const filters = ref({

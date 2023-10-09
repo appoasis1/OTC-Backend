@@ -59,6 +59,7 @@ import ProgressSpinner from 'primevue/progressspinner';
 import Splitter from 'primevue/splitter';
 import SplitterPanel from 'primevue/splitterpanel';
 import ColorPicker from 'primevue/colorpicker';
+import Checkbox from "primevue/checkbox";
 
 
 
@@ -70,6 +71,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     nuxtApp.vueApp.use(ConfirmationService);
     nuxtApp.vueApp.component('ProgressSpinner',ProgressSpinner)
     nuxtApp.vueApp.component('Chart',Chart)
+    nuxtApp.vueApp.component('Checkbox',Checkbox);
     nuxtApp.vueApp.component('Slider',Slider);
     nuxtApp.vueApp.component('ColorPicker',ColorPicker)
     nuxtApp.vueApp.component('Splitter',Splitter);

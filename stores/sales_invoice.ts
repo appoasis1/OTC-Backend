@@ -6,7 +6,7 @@ export const useInvoiceStore = defineStore('invoice', {
     state: () => ({
         name: "",
         number: "",
-        date: new Date().toISOString().substr(0, 10),
+        date: new Date(),
         posting_date: "",
         due_date: "",
         date_incoming: "",
@@ -28,7 +28,7 @@ export const useInvoiceStore = defineStore('invoice', {
         series: "",
         taxable_amount: 0,
         non_taxable_amount: 0,
-        grand_total: 0,
+        vat: 0,
         total_charges: 0,
         advance_payment: 0,
         amount_due: 0,
@@ -39,7 +39,7 @@ export const useInvoiceStore = defineStore('invoice', {
         async createInvoice() {
 
             const data = { 
-                name: "Invoice",
+                name: "Sales Invoice",
                 number: "001",
                 date: this.date,
                 customer: this.selectedCustomer,
@@ -47,7 +47,12 @@ export const useInvoiceStore = defineStore('invoice', {
                 currency: this.currency,
                 cost_centre: this.cost_centre,
                 series: this.series,
-                items: this.items
+                items: this.items,
+                taxable_amount: this.taxable_amount,
+                total_charges: this.total_charges,
+                non_taxable_amount: this.non_taxable_amount,
+                advance_payment: this.advance_payment,
+                amount_due: this.amount_due
             },
              config = {
                 method: 'post',

@@ -61,7 +61,13 @@ model Invoice {
   currency         String?
   date              DateTime?
   customer         String?
-  bank              String?         
+  bank              String? 
+  taxable_amount    String?
+  total_charges     String?
+  non_taxable_amount String?
+  advance_payment    String?
+  amount_due         String?
+  vat                String?
   items         Json?
 }
 

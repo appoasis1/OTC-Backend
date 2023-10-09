@@ -1,27 +1,62 @@
+// import { prisma } from "~~/prisma/db";
+
+// export default defineEventHandler(async (event) => {
+//   const response = {};
+//   try {
+    
+//     const {id} = await readBody(event);
+    
+//     const invoice = await prisma.invoice.findUnique({
+//       where: { 
+//         id: id
+//      },
+//     });
+
+//     response['invoice'] = invoice
+//     console.log(response.data.invoice.name);
+//     response['success'] = true
+
+//   } catch (error) {
+//     response['success'] = false
+//     response['message'] = error.toString()
+//   };
+
+// return response;
+// });
+
+
+
+
+
+
+
+
+
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
   try {
-    const {selectedAccount} = await readBody(event);
+    const {id} = await readBody(event);
     
-    const bank = await prisma.bank.findFirst({
+    const invoice = await prisma.invoice.findFirst({
       where: { 
-        bank: selectedAccount
+        id: id
      },
     });
-
-    if (!bank) {
+    console.log("my object", invoice);
+    if (!invoice) {
       return {
         data: null,
-        message: "Account not found", 
+        message: "Invoice not found" + id, 
         error: true,
         success: false,
       };
     }
-    console.log(bank);
+    //console.log(invoice);
+   // console.log("ID is", id);
     return {
-      data: {account: bank.account_name, account_type: bank.account_type, account_number: bank.bank_account_no },
-      message: "Customer found",
+      data: {title:invoice.name, cost_center: invoice.cost_center, currency: invoice.currency, date: invoice.date, customer: invoice.customer },
+      message: "Inovice found",
       error: false,
       success: true,
     };

@@ -18,10 +18,10 @@
               </thead>
               <tbody>
                 <tr>
-                  <td>{{ invoice.number }}</td>
+                  <!-- <td>{{ invoice.number }}</td>
                   <td>{{ invoice.date }}</td>
                   <td>{{ invoice.customer }}</td>
-                  <td>{{ invoice.total }}</td>
+                  <td>{{ invoice.total }}</td> -->
                 </tr>
               </tbody>
             </table>
@@ -38,12 +38,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="item in invoice.items" :key="item.id">
+                  <!-- <tr v-for="item in invoice.items" :key="item.id">
                     <td>{{ item.description }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.unit_price }}</td>
                     <td>{{ item.total }}</td>
-                  </tr>
+                  </tr> -->
                 </tbody>
               </table>
             </div>
@@ -57,33 +57,56 @@
 <script setup lang="ts">
 import { useInvoiceStore } from '~/stores/sales_invoice';
 import { reactive, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import axios from 'axios';
 
 const invoiceStore = useInvoiceStore();
-const invoice = reactive({
-  number: '',
-  date: '',
-  customer: null,
-  items: [],
-  total: 0,
-});
-console.log('invoice', invoice)
+const { params: { id } } = useRoute();
+const detail = ref();
 
-const router = useRouter();
 
 onMounted(() => {
-  const invoiceId = router.params.id;
-  invoiceStore.getInvoice(invoiceId).then((response) => {
-    invoice.number = response.data.number;
-    invoice.date = response.data.date;
-    invoice.customer = response.data.customer;
-    invoice.items = response.data.items;
-    invoice.total = response.data.total;
-  });
+  
+  console.log(id);
+  
+  const getInvoiceDetails = async () => {
+          
+          var data = JSON.stringify({
+              "id": id,
+          });
+          var config = {
+              method: 'post',
+              url: '/invoice/detail/',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+              data: data
+          };
 
-  const deleteInvoice = () => {
+          const result: any = await axios(config).then(function (response) {
+              console.log(JSON.stringify(response.data));
+              detail.value = response.data.data;
+
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+          }
+
+          getInvoiceDetails();
+
+ 
+  });
+   const deleteInvoice = () => {
     //  TODO: Implement invoice deletion
   }
-  });
-  
 
 </script>

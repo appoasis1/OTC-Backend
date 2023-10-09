@@ -32,13 +32,20 @@
                                                                 </div>
                                                                 <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">
                                                                         </div></div><div class="field mb-4 ml-220 col-6 md:col-3">  
-                                                                            <div class="card flex flex-column align-items-cente">
+                                                                            <!-- <div class="card flex flex-column align-items-cente">
                                                                             <div class="flex flex-wrap gap-2 mb-8">
-                                                                            <h4>Taxable Amount:   $ {{ taxable_amount }}</h4> <br><br>
+                                                                            <h4>Taxable Amount:   $ {{ taxable_amount }} <br>VAT @ 15%:   $ {{ vat }}
+                                                                                <br> Non Taxable Amount:   $ {{ non_taxable_amount }}
+                                                                                <br> Total Charges:   $ {{ total_charges }}
+                                                                                <br> Adavnce Payment:   $ {{ advance_payment }}
+                                                                                <br> Amount Due:   $ {{ amount_due }}
+                                                                            </h4> 
+                                                                          
                                                                             
+
                                                                             </div>
                                                                             
-                                                                        </div>
+                                                                        </div> -->
 
                                                                         </div>
                                                                             <div class="block-header">
@@ -66,6 +73,15 @@
                                                                                                             <Button @click="openModal(slotProps.index)" label="Edit"  class="small" :style="{ width: '7vw' }"/>
                                                                                                         </template>
                                                                                                     </Column>
+                                                                                                    <Column field="chargeable_mileage" hidden="true"></Column>
+                                                                                                    <Column field="opening_mileage" hidden="true"></Column>
+                                                                                                    <Column field="closing_mileage" hidden="true"></Column>
+                                                                                                    <Column field="actual_mileage" hidden="true"></Column>
+                                                                                                    <Column field="total_free_mileage" hidden="true"></Column>
+                                                                                                    <Column field="uom" hidden="true"></Column>
+                                                                                                    <Column field="date_outgoing" hidden="true"></Column>
+                                                                                                    <Column field="date_incoming" hidden="true"></Column>
+                                                                                                    <Column field="duration" hidden="true"></Column>
                                                                                                 </DataTable>
                                                                                                 
                                                                                             </div>
@@ -144,6 +160,15 @@
                                                                                                     <label for="company_name" class="font-medium text-900">Unit of Measure</label> 
                                                                                                     <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="uom" id="customer_name" type="text">
                                                                                                 </div>
+
+                                                                                                
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Taxable?</label> 
+                                                                                                    <v-if>
+                                                                                                    <Checkbox v-model="is_taxable" :binary="true" />
+                                                                                                    </v-if>
+                                                                                                </div>
+
                                                                                                 </div>
                             
                                                                                                 <Button label="Save" @click="(e) => editItem()" icon="pi pi-plus" />
@@ -224,9 +249,11 @@
     const total_charges = storeToRefs(invoiceStore).total_charges;
     const non_taxable_amount = storeToRefs(invoiceStore).non_taxable_amount;
     const advance_payment = storeToRefs(invoiceStore).advance_payment;
-    const grand_total = storeToRefs(invoiceStore).grand_total;
+    const amount_due = storeToRefs(invoiceStore).amount_due;
+    const vat = storeToRefs(invoiceStore).vat
     const itemList = storeToRefs(invoiceStore).items;
     const uom = storeToRefs(invoiceStore).uom;
+    const is_taxable = ref(false);
 
     //dialog states
     const addDialog = ref(false);
@@ -309,7 +336,16 @@
             vehicle: selectedVehicle.value,
             quantity: 1,
             rate: 0.00, 
-            amount: 0.00 
+            amount: 0.00 ,
+            chargeable_mileage: 0,
+            opening_mileage: 0,
+            closing_mileage: 0,
+            actual_milege: 0,
+            total_free_mileage: 0,
+            uom: 0,
+            date_outgoing: 0,
+            date_incoming: 0,
+            duration: 0
         };
         
         itemsTable.value.push(newItem); 
@@ -321,22 +357,48 @@
     };
 
     const calculateTotal = () =>  {
+        non_taxable_amount.value = 0;
+        vat.value = 0;
+        amount_due.value = 0;
+        total_charges.value = 0;
+        advance_payment.value = 0;
         taxable_amount.value = 0;
-        for (const item of itemsTable.value) {
-            taxable_amount.value += item.amount;
-            console.log("total", taxable_amount.value);
+//cal vat
+        if (is_taxable.value = true){
+            for (const item of itemsTable.value) {
+                let tax = 0.05 * item.amount;
+                taxable_amount.value += (item.amount + tax);
+                non_taxable_amount.value += 0;
         }
+
+        } else {
+               for (const item of itemsTable.value) {
+                taxable_amount.value += item.amount;
+                non_taxable_amount.value += 0;
+        }
+        }
+     
     }
 
     const itemData = ref([]);
     const retrieveItemData = () =>  {
         itemData.value = itemsTable.value.map(item => {
             const data = {
-            Item: item.item,
-            Vehicle: item.vehicle,
-            Quantity: item.quantity,
-            Rate: item.rate,
-            Amount: item.amount
+            item: item.item,
+            vehicle: item.vehicle,
+            quantity: item.quantity,
+            rate: item.rate,
+            amount: item.amount,
+            chargeable_mileage: item.chargeable_mileage,
+            opening_mileage: item.opening_mileage,
+            closing_mileage: item.closing_mileage,
+            actual_milege: item.actual_milege,
+            total_free_mileage: item.total_free_mileage,
+            uom: item.uom,
+            date_outgoing: item.date_outgoing,
+            date_incoming: item.date_incoming,
+            duration: item.duration
+
             };
            // console.log(data);
             return data;
@@ -348,13 +410,22 @@
     const index = ref(null); 
 
     const editItem = () => {
+        console.log(is_taxable.value);
         console.log(index.value);
         console.log(itemsTable.value);
         const item = itemsTable.value[index.value];
 
         if (item) {
             item.rate = rate.value;
-            
+            item.chargeable_mileage = chargeable_mileage.value;
+            item.opening_mileage = opening_mileage.value;
+            item.closing_mileage = closing_mileage.value;
+            item.actual_mileage = actual_milege.value;
+            item.total_free_mileage = total_free_mileage.value;
+            item.uom = uom.value;
+            item.date_incoming = date_incoming.value;
+            item.date_outgoing = date_outgoing.value;
+            item.duration = duration.value;
             if (Number.isNaN(duration.value)){
                 item.quantity = 1;
             } else {

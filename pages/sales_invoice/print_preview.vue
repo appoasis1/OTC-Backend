@@ -102,8 +102,7 @@
     import { ref, onMounted, computed } from 'vue';
     import { useRoute } from 'vue-router';
     import axios from 'axios';
-
-
+    
     const primaryAddress = ref(null);
     const accountName = ref(null);
     const accountType = ref(null);
@@ -167,7 +166,7 @@
                 return address
             })
 
-            const getBankingDetails = async () => {
+        const getBankingDetails = async () => {
           
           var data = JSON.stringify({
               "selectedAccount": invoiceData.value.selectedAccount,
