@@ -8,7 +8,7 @@
                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
                   <div class="text-900 font-medium text-xl mb-3">Sales Invoice Print Preview</div>
                   <div class="d-flex justify-content-end mb-3">
-                    <button class="p-button p-component" style="text-decoration: none;" @click="printPage">
+                    <button class="p-button p-component"  style="text-decoration: none;" @click="printHTML">
                       <span class="pi pi-print"></span>
                       Print
                     </button>
@@ -16,7 +16,7 @@
                   <div class="surface-card p-4 shadow-2 border-round p-fluid">
                     <div id="print-section">
                     
-                            <div class="document-container">
+                            <div class="document-container" id="pdf">
                                 <div style="display: flex; justify-content: flex-end;">
                                 <div>
                                     <img src="/images/murare.png" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
@@ -101,6 +101,8 @@
 <script setup lang="ts">
     import { ref, onMounted, computed } from 'vue';
     import { useRoute } from 'vue-router';
+    import html2canvas from 'html2canvas';
+    import jsPDF from 'jspdf';
     import axios from 'axios';
     
     const primaryAddress = ref(null);
@@ -158,11 +160,12 @@
             }
             
             formattedAddress.value = computed(() => {
-                let address = primaryAddress.value.replace(/<br>|(\r\n|\n|\r)/gm, ', ')
-                address = address.replace(/,\s*,/g, ',')
-                address = address.replace(/(^,)|(,$)/g, '')
-                address = address.replace(/,(?=\s*$)/, '') // Remove last comma
-                address = address.replace(/"/g, '') // Remove double quotes
+                let address = primaryAddress.value;
+                // let address = primaryAddress.value.replace(/<br>|(\r\n|\n|\r)/gm, ', ')
+                // address = address.replace(/,\s*,/g, ',')
+                // address = address.replace(/(^,)|(,$)/g, '')
+                // address = address.replace(/,(?=\s*$)/, '') // Remove last comma
+                // address = address.replace(/"/g, '') // Remove double quotes
                 return address
             })
 
@@ -223,6 +226,30 @@
         printWindow.print();
         printWindow.close();
 }
+
+const printHTML = async () => {
+  // Get the HTML element to print
+  const element = document.getElementById("pdf");
+
+  // Use html2canvas to convert the element to an image with increased DPI
+  const canvas = await html2canvas(element, { dpi: 300 });
+
+  // Get the image data URL
+  const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG format with maximum quality
+
+  // Create a new jspdf instance
+  const pdf = new jsPDF();
+
+  // Add the image to the PDF document with improved quality
+  pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), 0, null, 'FAST');
+
+  // Generate a blob URL from the PDF data
+  const pdfBlob = pdf.output('blob');
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+
+  // Open the PDF in a new browser tab
+  window.open(pdfUrl, '_blank');
+};
 
 </script>
 

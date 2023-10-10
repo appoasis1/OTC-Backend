@@ -7,7 +7,8 @@
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
                                     <div class="text-900 font-medium text-xl mb-1"><h1>Sales Invoice</h1></div>
-                                    <div class="d-flex justify-content-end mb-3">    
+                                    <div class="d-flex justify-content-end mb-3">  
+                                        <Button on @click="printPreview" label="Print" icon="pi pi-save" class="ml-3" />  
                                         <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" />
                                     </div>
                                     <div class="surface-card p-4 shadow-2 border-round p-fluid">
@@ -32,21 +33,20 @@
                                                                                                     <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="advance_payment" id="customer_name" type="text">
                                                                                                 </div>
                                                                         </div></div>
-                                                                        <div class="field mb-4 ml-220 col-6 md:col-3">  
-                                                                            <div class="card flex flex-column align-items-cente">
-                                                                            <div class="flex flex-wrap gap-2 mb-8">
-                                                                            <h4>Taxable Amount:   $ {{ taxable_amount.toFixed(2) }} <br> <br>VAT @ 15%:   $ {{ vat.toFixed(2) }} <br>
+
+                                                                        <div class="field mb-4 ml-220 col-6 md:col-3" style=" margin-right: 20px    ;">  
+                                                                            <div class="card flex flex-column align-items-cente" >
+                                                                            <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
+                                                                            <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
+                                                                            <h4>Taxable Amount:  $ {{ taxable_amount.toFixed(2) }} <br> <br>VAT:   $ {{ vat.toFixed(2) }} <br>
                                                                                 <br> Non Taxable Amount:   $ {{ non_taxable_amount.toFixed(2) }} <br>
                                                                                 <br> Total Charges:   $ {{ total_charges.toFixed(2) }} <br>
                                                                                 <br> Adavnce Payment:   $ {{ advance_payment }}<br>
                                                                                 <br> Amount Due:   $ {{ amount_due.toFixed(2) }}
                                                                             </h4> 
-                                                                          
-        
-                                                                            </div>
-                                                                            
-                                                                        </div>
-
+                                                                           </div>
+                                                                           </div>
+                                                                         </div>
                                                                         </div>
                                                                             <div class="block-header">
                                                                                         <div style="padding-left: 13px;"></div>
@@ -173,7 +173,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Choose Tax</label> 
-                                                                                                    <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                    <DropDown v-model="selectedTax" :options="taxes"  placeholder="Select Tax" class="w-full md:w-34rem" />
                                                                                                 </div>
 
                                                                                                 </div>
@@ -239,6 +239,8 @@
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
     let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
+    let selectedTax = ref();
+    const taxes = ref([14.5, 15]);
     const date = storeToRefs(invoiceStore).date;
     const posting_date = storeToRefs(invoiceStore).posting_date;
     const due_date = storeToRefs(invoiceStore).due_date;
@@ -339,10 +341,11 @@
         return cost_centers.value.map(cost_center => cost_center.cost_center_name);
     });
 
+
     const addItem = () => {
-  // Check if either selectedItem or selectedVehicle is empty
+ 
   if (!selectedItem.value || !selectedVehicle.value) {
-    // Display an error message or perform any other action
+   
     alert('Please select both item and vehicle');
     return;
   }
@@ -364,24 +367,24 @@
     duration: 0
   };
   
-  itemsTable.value.push(newItem); 
-  addDialog.value = false;
-  selectedItem.value = null;
-  selectedVehicle.value = null;
-  calculateTotal();
-  retrieveItemData();
-};
+    itemsTable.value.push(newItem); 
+    addDialog.value = false;
+    selectedItem.value = null;
+    selectedVehicle.value = null;
+    calculateTotal();
+    retrieveItemData();
+    };
+
     const calculateTotal = () =>  {
         non_taxable_amount.value = 0;
         vat.value = 0;
         amount_due.value = 0;
         total_charges.value = 0;
-        //advance_payment.value = 0;
         taxable_amount.value = 0;
-//cal vat
+
         if (is_taxable.value === true){
             for (const item of itemsTable.value) {
-                let tax = 0.05 * item.amount;
+                let tax = (selectedTax.value/100) * item.amount;
                 vat.value += tax;
                 taxable_amount.value += (item.amount + tax);
                 non_taxable_amount.value += 0;
@@ -427,7 +430,7 @@
         });
 
         itemList.value = itemData.value;
-        console.log(itemList.value);
+        //console.log(itemList.value);
     }
     const index = ref(null); 
 
@@ -457,6 +460,18 @@
         }
         calculateTotal();
         editDialog.value = false;
+        rate.value = null;
+        chargeable_mileage.value = null;
+        opening_mileage.value = null;
+        closing_mileage.value = null;
+        actual_milege.value = null;
+        total_free_mileage.value = null;
+        uom.value = null;
+        date_incoming.value = null;
+        date_outgoing.value = null;
+        duration.value = null;
+        selectedTax.value = null;
+        is_taxable.value = false;
         };
 
     const openModal = (myIndex) => {

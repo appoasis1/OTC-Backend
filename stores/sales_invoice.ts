@@ -51,7 +51,7 @@ export const useInvoiceStore = defineStore('invoice', {
                 taxable_amount: this.taxable_amount,
                 total_charges: this.total_charges,
                 non_taxable_amount: this.non_taxable_amount,
-                advance_payment: this.advance_payment,
+                advance_payment: parseFloat(this.advance_payment),
                 amount_due: this.amount_due
             },
              config = {
