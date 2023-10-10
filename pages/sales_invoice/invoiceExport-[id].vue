@@ -1,84 +1,226 @@
 <template>
-    <Head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=yes">
-        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-        <title>Sales Invoice</title>
-    </Head>
-    <main>
-        
-        <div class="document-container">
-                                <div style="display: flex; justify-content: flex-end;">
-                                <div>
-                                    <img src="/images/murare.png" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
-                                </div>
-                                <div style="text-align: right; display: flex; flex-direction: column;">
-                                    <h2 style="color: red; margin-bottom: 20px;">Fiscal Tax Invoice</h2>
-                                    <h6 style="margin-bottom: 20px; ">Invoice Number: 200</h6>
-                                    <h6 style="margin-bottom: 20px; ">Invoice Date: 200</h6>
-                                    <h6 style="margin-bottom: 20px; ">Business Partner Number: 0300068944</h6>
-                                    <h6 style="margin-bottom: 20px;">VAT Number: 10070328</h6>
-                                    <h6 style="margin-bottom: 20px; ">Vendor Number (SPB): 712357</h6>
-                                </div>
-                                </div>
+    <body>
+    <div style="width: 100%; height: 100%; border: 1px solid black; padding: 10px;">
+        <div style="display: flex; justify-content: space-between;">
+            <section style="width: 100%;">
+                <img src="" alt="murare pic" />
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </section>
+            <section style="width: 100%; text-align: right;">
+                <h1>
+                    Tax Invoice
+                </h1>
+                Invoice Number: MIZWL147 <br>
+                Invoice Date: 26-Jun-23 <br>
+                Business Partner Number: 0200184926 <br>
+                VAT Number: 10070328 <br>
+                Vendor Number (SPB): 712357
+                 <br>
+            </section>
+        </div>
+        <div>
+            <table style="width: 100%; padding-bottom: 10%; border-bottom:2px solid black;">
+                <thead style="background-color: gray;">
+                    <tr>
+                        <th>
 
+                        </th>
+                        <th>
+                            CUSTOMER DETAILS
+                        </th>
+                        <th>
 
-                                <table class="table table-bordered" style="border: 1px solid black;">
-                                    <tbody>
-                                        <tr>
-                                            <th colspan="4" style="background-color: #888888; text-align: center;"><b>Customer Details</b></th>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 6%;">Customer name: <br><br><br>  Contact Person:</td>
-                                            <td style="width: 6%;"> <br> <br>  <h6 style="font-size: 13px;">
-                                                address: 
-                                              
-                                                
-                                            
-                                            </h6> <br> 200 </td>
-                                            <td style="width: 15%;">VAT Number : 200<br> Order Number : 200</td>
-                                            <td style="width: 10%;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        </th>
 
-                                <table class="table table-bordered" style="border: 1px solid black;">
-                                    <tbody>
-                                        <tr>
-                                            <th style="background-color: #888888;">Item</th>
-                                            <th style="background-color: #888888;">Description</th>
-                                            <th style="background-color: #888888;">Vehicle Type</th>
-                                            <th style="background-color: #888888;">Vehicle Reg</th>
-                                        
-                                            <th class="text-right" style="background-color: #888888;">Quantity</th>
-                                            <th class="text-right" style="background-color: #888888;">Rate</th>
-                                            <th class="text-right" style="background-color: #888888;">Amount</th>
-                                        
-                                        </tr>
-                                        <tr>
-                                       
-                                            <td style="width: 10%;">200</td>
-                                            <td style="width: 20%;">200</td>
-                                            <td style="width: 10%;">
-                                                <div style="border: 0px;">200</div>
-                                            </td>
-                                            
-                                            <td style="width: 10%;">
-                                                <div style="border: 0px;">200</div>
-                                            </td>
-                                    
-                                            <td style="width: 6%;">200</td>
-                                        <td style="width: 8%;" class="text-right">200</td>
-                                <td style="width: 12%;" class="text-right">$ 200</td>
-                                        
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
+                        <th>
 
-                                </div>
-    </main>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td style="width: 15%; border-right: 2px solid black;">
+                            Customer name:  <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            Contact Person:
+                        </td>
+
+                        <td style="border-right: 2px solid black;">
+                            Potraz <br>
+                            1008 Perfomance Close  <br>
+                            MountPleasant business Park  <br>
+                            Harare <br>
+                            <br>
+                            Chanengeta Willias
+                        </td>
+
+                        <td style="width:10%; border-right: 2px solid black;">
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+
+                        <td>
+                            <b>
+                            VAT Number : <br>
+                            Order Number : <br>
+                            </b>
+                             <br>
+                            <br>
+                            <br>
+                            <br>
+                            
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style="width: 100%; padding-bottom: 20%; margin-top: 5%; border-bottom: 2px solid black;">
+                <thead style="background-color: gray;">
+                    <tr>
+                        <th> </th>
+
+                        <th>
+                            <b> DESCRIPTION</b>
+                        </th>
+
+                        <th></th>
+
+                        <th>
+                            DURATION
+                        </th>
+
+                        <th>
+                            DAYS
+                        </th>
+
+                        <th>
+                            DAILY RATE PER VEHICLE
+                        </th>
+
+                        <th>
+                            TOTAL COST
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border-right: 2px solid black;">
+                            Vehicle Type  <br>
+                            Date Out    <br>
+                            Opening Mileage  <br>
+                            Closing Mileage  <br>
+                            Kms Travelled  <br>
+                            Total free mileage  <br>
+                            <br>
+                            Chargeable Mileage  <br>
+                            
+                        </td>
+                        <td style="border-right: 2px solid black;">
+                            Toyota Hilux <br>
+                            23-Jun-23 <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+                        <td style="border-right: 2px solid black;">
+                            Reg No <br> 
+                            Date In <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+                        <td style="border-right: 2px solid black;">
+                            ADJ1324 <br>
+                            26-Jun-23 <br>
+                            177382 <br>
+                            178444 <br>
+                            1062 <br>
+                            500
+                            <hr>
+                            562 
+                        </td>
+                        <td style="border-right: 2px solid black;">
+                            2 <br>
+                            Kms <br>
+                            Kms <br>
+                            Kms <br>
+                            Kms <br>
+                            Kms <br>
+                            <br>
+                            <br>
+                        </td>
+                        <td style="border-right: 2px solid black;">
+                            $ 990,000.00 <br>
+                            $ 5,400.00 <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+                        <td>
+                            $ 1,980,000.00 <br>
+                            US$ 3,034,800.00 <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; border: 2px solid black; border-top: none; padding-inline: 10px; padding-bottom: 30px; ">
+        <section>
+          <b style="text-decoration: underline;">  STANDARD TERMS & CONDITIONS </b> <br>
+            1.200km free mileage per day and excess charged at 70c per km travelled <br>
+          <b>  2.Quotation excludes fuel, vehicle to be delivered with full tank and returned with full tank  </b> <br>
+       <b>     3.Payment is made upfront <br>
+            4.Quotation is in USD <br>
+            5.Quotation valid for 30 days </b> <br>
+          <b>  6.Copy of driver's licence, proof of residence(city council bill) or passport and a refundable deposit of $400  </b>
+      <br>
+      <br>
+      <b style="font-family: cursive; font-size:14px; padding-inline-start: 30px;">
+        Prepared By: 
+      </b>
+        </section>
+        <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
+          <b style="text-decoration: underline;">  Cost excluding Vat &nbsp; $ 470.00 <br>
+            VAT @ 15% &nbsp; $ 70.50 <br>
+            Cost inclusive of Vat &nbsp; $ 540.50 <br>
+            Refundable deposit &nbsp; $ 400.00 <br>
+            Total Costs &nbsp; $ 940.50 <br>
+        </b>
+
+        </section>
+
+        <!-- end of div -->
+    </div>
+</body>
 </template>
 
 <script setup lang="ts">

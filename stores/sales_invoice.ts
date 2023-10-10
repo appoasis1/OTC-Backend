@@ -22,6 +22,7 @@ export const useInvoiceStore = defineStore('invoice', {
         selectedCustomer: "",
         selectedAccount: "",
         selectedVehicle: "",
+        selectedTerm: "",
         selectedItem: "",
         currency: "",
         cost_centre: "",

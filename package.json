@@ -41,6 +41,8 @@
     "fs": "^0.0.1-security",
     "h3-formidable": "^0.3.2",
     "html-pdf-node": "^1.0.7",
+    "html2pdf": "^0.0.11",
+    "html2pdf.js": "^0.10.1",
     "jquery": "^3.6.0",
     "jsonwebtoken": "^9.0.0",
     "jspdf": "^2.5.1",

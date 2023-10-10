@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
   try {
     const {id} = await readBody(event);
     
-    const invoice = await prisma.invoice.findFirst({
+    const invoice = await prisma.invoice.findUnique({
       where: { 
         id: id
      },

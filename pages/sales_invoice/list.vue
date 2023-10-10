@@ -37,13 +37,13 @@
                                             <template #body="slotProps">
                                          <!-- <NuxtLink :to="'/sales_invoice/' + slotProps.data.id"> {{ slotProps.data.name }}</NuxtLink> -->
                                          <!-- <a href="" @click="invoiceDetail"> {{ slotProps.data.name }} </a>  -->
-                                          <NuxtLink :to="`/sales_invoice/detail-${slotProps.data?.id}` + slotProps.data.id"> {{ slotProps.data.name }}</NuxtLink>
+                                          <NuxtLink :to="`/sales_invoice/detail-${slotProps.data?.id}`"> {{ slotProps.data.name }}</NuxtLink>
                                         </template>
                                         </Column>
   
                                         <Column field="country.name" header="Date" filterField="country.name" filterMatchMode="contains" sortable>
                                             <template #body="slotProps">
-                                            {{slotProps.data.date}}
+                                                {{ slotProps.data.date }}
                                         </template>
                                         </Column>
   

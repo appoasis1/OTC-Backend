@@ -34,20 +34,23 @@
                                                                                                 </div>
                                                                         </div></div>
 
-                                                                        <div class="field mb-4 ml-220 col-6 md:col-3" style=" margin-right: 20px    ;">  
-                                                                            <div class="card flex flex-column align-items-cente" >
-                                                                            <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
-                                                                            <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
-                                                                            <h4>Taxable Amount:  $ {{ taxable_amount.toFixed(2) }} <br> <br>VAT:   $ {{ vat.toFixed(2) }} <br>
-                                                                                <br> Non Taxable Amount:   $ {{ non_taxable_amount.toFixed(2) }} <br>
-                                                                                <br> Total Charges:   $ {{ total_charges.toFixed(2) }} <br>
-                                                                                <br> Adavnce Payment:   $ {{ advance_payment }}<br>
-                                                                                <br> Amount Due:   $ {{ amount_due.toFixed(2) }}
-                                                                            </h4> 
-                                                                           </div>
-                                                                           </div>
-                                                                         </div>
-                                                                        </div>
+                                                                        <div class=" mb-4 ml-220 col-6 md:col-3" style="margin-right: 120px;">
+                                                                            <div class="card flex flex-column align-items-center">
+                                                                                <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
+                                                                                <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
+                                                                                    <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
+                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ taxable_amount.toFixed(2) }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
+                                                                                    Non Taxable Amount: $ {{ non_taxable_amount.toFixed(2) }} <br><br>
+                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
+                                                                                    Advance Payment: &nbsp; &nbsp;$ {{ advance_payment }} <br><br>
+                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ amount_due.toFixed(2) }}
+                                                                                    </h4>
+                                                                                </div>
+                                                                                </div>
+                                                                            </div>
+                                                                            </div>
+                                                                        
                                                                             <div class="block-header">
                                                                                         <div style="padding-left: 13px;"></div>
                                                                                         </div>
@@ -60,6 +63,11 @@
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                     <Column header="Vehicle">
+                                                                                                        <template #body="slotProps">
+                                                                                                            {{ slotProps.data.vehicle }}
+                                                                                                        </template>
+                                                                                                    </Column>
+                                                                                                    <Column header="Vehicle Type">
                                                                                                         <template #body="slotProps">
                                                                                                             {{ slotProps.data.vehicle }}
                                                                                                         </template>
@@ -192,8 +200,8 @@
                                                                                                         </div>
                                                                                                             <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
                                           
-                                                                                                                <DropDown v-model="selectedItem" :options="itemsNames"  placeholder="Choose Item" style="height: calc(133.6px); overflow: hidden;" class="w-full md:w-34rem" />
-                                                                                                                 </div>
+                                                                                                                <DropDown v-model="selectedTerm" :options="terms"  placeholder="Choose Terms and Conditions" style="height: calc(133.6px); overflow: hidden;" class="w-full md:w-34rem" />
+                                                                                                            </div>
                                                                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
 
                                                                                                     </div>
@@ -236,6 +244,7 @@
     let selectedCurrency = storeToRefs(invoiceStore).currency;
     let selectedSeries = storeToRefs(invoiceStore).series;
     let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
+    let selectedTerm = storeToRefs(invoiceStore).selectedTerm;
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
     let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
@@ -277,6 +286,10 @@
     let accounts = ref([]);
     let items = ref([]);
 
+    let terms = [
+        "1.Mileage is limited to **km per day excess mileage will be charged at $** per km travelled. 2.Quotation includes fuel."
+      
+     ];
 
     const printPreview = () => {
         const invoiceData = {
@@ -284,6 +297,13 @@
             selectedSeries: selectedSeries.value,
             selectedAccount: selectedAccount.value,
             date: date.value,
+            vat: vat.value,
+            taxable_amount: taxable_amount.value,
+            non_taxable_amount: non_taxable_amount.value,
+            amount_due: amount_due.value,
+            total_charges: total_charges.value,
+            advance_payment: advance_payment.value,
+            items: itemData.value
 
         };
 
@@ -344,15 +364,16 @@
 
     const addItem = () => {
  
-  if (!selectedItem.value || !selectedVehicle.value) {
+  if (!selectedItem.value) {
    
-    alert('Please select both item and vehicle');
+    alert('Please choose an item');
     return;
   }
 
   const newItem = {
     item: selectedItem.value,
     vehicle: selectedVehicle.value,
+    vehicle_type: '',
     quantity: 1,
     rate: 0.00, 
     amount: 0.00 ,
@@ -366,6 +387,11 @@
     date_incoming: 0,
     duration: 0
   };
+
+        const relatedItem = items.value.find(item => item.item_code === selectedVehicle.value);
+        if (relatedItem) {
+        newItem.vehicle_type = relatedItem.item_group;
+        }
   
     itemsTable.value.push(newItem); 
     addDialog.value = false;
@@ -411,6 +437,7 @@
             const data = {
             item: item.item,
             vehicle: item.vehicle,
+            
             quantity: item.quantity,
             rate: item.rate,
             amount: item.amount,
@@ -528,21 +555,50 @@
 
 
     const createInvoice = async () => {
-        let result: any = await invoiceStore.createInvoice();
-        if(result?.data?.success){
-            const invoiceId = result.data.data.id;
+  if (!selectedCustomer.value) {
+    // Handle the case where SelectedCustomer.value is empty or falsy
+    toast.add({
+      severity: 'warn',
+      summary: 'Create Invoice',
+      detail: 'No customer selected. Please select a customer.',
+      life: 2500
+    });
+    return; // Exit the function to prevent further execution
+  }
 
-            // Redirect to the sales_invoice/detail-[id] route
-          //  const router = useRouter();
-          console.log("id is the following", invoiceId)
-            router.push(`/sales_invoice/detail-${invoiceId}`);
-            toast.add({severity: 'success', summary: 'Create Invoice', detail: "Invoice was created successfully", life: 6000});
-        
-        }else{
-            toast.add({severity: 'warn', summary: 'Create Invoice', detail: `Invoice creation failed : ${result?.data?.message}`, life: 6000});
-            console.log("error",result?.data?.error);
-        }
-    }
+  if (!selectedCost.value) {
+    // Handle the case where SelectedCustomer.value is empty or falsy
+    toast.add({
+      severity: 'warn',
+      summary: 'Create Invoice',
+      detail: 'No cost center selected. Please select a cost center.',
+      life: 2500
+    });
+    return; // Exit the function to prevent further execution
+  }
+
+  let result: any = await invoiceStore.createInvoice();
+
+  if (result?.data?.success) {
+    const invoiceId = result.data.data.id;
+
+    router.push(`/sales_invoice/detail-${invoiceId}`);
+    toast.add({
+      severity: 'success',
+      summary: 'Create Invoice',
+      detail: 'Invoice was created successfully',
+      life: 6000
+    });
+  } else {
+    toast.add({
+      severity: 'warn',
+      summary: 'Create Invoice',
+      detail: `Invoice creation failed: ${result?.data?.message}`,
+      life: 6000
+    });
+    console.log('error', result?.data?.error);
+  }
+}
 
 </script>
 
@@ -588,6 +644,13 @@
     padding: 8px;
     text-align: right;
   }
+
+  .p-toast-message {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
   .my-table th {
     background-color: #f2f2f2;
