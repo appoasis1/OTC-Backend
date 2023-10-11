@@ -54,7 +54,7 @@
                                         </Column>
                                         <Column field="invoices.series" header="Amount Due" filterField="representative.name" sortable>
                                             <template #body="slotProps">
-                                                {{slotProps.data.amount_due}}
+                                               $ {{slotProps.data.amount_due.toFixed(2)}}
                                         </template>
                                         </Column>
   
