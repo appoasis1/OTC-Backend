@@ -6,7 +6,7 @@
                         <div class="block-content">
                             <div class="">
                                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
-                                    <div class="text-900 font-medium text-xl mb-1"><h1>Sales Invoice</h1></div>
+                                    <div class="text-900 font-medium text-xl mb-1"><h1>Quotation</h1></div>
                                     <div class="d-flex justify-content-end mb-3">  
                                         <Button on @click="printPreview" label="Print" icon="pi pi-save" class="ml-3" />  
                                         <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" />
@@ -19,9 +19,9 @@
                                                 <div class="field mb-4 col-12 md:col-4">
                                                     <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="posting_date" showIcon /></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="due_date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Valid Until</label><Calendar v-model="posting_date" showIcon /></div>
+                                                   
+                                                   
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"></div>
@@ -29,8 +29,8 @@
                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
                                                                 </div>
                                                                 <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">  <div class="field mb-4 col-12 md:col-6"> 
-                                                                                                    <label for="company_name" class="font-medium text-900">Advance Payment</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="advance_payment" id="customer_name" type="text">
+                                                                                                    
+                                                                                                    
                                                                                                 </div>
                                                                         </div></div>
 
@@ -39,12 +39,12 @@
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ taxable_amount.toFixed(2) }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
-                                                                                    Non Taxable Amount: $ {{ non_taxable_amount.toFixed(2) }} <br><br>
-                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
-                                                                                    Advance Payment: &nbsp; &nbsp;$ {{ advance_payment }} <br><br>
-                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ amount_due.toFixed(2) }}
+                                                                                        Cost excluding VAT: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ taxable_amount.toFixed(2) }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
+                                                                                    Cost Inclusive of VAT: &nbsp; &nbsp; &nbsp; $ {{ non_taxable_amount.toFixed(2) }} <br><br>
+                                                                                    Non Taxable Amount:&nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
+                                                                                    Total Cost: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ advance_payment }} <br><br>
+                                                                                    
                                                                                     </h4>
                                                                                 </div>
                                                                                 </div>
@@ -57,6 +57,11 @@
                                                                                     <div class="field mb-4 col-12 flex align-items-center">
                                                                                             <div class="table-wrapper">
                                                                                                 <DataTable :value="itemsTable"  resizableColumns columnResizeMode="expand" showGridlines class="full-width-table">
+                                                                                                    <Column header="Number of Vehicles" :style="{ width: '6vw' }">
+                                                                                                        <template #body="slotProps">
+                                                                                                            {{ slotProps.data.number }}
+                                                                                                        </template>
+                                                                                                    </Column>
                                                                                                     <Column header="Item" >
                                                                                                         <template #body="slotProps">
                                                                                                             {{ slotProps.data.item }}
@@ -179,6 +184,10 @@
                                                                                                     <Checkbox v-model="is_taxable" :binary="true" />
                                                                                                     
                                                                                                 </div>
+                                                                                                <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                    <label for="company_name" class="font-medium text-900">Number of Vehicles</label> 
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="number" id="rate" type="text">
+                                                                                                </div>
 
                                                                                               
 
@@ -228,7 +237,7 @@
     import { useInvoiceStore } from '~/stores/sales_invoice';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
-import axios from "axios";
+    import axios from "axios";
 
     const router = useRouter();
     const invoiceStore = useInvoiceStore();
@@ -274,6 +283,7 @@ import axios from "axios";
     const vat = storeToRefs(invoiceStore).vat
     const itemList = storeToRefs(invoiceStore).items;
     const uom = storeToRefs(invoiceStore).uom;
+    const number = ref(0);
     const is_taxable = ref(false);
 
     //dialog states
@@ -310,7 +320,7 @@ import axios from "axios";
         };
 
         router.push({
-        path: '/sales_invoice/print_preview',
+        path: '/quotation/print_preview',
         query: {
         invoiceData: JSON.stringify(invoiceData)
      }
@@ -379,6 +389,7 @@ import axios from "axios";
             quantity: 1,
             rate: 0.00, 
             amount: 0.00 ,
+            number: 1,
             chargeable_mileage: 0,
             opening_mileage: 0,
             closing_mileage: 0,
@@ -485,6 +496,7 @@ import axios from "axios";
             actual_milege: item.actual_milege,
             total_free_mileage: item.total_free_mileage,
             uom: item.uom,
+            number: item.number,
             date_outgoing: item.date_outgoing,
             date_incoming: item.date_incoming,
             duration: item.duration
@@ -513,6 +525,7 @@ import axios from "axios";
             item.actual_mileage = actual_milege.value;
             item.total_free_mileage = total_free_mileage.value;
             item.uom = uom.value;
+            item.number = number.value;
             item.date_incoming = date_incoming.value;
             item.date_outgoing = date_outgoing.value;
             item.duration = duration.value;

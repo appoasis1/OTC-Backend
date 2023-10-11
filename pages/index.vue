@@ -7,7 +7,7 @@
             <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
               <div class="flex align-items-center justify-content-between">
                 <div>
-                  <span class="text-3xl text-900 font-bold">3</span>
+                  <span class="text-3xl text-900 font-bold">{{ invoiceCount }}</span>
                   <p class="mt-2 mb-0 text-600 text-xl">Sales Invoices</p>
                 </div>
                 <div>
@@ -62,7 +62,7 @@
               <div class="text-center">
                 <i class="pi pi-eye text-4xl mb-2"></i>
                 <div class="text-sm font-semibold mb-2">Sales Invoices</div>
-                <span class="font-semibold">6</span>
+                <span class="font-semibold">{{ invoiceCount }}</span>
               </div>
             </div>
             <div class="flex-1 flex justify-content-center align-items-center bg-primary-400 shadow-1 p-3 border-round-md">
@@ -89,6 +89,106 @@
 </template>
 
 <script setup lang="ts">
+import axios from 'axios';
+
+
+const invoiceCount = ref(0);
+const quotaionCount = ref(0);
+const orderCount = ref(0);
+
+onMounted(() => {
+        
+        const getInvoices= async () => {
+          
+          var config = {
+              method: 'post',
+              url: '/invoice/list',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+          };
+
+          const result: any = await axios(config).then(function (response) {
+            console.log(JSON.stringify(response.data.data));
+            for (let i in response.data.data){
+                 invoiceCount.value += 1;
+            }
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+          }
+
+          const getQuotations = async () => {
+          
+          var config = {
+              method: 'post',
+              url: '/quotation/list',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+          };
+
+          const result: any = await axios(config).then(function (response) {
+            console.log(JSON.stringify(response.data.data));
+            for (let i in response.data.data){
+                 quotaionCount.value += 1;
+            }
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+          }
+
+          const getOrders= async () => {
+          
+          var config = {
+              method: 'post',
+              url: '/order/list',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+          };
+
+          const result: any = await axios(config).then(function (response) {
+            //console.log(JSON.stringify(response.data.data));
+            for (let i in response.data.data){
+                 orderCount.value += 1;
+            }
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+          }
+            getOrders();
+            getQuotations();
+            getInvoices();
+
+        });
  
 </script>
 

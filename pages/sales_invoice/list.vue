@@ -43,7 +43,7 @@
   
                                         <Column field="country.name" header="Date" filterField="country.name" filterMatchMode="contains" sortable>
                                             <template #body="slotProps">
-                                                {{ slotProps.data.date }}
+                                                {{ formatDate(slotProps.data.date) }}
                                         </template>
                                         </Column>
   
@@ -128,6 +128,16 @@
         invoiceID: JSON.stringify(invoiceId)
      }
     });
+    };
+
+    const formatDate = (value) => {
+    const date = new Date(value);
+    const day = date.getUTCDate();
+    const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day} ${month} ${year}`;
+    return formattedDate;
     };
 
 const dt = ref();

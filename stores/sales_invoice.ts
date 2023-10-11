@@ -49,6 +49,7 @@ export const useInvoiceStore = defineStore('invoice', {
                 cost_centre: this.cost_centre,
                 series: this.series,
                 items: this.items,
+                selectedTerm: this.selectedTerm,
                 taxable_amount: this.taxable_amount,
                 total_charges: this.total_charges,
                 non_taxable_amount: this.non_taxable_amount,

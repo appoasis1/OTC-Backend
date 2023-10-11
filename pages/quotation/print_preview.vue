@@ -8,83 +8,172 @@
                 <div class="surface-ground px-4 py-8 md:px-6 lg:px-8">
                   <div class="text-900 font-medium text-xl mb-3">Quotation Print Preview</div>
                   <div class="d-flex justify-content-end mb-3">
-                    <button class="p-button p-component" style="text-decoration: none;" @click="printPage">
+                    <button class="p-button p-component"  style="text-decoration: none;" @click="printHTML">
                       <span class="pi pi-print"></span>
                       Print
                     </button>
                   </div>
                   <div class="surface-card p-4 shadow-2 border-round p-fluid">
                     <div id="print-section">
-                    
-                            <div class="document-container">
-                                <div style="display: flex; justify-content: flex-end;">
-                                <div>
-                                    <img src="/images/murare.png" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
-                                </div>
-                                <div style="text-align: right; display: flex; flex-direction: column;">
-                                    <h2 style="color: red; margin-bottom: 20px;">Fiscal Tax Invoice</h2>
-                                    <h6 style="margin-bottom: 20px; ">Invoice Number: 200</h6>
-                                    <h6 style="margin-bottom: 20px; ">Invoice Date: 200</h6>
-                                    <h6 style="margin-bottom: 20px; ">Business Partner Number: 0300068944</h6>
-                                    <h6 style="margin-bottom: 20px;">VAT Number: 10070328</h6>
-                                    <h6 style="margin-bottom: 20px; ">Vendor Number (SPB): 712357</h6>
-                                </div>
-                                </div>
+        <div id="pdf">           
+        <div style="width: 100%; height: 100%; border: 1px solid black; padding: 10px;" >
+        <div style="display: flex; justify-content: space-between;">
+            <section style="width: 100%;">
+                <img src="/images/murare.png" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </section>
+            <section style="width: 100%; text-align: right;">
+                <h1 style="color: red;">
+                 HIRE QUOTE
+                </h1>
+                Invoice Number: MIUSB001 <br>
+                Invoice Date: {{ formatDate(invoiceData.date) }} <br>
+                Business Partner Number: 0300068944 <br>
+                VAT Number: 10070328 <br>
+                Vendor Number (SPB):  712357
+                 <br>
+            </section>
+        </div>
+        <div>
+            <table style="width: 100%; padding-bottom: 10%; border-bottom:2px solid black;">
+                <thead style="background-color: gray;">
+                    <tr>
+                        <th>
 
+                        </th>
+                        <th style="color: black;">
+                            CUSTOMER DETAILS
+                        </th>
+                        <th>
 
-                                <table class="table table-bordered" style="border: 1px solid black;">
-                                    <tbody>
-                                        <tr>
-                                            <th colspan="4" style="background-color: #888888; text-align: center;"><b>Customer Details</b></th>
-                                        </tr>
-                                        <tr>
-                                            <td style="width: 6%;">Customer name: <br><br><br>  Contact Person:</td>
-                                            <td style="width: 6%;"> <br> <br>  {{ invoiceData.selectedCustomer }} <h6 style="font-size: 13px;">
-                                                {{ primaryAddress }}
-                                                
-                                            
-                                            </h6> <br> 200 </td>
-                                            <td style="width: 15%;">VAT Number : 200<br> Order Number : 200</td>
-                                            <td style="width: 10%;"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        </th>
 
-                                <table class="table table-bordered" style="border: 1px solid black;">
-                                    <tbody>
-                                        <tr>
-                                            <th style="background-color: #888888;">Item</th>
-                                            <th style="background-color: #888888;">Description</th>
-                                            <th style="background-color: #888888;">Vehicle Type</th>
-                                            <th style="background-color: #888888;">Vehicle Reg</th>
-                                        
-                                            <th class="text-right" style="background-color: #888888;">Quantity</th>
-                                            <th class="text-right" style="background-color: #888888;">Rate</th>
-                                            <th class="text-right" style="background-color: #888888;">Amount</th>
-                                        
-                                        </tr>
-                                        <tr>
-                                       
-                                            <td style="width: 10%;">200</td>
-                                            <td style="width: 20%;">200</td>
-                                            <td style="width: 10%;">
-                                                <div style="border: 0px;">200</div>
-                                            </td>
-                                            
-                                            <td style="width: 10%;">
-                                                <div style="border: 0px;">200</div>
-                                            </td>
-                                    
-                                            <td style="width: 6%;">200</td>
-                                        <td style="width: 8%;" class="text-right">200</td>
-                                <td style="width: 12%;" class="text-right">$ 200</td>
-                                        
-                                        </tr>
-                                       
-                                    </tbody>
-                                </table>
+                        <th>
 
-                                </div>
+                        </th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td style="width: 15%; border-right: 2px solid black;">
+                            Customer name:  <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            Contact Person: 
+                        </td>
+
+                        <td style="border-right: 2px solid black;">
+                            {{ invoiceData.selectedCustomer }} <br>
+                            <h6 style="font-size: 13px;">{{ formattedAddress }}</h6> <br>
+                             <br>
+                            <br>
+                            <br>
+                            
+                        </td>
+
+                        <td style="width:10%; border-right: 2px solid black;">
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                            <br>
+                        </td>
+
+                        <td>
+                            <b>
+                            VAT Number : <br>
+                            Order Number : <br>
+                            </b>
+                             <br>
+                            <br>
+                            <br>
+                            <br>
+                            
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+            <table style="width: 100%; padding-bottom: 20%; margin-top: 5%; border-bottom: 2px solid black;">
+                <thead style="background-color: gray;">
+                    <tr>
+                        <th style="color: black;"><b> Item</b></th>
+
+                        <th style="color: black;">
+                            <b> DESCRIPTION</b>
+                        </th>
+
+                        <th style="color: black;"><b>Vehicle Type</b></th>
+
+                        <th style="color: black;">
+                            <b>Vehicle Reg</b>
+                        </th>
+
+                        <th style="color: black;">
+                            <b>Quantity</b>
+                        </th>
+
+                        <th style="color: black;">
+                            <b>Rate</b>
+                        </th>
+
+                        <th style="color: black;">
+                            <b>Amount</b>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody style="height: 78px;">
+                    <tr v-for="item in invoiceData.items" :key="item.item">
+                        <td style="border-right: 2px solid black;">{{ item.item }}</td>
+                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;">{{ item.quantity }}</span></td>
+                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
+                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
+                        <td style="border-right: 2px solid black;">
+                            <span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.quantity }} {{ item.uom }}</span>
+                        </td>
+                        <td style="border-right: 2px solid black; text-align: right;">$ {{ item.rate.toFixed(2) }}</td>
+                        <td style="text-align: right;">$ {{ item.amount.toFixed(2) }}</td>
+                        </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div style="display: flex; justify-content: space-between; border: 2px solid black; border-top: none; padding-inline: 10px; padding-bottom: 30px; ">
+        <section>
+          <b style="text-decoration: underline;">  STANDARD TERMS & CONDITIONS </b> <br>
+            1.200km free mileage per day and excess charged at 70c per km travelled <br>
+          <b>  2.Quotation excludes fuel, vehicle to be delivered with full tank and returned with full tank  </b> <br>
+       <b>     3.Payment is made upfront <br>
+            4.Quotation is in USD <br>
+            5.Quotation valid for 30 days </b> <br>
+          <b>  6.Copy of driver's licence, proof of residence(city council bill) or passport and a refundable deposit of $400  </b>
+      <br>
+      <br>
+     
+        </section>
+        <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
+          <b>  Taxable Amount &nbsp; $ {{ invoiceData.taxable_amount.toFixed(2) }} <br>
+            VAT &nbsp; $ {{ invoiceData.vat.toFixed(2) }} <br>
+            Non Taxable Amount &nbsp; $ {{ invoiceData.non_taxable_amount.toFixed(2) }} <br>
+            Total Charges &nbsp; $ {{ invoiceData.total_charges.toFixed(2) }} <br>
+            Advance Payment &nbsp; $ {{ invoiceData.advance_payment }} <br>
+            Amount Due &nbsp; $ {{ invoiceData.amount_due.toFixed(2) }} <br>
+        </b>
+
+        </section>
+
+        <!-- end of div -->
+    </div>
+                    </div>
                       
                     </div>
                   </div>
@@ -98,24 +187,42 @@
   </template>
 
 <script setup lang="ts">
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted, computed } from 'vue';
     import { useRoute } from 'vue-router';
+    import html2canvas from 'html2canvas';
+    import jsPDF from 'jspdf';
     import axios from 'axios';
-
-
+    
     const primaryAddress = ref(null);
     const accountName = ref(null);
     const accountType = ref(null);
     const accountNumber = ref(null);
+    const formattedAddress = ref(null)
     const invoiceData = ref({
         selectedCustomer: null,
         selectedSeries: null,
         selectedAccount: null,
         date: null,
-       
+        vat: 0,
+        non_taxable_amount: 0,
+        amount_due: 0,
+        taxable_amount:0,
+        advance_payment: 0,
+        total_charges: 0,
+        items: null
         });
 
     const route = useRoute();
+
+   const formatDate = (value) => {
+    const date = new Date(value);
+    const day = date.getUTCDate();
+    const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day} ${month} ${year}`;
+    return formattedDate;
+    };
 
     onMounted(() => {
         if (Array.isArray(route.query.invoiceData)) {
@@ -123,6 +230,8 @@
         } else {
             invoiceData.value = JSON.parse(route.query.invoiceData);
         }
+
+                console.log("My items are", invoiceData.value.items);
 
             const getCustomerAddress = async () => {
           
@@ -139,8 +248,14 @@
             };
 
             const result: any = await axios(config).then(function (response) {
-                //console.log(JSON.stringify(response.data));
-                primaryAddress.value = response.data.data;
+                console.log(JSON.stringify(response.data.data));
+                if (response.data.data === null){
+                    primaryAddress.value = ' ';
+                } else {
+                    primaryAddress.value = response.data.data;
+                }
+                
+
                 return {
                     data: response.data,
                     success: true
@@ -154,8 +269,18 @@
             });
             return result;
             }
+            
+            formattedAddress.value = computed(() => {
+                let address = primaryAddress.value;
+                // let address = primaryAddress.value.replace(/<br>|(\r\n|\n|\r)/gm, ', ')
+                // address = address.replace(/,\s*,/g, ',')
+                // address = address.replace(/(^,)|(,$)/g, '')
+                // address = address.replace(/,(?=\s*$)/, '') // Remove last comma
+                // address = address.replace(/"/g, '') // Remove double quotes
+                return address
+            })
 
-            const getBankingDetails = async () => {
+        const getBankingDetails = async () => {
           
           var data = JSON.stringify({
               "selectedAccount": invoiceData.value.selectedAccount,
@@ -212,6 +337,31 @@
         printWindow.print();
         printWindow.close();
 }
+
+const printHTML = async () => {
+  // Get the HTML element to print
+  const element = document.getElementById("pdf");
+
+  // Use html2canvas to convert the element to an image with increased DPI
+  const canvas = await html2canvas(element, { dpi: 300 });
+
+  // Get the image data URL
+  const imgData = canvas.toDataURL('image/jpeg', 1.0); // Use JPEG format with maximum quality
+
+  // Create a new jspdf instance
+  const pdf = new jsPDF();
+
+  // Add the image to the PDF document with improved quality
+  pdf.addImage(imgData, 'JPEG', 0, 0, pdf.internal.pageSize.getWidth(), 0, null, 'FAST');
+
+  // Generate a blob URL from the PDF data
+  const pdfBlob = pdf.output('blob');
+  const pdfUrl = URL.createObjectURL(pdfBlob);
+
+  // Open the PDF in a new browser tab
+  window.open(pdfUrl, '_blank');
+};
+
 </script>
 
 <style>

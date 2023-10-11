@@ -72,6 +72,45 @@ model Invoice {
   items              Json?
 }
 
+model Quotation {
+  id                String         @id @default(cuid())
+  name              String?
+  number            String?
+  cost_center      String?
+  series           String?
+  currency         String?
+  date              DateTime?
+  customer         String?
+  bank              String? 
+  taxable_amount    Float?
+  total_charges     Float?
+  non_taxable_amount Float?
+  advance_payment    Float?
+  amount_due         Float?
+  vat                Float?
+  terms              String?
+  items              Json?
+}
+
+model Order {
+  id                String         @id @default(cuid())
+  name              String?
+  number            String?
+  cost_center      String?
+  series           String?
+  currency         String?
+  date              DateTime?
+  customer         String?
+  bank              String? 
+  taxable_amount    Float?
+  total_charges     Float?
+  non_taxable_amount Float?
+  advance_payment    Float?
+  amount_due         Float?
+  vat                Float?
+  terms              String?
+  items              Json?
+}
 // model Quotation {
 //   id      String    @id @default(cuid())
 //   name    String?
