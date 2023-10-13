@@ -30,11 +30,11 @@
                 <h1 style="color: red;">
                  HIRE QUOTE
                 </h1>
-                Invoice Number: MIUSB001 <br>
-                Invoice Date: {{ formatDate(invoiceData.date) }} <br>
-                Business Partner Number: 0300068944 <br>
-                VAT Number: 10070328 <br>
-                Vendor Number (SPB):  712357
+                Quote Number: SAL-QTN-2023-
+                00011 <br>
+                Quote Date: 2023-10-07 <br>
+               
+               
                  <br>
             </section>
         </div>
@@ -70,8 +70,8 @@
                         </td>
 
                         <td style="border-right: 2px solid black;">
-                            {{ invoiceData.selectedCustomer }} <br>
-                            <h6 style="font-size: 13px;">{{ formattedAddress }}</h6> <br>
+                            Netone <br>
+                            <h6 style="font-size: 13px;"></h6> <br>
                              <br>
                             <br>
                             <br>
@@ -105,11 +105,9 @@
             <table style="width: 100%; padding-bottom: 20%; margin-top: 5%; border-bottom: 2px solid black;">
                 <thead style="background-color: gray;">
                     <tr>
-                        <th style="color: black;"><b> Item</b></th>
+                        <th style="color: black;"><b> No of Vehicles</b></th>
 
-                        <th style="color: black;">
-                            <b> DESCRIPTION</b>
-                        </th>
+                      
 
                         <th style="color: black;"><b>Vehicle Type</b></th>
 
@@ -118,29 +116,31 @@
                         </th>
 
                         <th style="color: black;">
-                            <b>Quantity</b>
+                            <b>Duration</b>
                         </th>
 
                         <th style="color: black;">
-                            <b>Rate</b>
+                            <b>Daily Rate</b>
                         </th>
 
                         <th style="color: black;">
-                            <b>Amount</b>
+                            <b>Estimated
+Cost of Hire
+</b>
                         </th>
                     </tr>
                 </thead>
                 <tbody style="height: 78px;">
-                    <tr v-for="item in invoiceData.items" :key="item.item">
-                        <td style="border-right: 2px solid black;">{{ item.item }}</td>
-                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;">{{ item.quantity }}</span></td>
-                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
-                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
+                    <tr>
+                        <td style="border-right: 2px solid black;">1</td>
+                        
+                        <td style="border-right: 2px solid black;">Venter Trailer<span style="padding-left: 5px;"></span></td>
+                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;"></span></td>
                         <td style="border-right: 2px solid black;">
-                            <span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.quantity }} {{ item.uom }}</span>
+                            <span style="padding-left: 5px;">20</span>
                         </td>
-                        <td style="border-right: 2px solid black; text-align: right;">$ {{ item.rate.toFixed(2) }}</td>
-                        <td style="text-align: right;">$ {{ item.amount.toFixed(2) }}</td>
+                        <td style="border-right: 2px solid black; text-align: right;">$ 50.00</td>
+                        <td style="text-align: right;">$ 50.00</td>
                         </tr>
                 </tbody>
             </table>
@@ -161,12 +161,13 @@
      
         </section>
         <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
-          <b>  Taxable Amount &nbsp; $ {{ invoiceData.taxable_amount.toFixed(2) }} <br>
-            VAT &nbsp; $ {{ invoiceData.vat.toFixed(2) }} <br>
-            Non Taxable Amount &nbsp; $ {{ invoiceData.non_taxable_amount.toFixed(2) }} <br>
-            Total Charges &nbsp; $ {{ invoiceData.total_charges.toFixed(2) }} <br>
-            Advance Payment &nbsp; $ {{ invoiceData.advance_payment }} <br>
-            Amount Due &nbsp; $ {{ invoiceData.amount_due.toFixed(2) }} <br>
+          <b>  Cost excluding VAT &nbsp; $ 50.00 <br>
+            VAT @15%&nbsp; $ 0.00 <br>
+            Cost inclusive of VAT &nbsp; $  4,038.00 <br>
+            Non taxable amount &nbsp; $ 50.00 <br>
+            Total Costs
+             &nbsp; $ 50.00<br>
+           
         </b>
 
         </section>
@@ -214,7 +215,7 @@
 
     const route = useRoute();
 
-   const formatDate = (value) => {
+    const formatDate = (value) => {
     const date = new Date(value);
     const day = date.getUTCDate();
     const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);

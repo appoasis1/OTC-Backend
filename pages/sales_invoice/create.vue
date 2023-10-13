@@ -43,7 +43,7 @@
                                                                                     VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
                                                                                     Non Taxable Amount: $ {{ non_taxable_amount.toFixed(2) }} <br><br>
                                                                                     Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
-                                                                                    Advance Payment: &nbsp; &nbsp;$ {{ advance_payment }} <br><br>
+                                                                                    Advance Payment: &nbsp; &nbsp;$ {{ formatted_advance_payment }} <br><br>
                                                                                     Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ amount_due.toFixed(2) }}
                                                                                     </h4>
                                                                                 </div>
@@ -96,6 +96,7 @@
                                                                                         </div>
                                                                                             <div style="padding-left: 13px;">
                                                                                             <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="addDialog = true" />
+                                                                                            <Button label="Addfvvfdvf" icon="pi pi-plus" size="normal"   @click="retrieveItemData" />
                                                                                             </div>
                                                                                             <Dialog v-model:visible="addDialog" modal header="Add Item" :style="{ width: '50vw' }">
                                                                                                 <div class="grid formgrid p-fluid">
@@ -228,7 +229,7 @@
     import { useInvoiceStore } from '~/stores/sales_invoice';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
-import axios from "axios";
+    import axios from "axios";
 
     const router = useRouter();
     const invoiceStore = useInvoiceStore();
@@ -294,6 +295,7 @@ import axios from "axios";
      ];
 
     const printPreview = () => {
+        retrieveItemData();
         const invoiceData = {
             selectedCustomer: selectedCustomer.value,
             selectedSeries: selectedSeries.value,
@@ -305,7 +307,7 @@ import axios from "axios";
             amount_due: amount_due.value,
             total_charges: total_charges.value,
             advance_payment: advance_payment.value,
-            items: itemData.value
+            items: itemList.value
 
         };
 
@@ -350,6 +352,10 @@ import axios from "axios";
     const accountNames = computed(() => {
         return accounts.value.map(account => account.bank);
     });
+
+    const formatted_advance_payment = computed(() => {
+        return advance_payment.value.toFixed(2);
+    })
 
     const currencyNames = computed(() => {
         return currencies.value.map(currency => currency.name);
@@ -474,11 +480,11 @@ import axios from "axios";
         itemData.value = itemsTable.value.map(item => {
             const data = {
             item: item.item,
-            vehicle: item.vehicle,
-            
+            vehicle: item.vehicle, 
             quantity: item.quantity,
             rate: item.rate,
             amount: item.amount,
+            vehicle_type: item.vehicle_type,
             chargeable_mileage: item.chargeable_mileage,
             opening_mileage: item.opening_mileage,
             closing_mileage: item.closing_mileage,
@@ -490,10 +496,10 @@ import axios from "axios";
             duration: item.duration
 
             };
-           // console.log(data);
+            
             return data;
         });
-
+        console.log("my items are here", itemData.value);
         itemList.value = itemData.value;
         //console.log(itemList.value);
     }

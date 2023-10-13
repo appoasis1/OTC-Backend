@@ -31,7 +31,7 @@
                  Fiscal Tax Invoice
                 </h1>
                 Invoice Number: MIUSB001 <br>
-                Invoice Date: {{ formatDate(invoiceData.date) }} <br>
+                Invoice Date: 11 October 2023 <br>
                 Business Partner Number: 0300068944 <br>
                 VAT Number: 10070328 <br>
                 Vendor Number (SPB):  712357
@@ -71,7 +71,11 @@
 
                         <td style="border-right: 2px solid black;">
                             {{ invoiceData.selectedCustomer }} <br>
-                            <h6 style="font-size: 13px;">{{ formattedAddress }}</h6> <br>
+                            <h6 style="font-size: 13px;">
+                            <br> {{ formattedAddress }}
+                                <br>
+                            <br>
+                            </h6> <br>
                              <br>
                             <br>
                             <br>
@@ -134,13 +138,13 @@
                     <tr v-for="item in invoiceData.items" :key="item.item">
                         <td style="border-right: 2px solid black;">{{ item.item }}</td>
                         <td style="border-right: 2px solid black;"><span style="padding-left: 5px;">{{ item.quantity }}</span></td>
-                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
+                        <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle_type !== null">{{ item.vehicle_type }}</span></td>
                         <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
                         <td style="border-right: 2px solid black;">
                             <span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.quantity }} {{ item.uom }}</span>
                         </td>
-                        <td style="border-right: 2px solid black; text-align: right;">$ {{ item.rate.toFixed(2) }}</td>
-                        <td style="text-align: right;">$ {{ item.amount.toFixed(2) }}</td>
+                        <td style="border-right: 2px solid black; text-align: right;">$ {{ item.rate }}</td>
+                        <td style="text-align: right;">$ {{ item.amount }}</td>
                         </tr>
                 </tbody>
             </table>
@@ -161,12 +165,12 @@
      
         </section>
         <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
-          <b>  Taxable Amount &nbsp; $ {{ invoiceData.taxable_amount.toFixed(2) }} <br>
-            VAT &nbsp; $ {{ invoiceData.vat.toFixed(2) }} <br>
-            Non Taxable Amount &nbsp; $ {{ invoiceData.non_taxable_amount.toFixed(2) }} <br>
-            Total Charges &nbsp; $ {{ invoiceData.total_charges.toFixed(2) }} <br>
-            Advance Payment &nbsp; $ {{ invoiceData.advance_payment }} <br>
-            Amount Due &nbsp; $ {{ invoiceData.amount_due.toFixed(2) }} <br>
+          <b>  Taxable Amount &nbsp; $ {{ invoiceData.taxable_amount }} <br>
+            VAT &nbsp; $ {{ vat }} <br>
+            Non Taxable Amount &nbsp; $ {{ non_taxable_amount }} <br>
+            Total Charges &nbsp; $ {{ total_charges }} <br>
+            Advance Payment &nbsp; $ {{ advance_payment }} <br>
+            Amount Due &nbsp; $ {{ amount_due }} <br>
         </b>
 
         </section>
@@ -203,18 +207,19 @@
         selectedSeries: null,
         selectedAccount: null,
         date: null,
+        terms: null,
         vat: 0,
         non_taxable_amount: 0,
         amount_due: 0,
-        taxable_amount:0,
+        taxable_amount: 0,
         advance_payment: 0,
         total_charges: 0,
         items: null
         });
 
     const route = useRoute();
-
-   const formatDate = (value) => {
+    
+    const formatDate = (value) => {
     const date = new Date(value);
     const day = date.getUTCDate();
     const month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(date);
@@ -223,6 +228,30 @@
     const formattedDate = `${day} ${month} ${year}`;
     return formattedDate;
     };
+
+    const vat = computed(() => {
+        return invoiceData.value.vat.toFixed(2);
+    });
+
+    const non_taxable_amount = computed(() => {
+        return invoiceData.value.non_taxable_amount.toFixed(2);
+    });
+
+    // const taxable_amount = computed(() => {
+    //     return invoiceData.value.taxable_amount.toFixed(2);
+    // });
+
+    const advance_payment = computed(() => {
+        return invoiceData.value.advance_payment.toFixed(2);
+    });
+
+    const total_charges = computed(() => {
+        return invoiceData.value.total_charges.toFixed(2);
+    });
+
+    const amount_due = computed(() => {
+        return invoiceData.value.amount_due.toFixed(2);
+    });
 
     onMounted(() => {
         if (Array.isArray(route.query.invoiceData)) {
@@ -280,6 +309,7 @@
                 return address
             })
 
+
         const getBankingDetails = async () => {
           
           var data = JSON.stringify({
@@ -318,26 +348,6 @@
 
         });
         
-
-    function printPage() {
-        const printContents = document.getElementById('print-section').innerHTML;
-        const printWindow = window.open('', '', 'height=500,width=500');
-        printWindow.document.write(`
-            <html>
-            <head>
-                <title>Sales Invoice Print Preview</title>
-            </head>
-            <body>
-                ${printContents}
-            </body>
-            </html>
-        `);
-        printWindow.document.close();
-        printWindow.focus();
-        printWindow.print();
-        printWindow.close();
-}
-
 const printHTML = async () => {
   // Get the HTML element to print
   const element = document.getElementById("pdf");

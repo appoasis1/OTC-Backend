@@ -51,6 +51,7 @@ export const useInvoiceStore = defineStore('invoice', {
                 items: this.items,
                 selectedTerm: this.selectedTerm,
                 taxable_amount: this.taxable_amount,
+                vat: this.vat,
                 total_charges: this.total_charges,
                 non_taxable_amount: this.non_taxable_amount,
                 advance_payment: parseFloat(this.advance_payment),
@@ -101,5 +102,36 @@ export const useInvoiceStore = defineStore('invoice', {
               throw error;
             }
           },
+          async detailInvoice (id) {
+            console.log('iiii',id)
+            var data = JSON.stringify({
+                "id": id
+            })
+            
+          const config = {
+            method: 'post',
+            url: '/invoice/detail',
+            headers: { 
+               'Content-Type': 'application/json'
+            },
+            data: data
+         }; 
+   
+         const result: any = await axios(config).then(function (response) {
+            return {
+               data: response.data,
+               success: true
+            }
+         }).catch(function (error) {
+            console.log(error);
+   
+            return {
+               success: false
+            }
+         }); 
+         
+         
+         return result; 
+      },
     }
 });
