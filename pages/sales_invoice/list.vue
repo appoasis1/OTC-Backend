@@ -88,6 +88,7 @@
             var config = {
               method: 'post',
               url: '/invoice/list',
+              
               headers: { 
                   'Content-Type': 'application/json'
               },

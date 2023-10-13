@@ -39,12 +39,12 @@
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ taxable_amount.toFixed(2) }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
-                                                                                    Non Taxable Amount: $ {{ non_taxable_amount.toFixed(2) }} <br><br>
-                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
+                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_taxable_amount }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ formatted_vat }} <br><br>
+                                                                                    Non Taxable Amount: $ {{ formatted_non_taxable_amount }} <br><br>
+                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_total_charges }} <br><br>
                                                                                     Advance Payment: &nbsp; &nbsp;$ {{ formatted_advance_payment }} <br><br>
-                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ amount_due.toFixed(2) }}
+                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_amount_due }}
                                                                                     </h4>
                                                                                 </div>
                                                                                 </div>
@@ -96,7 +96,7 @@
                                                                                         </div>
                                                                                             <div style="padding-left: 13px;">
                                                                                             <Button label="Add Item" icon="pi pi-plus" size="normal"   @click="addDialog = true" />
-                                                                                            <Button label="Addfvvfdvf" icon="pi pi-plus" size="normal"   @click="retrieveItemData" />
+                                                                                        
                                                                                             </div>
                                                                                             <Dialog v-model:visible="addDialog" modal header="Add Item" :style="{ width: '50vw' }">
                                                                                                 <div class="grid formgrid p-fluid">
@@ -183,7 +183,7 @@
 
                                                                                               
 
-                                                                                                
+                            
 
                                                                                                 </div>
                             
@@ -197,10 +197,28 @@
                                                                                                    
                                                                                                     </div>
                                                                                                         <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
+                                                                                                            
+                                                                                                        </div>
+                                                                                                        <Dialog v-model:visible="addTerm" modal header="Create New Terms and Condition" :style="{ width: '50vw' }">
+                                                                                                            <div class="grid formgrid p-fluid">
+                                                                                                            <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                                <label for="company_name" class="font-medium text-900">Item</label> 
+                                                                                                                <DropDown v-model="selectedItem" :options="itemsNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
+                                                                                                            </div>
 
+                                                                                                            <div class="field mb-4 col-12 md:col-6"> 
+                                                                                                                <label for="company_name" class="font-medium text-900">Vehicle</label> 
+                                                                                                                <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
+                                                                                                            </div>
+                                                                                                            </div>
+                                                                                                            <Button on @click="addItem" label="Add" icon="pi pi-plus" />
+                                                                                                        </Dialog>
+                                                                                                        <div class="d-flex justify-content-end mb-3">  
+                                                                                                            <Button on @click="printPreview" label="Add Terms " icon="pi pi-plus" class="ml-3" />  
+                                                                                                            <!-- <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" /> -->
                                                                                                         </div>
                                                                                                             <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
-                                          
+                                                                                                                
                                                                                                                 <DropDown v-model="selectedTerm" :options="terms"  placeholder="Choose Terms and Conditions" style="height: calc(133.6px); overflow: hidden;" class="w-full md:w-34rem" />
                                                                                                             </div>
                                                                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
@@ -354,8 +372,52 @@
     });
 
     const formatted_advance_payment = computed(() => {
-        return advance_payment.value.toFixed(2);
-    })
+        const value = Number(advance_payment.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_taxable_amount = computed(() => {
+        const value = Number(taxable_amount.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_vat = computed(() => {
+        const value = Number(vat.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_non_taxable_amount = computed(() => {
+        const value = Number(non_taxable_amount.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_total_charges = computed(() => {
+        const value = Number(total_charges.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_amount_due = computed(() => {
+        const value = Number(amount_due.value);
+        if (isNaN(value)) {
+            return null; // or return a default value
+        }
+        return value.toFixed(2);
+    });
 
     const currencyNames = computed(() => {
         return currencies.value.map(currency => currency.name);
@@ -383,8 +445,8 @@
             vehicle: selectedVehicle.value,
             vehicle_type: vehicleType.value,
             quantity: 1,
-            rate: 0.00, 
-            amount: 0.00 ,
+            rate: 0.00.toFixed(2), 
+            amount: 0.00.toFixed(2),
             chargeable_mileage: 0,
             opening_mileage: 0,
             closing_mileage: 0,
@@ -395,8 +457,7 @@
             date_incoming: 0,
             duration: 0
         };
-
-    
+   
         const getItemData = async () => {
           
           var data = JSON.stringify({
@@ -601,6 +662,7 @@
 
 
     const createInvoice = async () => {
+        retrieveItemData();
         if (!selectedCustomer.value) {
             toast.add({
             severity: 'warn',
@@ -620,13 +682,13 @@
             });
             return;
         }
-
+        console.log("Heyy my items are items are here,", itemList.value);
         let result: any = await invoiceStore.createInvoice();
 
         if (result?.data?.success) {
             const invoiceId = result.data.data.id;
 
-            router.push(`/sales_invoice/detail-${invoiceId}`);
+            //router.push(`/sales_invoice/detail-${invoiceId}`);
             toast.add({
             severity: 'success',
             summary: 'Create Invoice',
