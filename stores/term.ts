@@ -2,64 +2,19 @@ import { defineStore } from "pinia";
 import axios from "axios";
 
 
-export const useInvoiceStore = defineStore('invoice', {
+export const useTermStore = defineStore('terms', {
     state: () => ({
-        name: "",
-        number: "",
-        date: new Date(),
-        posting_date: "",
-        due_date: "",
-        date_incoming: "",
-        date_outgoing: "",
-        opening_mileage: "",
-        closing_mileage: "",
-        actual_milege: "",
-        total_free_mileage: "",
-        chargeable_mileage: "",
-        duration: "",
-        rate: "",
-        uom: "",
-        selectedCustomer: "",
-        selectedAccount: "",
-        selectedVehicle: "",
-        selectedTerm: "",
-        selectedItem: "",
-        currency: "",
-        cost_centre: "",
-        series: "",
-        taxable_amount: 0,
-        non_taxable_amount: 0,
-        vat: 0,
-        total_charges: 0,
-        advance_payment: 0,
-        amount_due: 0,
-        items: [],
-        invoiceList: [],
+        term: "",
     }),
     actions: {
-        async createInvoice() {
-            
+        async createTerm() {
+
             const data = { 
-                name: this.name,
-                number: "001",
-                date: this.date,
-                customer: this.selectedCustomer,
-                bank: this.selectedAccount,
-                currency: this.currency,
-                cost_centre: this.cost_centre,
-                series: this.series,
-                items: this.items,
-                selectedTerm: this.selectedTerm,
-                taxable_amount: parseFloat(this.taxable_amount),
-                vat: parseFloat(this.vat),
-                total_charges: parseFloat(this.total_charges),
-                non_taxable_amount: parseFloat(this.non_taxable_amount),
-                advance_payment: parseFloat(this.advance_payment),
-                amount_due: parseFloat(this.amount_due)
+                term: this.term
             },
              config = {
                 method: 'post',
-                url: '/invoice/create',
+                url: '/terms/create',
                 data: data,
                 headers: { 
                     'Accept': '/',

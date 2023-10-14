@@ -23,11 +23,10 @@ const load = async () => {
             username: "Adminstrator",
             phone: "099999998",
             email: "admin@oacey.com",
-            gender: "MALE",
+            
             password: hash,
-            profile: "ADMIN",
+            profile:"Admin",
             salt: salt,
-            account_status: "ACTIVE",
             title: "Mr",
             age: 23,
             current_logged_in_at: new Date(),
@@ -47,11 +46,11 @@ const load = async () => {
              username: "HR OFFICER",
              phone: "0999999985",
              email: "officer@oacey.com",
-             gender: "MALE",
+             
              password: hash,
-             profile: "HR_OFFICER",
+             
              salt: salt,
-             account_status: "ACTIVE",
+            
              title: "Mr",
              age: 23,
              current_logged_in_at: new Date(),

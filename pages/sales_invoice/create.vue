@@ -39,12 +39,12 @@
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_taxable_amount }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ formatted_vat }} <br><br>
-                                                                                    Non Taxable Amount: $ {{ formatted_non_taxable_amount }} <br><br>
-                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_total_charges }} <br><br>
-                                                                                    Advance Payment: &nbsp; &nbsp;$ {{ formatted_advance_payment }} <br><br>
-                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_amount_due }}
+                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_taxable_amount }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_vat }} <br><br>
+                                                                                    Non Taxable Amount: {{ symbol }} {{ formatted_non_taxable_amount }} <br><br>
+                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_total_charges }} <br><br>
+                                                                                    Advance Payment: &nbsp; &nbsp;{{ symbol }} {{ formatted_advance_payment }} <br><br>
+                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_amount_due }}
                                                                                     </h4>
                                                                                 </div>
                                                                                 </div>
@@ -73,9 +73,9 @@
                                                                                                         </template>
                                                                                                     </Column>
                                                                                                     <Column field="quantity" header="Quantity" :style="{ width: '9vw' }"></Column>
-                                                                                                    <Column field="rate" header="Rate $ " :style="{ width: '9vw' }">
+                                                                                                    <Column field="rate" header="Rate" :style="{ width: '9vw' }">
                                                                                                         </Column>
-                                                                                                    <Column field="amount" header="Amount $" :style="{ width: '9vw' }"></Column>
+                                                                                                    <Column field="amount" header="Amount" :style="{ width: '9vw' }"></Column>
                                                                                                     <Column header="Actions" :style="{ width: '3vw' }">
                                                                                                         <template #body="slotProps">
                                                                                                             <Button @click="openModal(slotProps.index)" label="Edit"  class="small" :style="{ width: '7vw' }"/>
@@ -201,20 +201,16 @@
                                                                                                         </div>
                                                                                                         <Dialog v-model:visible="addTerm" modal header="Create New Terms and Condition" :style="{ width: '50vw' }">
                                                                                                             <div class="grid formgrid p-fluid">
-                                                                                                            <div class="field mb-4 col-12 md:col-6"> 
-                                                                                                                <label for="company_name" class="font-medium text-900">Item</label> 
-                                                                                                                <DropDown v-model="selectedItem" :options="itemsNames"  placeholder="Choose Item" class="w-full md:w-34rem" />
-                                                                                                            </div>
+                                                                                                                <div class="field mb-4 col-12 md:col-12"> 
+                                                                                                                    <label for="company_name" class="font-medium text-900">Terms and Conditions</label> 
+                                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="term" data-pc-section="root" id="customer_name" type="text">
+                                                                                                                </div>
 
-                                                                                                            <div class="field mb-4 col-12 md:col-6"> 
-                                                                                                                <label for="company_name" class="font-medium text-900">Vehicle</label> 
-                                                                                                                <DropDown v-model="selectedVehicle" :options="vehicles"  placeholder="Choose Vehicle" class="w-full md:w-34rem" />
                                                                                                             </div>
-                                                                                                            </div>
-                                                                                                            <Button on @click="addItem" label="Add" icon="pi pi-plus" />
+                                                                                                            <Button on @click="createTerm" label="Save" icon="pi pi-plus" />
                                                                                                         </Dialog>
                                                                                                         <div class="d-flex justify-content-end mb-3">  
-                                                                                                            <Button on @click="printPreview" label="Add Terms " icon="pi pi-plus" class="ml-3" />  
+                                                                                                            <Button on @click="addTerm = true" label="Add Terms " icon="pi pi-plus" class="ml-3" />  
                                                                                                             <!-- <Button on @click="createInvoice" label="Save" icon="pi pi-save" class="ml-3" /> -->
                                                                                                         </div>
                                                                                                             <div class="field mb-4 col-12"><label for="notes" class="font-medium text-900">Terms and Conditions</label>
@@ -244,6 +240,7 @@
     import { useCurrencyStore } from '~/stores/currency';
     import { useCustomerStore } from '~/stores/customers';
     import { useSeriesStore } from '~/stores/series';
+    import { useTermStore } from '~/stores/term';
     import { useInvoiceStore } from '~/stores/sales_invoice';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
@@ -258,6 +255,7 @@
     const currencyStore = useCurrencyStore();
     const customerStore = useCustomerStore();
     const seriesStore = useSeriesStore();
+    const termStore = useTermStore();
    
     //Sales Invoice data
     let selectedCustomer = storeToRefs(invoiceStore).selectedCustomer;
@@ -265,6 +263,7 @@
     let selectedSeries = storeToRefs(invoiceStore).series;
     let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
     let selectedTerm = storeToRefs(invoiceStore).selectedTerm;
+    const invoiceName = storeToRefs(invoiceStore).name;
     let selectedCost = storeToRefs(invoiceStore).cost_centre;
     let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
@@ -284,6 +283,7 @@
     const chargeable_mileage = ref(0);
     const duration =  ref(0);
     const rate = ref(0);
+    const symbol = ref();
     const itemsTable = ref([]);
     const taxable_amount = storeToRefs(invoiceStore).taxable_amount;
     const total_charges = storeToRefs(invoiceStore).total_charges;
@@ -294,10 +294,11 @@
     const itemList = storeToRefs(invoiceStore).items;
     const uom = storeToRefs(invoiceStore).uom;
     const is_taxable = ref(false);
-
+    const term = storeToRefs(termStore).term;                                          
     //dialog states
     const addDialog = ref(false);
     const editDialog = ref(false);
+    const addTerm = ref(false);
 
     let customers = ref([]);
     let currencies = ref([]);
@@ -613,6 +614,83 @@
         console.log("my index", myIndex)
     }
 
+    const getCurrencySymbol = async () => {
+          
+          var data = JSON.stringify({
+              "selectedCurrency": selectedCurrency.value,
+          });
+
+          var config = {
+              method: 'post',
+              url: '/currency-detail/',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+              data: data
+          };
+
+          const result: any = await axios(config).then(function (response) {
+              console.log(JSON.stringify(response.data.data));
+              
+                  symbol.value = response.data.data.symbol;
+                 console.log(symbol.value);
+              
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+        }
+
+    watchEffect(() => {
+        getCurrencySymbol();
+    });
+
+    const generateName = async () => {
+          
+          var data = JSON.stringify({
+              "selectedSeries": selectedSeries.value,
+          });
+
+          var config = {
+              method: 'post',
+              url: '/invoice/get-name/',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+              data: data
+          };
+
+          const result: any = await axios(config).then(function (response) {
+   
+                invoiceName.value = response.data.name;
+                 //console.log("The name is ", invoiceName.value);
+              
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+        }
+
+    watchEffect(() => {
+        generateName();
+    });
+
     const calculateDuration = () => {
         const incoming = new Date(date_incoming.value);
         const outgoing = new Date(date_outgoing.value);
@@ -688,7 +766,7 @@
         if (result?.data?.success) {
             const invoiceId = result.data.data.id;
 
-            //router.push(`/sales_invoice/detail-${invoiceId}`);
+            router.push(`/sales_invoice/detail-${invoiceId}`);
             toast.add({
             severity: 'success',
             summary: 'Create Invoice',
@@ -700,6 +778,31 @@
             severity: 'warn',
             summary: 'Create Invoice',
             detail: `Invoice creation failed: ${result?.data?.message}`,
+            life: 6000
+            });
+            console.log('error', result?.data?.error);
+        }
+    }
+
+    const createTerm = async () => {
+ 
+        let result: any = await termStore.createTerm();
+
+        if (result?.data?.success) {
+    
+            
+            //router.push(`/sales_invoice/create`);
+            toast.add({
+            severity: 'success',
+            summary: '',
+            detail: 'Terms and conditions created successfully',
+            life: 6000
+            });
+        } else {
+            toast.add({
+            severity: 'warn',
+            summary: '',
+            detail: `Terms creation failed: ${result?.data?.message}`,
             life: 6000
             });
             console.log('error', result?.data?.error);

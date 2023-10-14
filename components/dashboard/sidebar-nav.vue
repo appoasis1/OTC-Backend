@@ -40,6 +40,7 @@
 
     navigateTo('/')
     
+    
   }
 
   const currentYear = () => {
@@ -78,6 +79,12 @@
                         label: 'Sales Order',
                         icon: 'pi pi-fw pi-user-plus',
                         to: '/sales_order/list'
+                    },
+                    {
+                        key: '1_3',
+                        label: 'Create User',
+                        icon: 'pi pi-fw pi-user-plus',
+                        to: '/admin/register'
                     }
                     
                 ]
