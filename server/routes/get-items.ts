@@ -31,6 +31,15 @@ export default defineEventHandler(async (event) => {
         continue;
       }
 
+      const existingItem = await prisma.item.findFirst({
+        where: { item_code: item.item_code },
+      });
+
+      if (existingItem) {
+        console.log(`Item with item_code ${item.item_code} already exists. Skipping creation.`);
+        continue;
+      }
+
       const createdItem = await prisma.item.create({
         data: {
           item_code: item.item_code,

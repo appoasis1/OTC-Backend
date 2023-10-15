@@ -16,12 +16,22 @@ export default defineEventHandler(async (event) => {
     const response = await axios(config);
     const customersData = response.data.customers || [];
 
-    //console.log("API Response:", response.data);
-    //console.log("API Response:", customersData);
-
     const createdCustomers = [];
 
     for (const customer of customersData) {
+      if (!customer.name) {
+        continue;
+      }
+
+      const existingCustomer = await prisma.customer.findFirst({
+        where: { name: customer.name },
+      });
+
+      if (existingCustomer) {
+        console.log(`Customer with name ${customer.name} already exists. Skipping creation.`);
+        continue;
+      }
+
       const createdCustomer = await prisma.customer.create({
         data: {
           name: customer.name,
@@ -34,12 +44,8 @@ export default defineEventHandler(async (event) => {
         },
       });
 
-      //console.log("Created customer:", createdCustomer);
-
       createdCustomers.push(createdCustomer);
     }
-
-   // console.log("Created customers:", createdCustomers);
 
     return {
       success: true,

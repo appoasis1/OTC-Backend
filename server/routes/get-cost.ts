@@ -19,6 +19,19 @@ export default defineEventHandler(async (event) => {
     const createdCostCentres = [];
 
     for (const costCentre of costCentresData) {
+      if (!costCentre.name) {
+        continue;
+      }
+
+      const existingCostCentre = await prisma.cost.findFirst({
+        where: { name: costCentre.name },
+      });
+
+      if (existingCostCentre) {
+        console.log(`Cost center with name ${costCentre.name} already exists. Skipping creation.`);
+        continue;
+      }
+
       const createdCostCentre = await prisma.cost.create({
         data: {
           name: costCentre.name,

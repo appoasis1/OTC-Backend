@@ -19,6 +19,19 @@ export default defineEventHandler(async (event) => {
     const createdSeries = [];
 
     for (const series of seriesData) {
+      if (!series.naming_series) {
+        continue;
+      }
+
+      const existingSeries = await prisma.series.findFirst({
+        where: { naming_series: series.naming_series },
+      });
+
+      if (existingSeries) {
+        console.log(`Series with naming series ${series.naming_series} already exists. Skipping creation.`);
+        continue;
+      }
+
       const createdSeriesRecord = await prisma.series.create({
         data: {
           naming_series: series.naming_series,

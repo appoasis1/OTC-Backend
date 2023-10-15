@@ -16,20 +16,32 @@ export default defineEventHandler(async (event) => {
     const response = await axios(config);
     const bankAccountsData = response.data.bank_accounts || [];
 
+    console.log('bankAccountsData:', bankAccountsData);
+
     const createdBankAccounts = [];
 
     for (const bankAccount of bankAccountsData) {
-      const createdBankAccount = await prisma.bank.create({
-        data: {
-          account_name: bankAccount.account_name,
-          bank: bankAccount.bank,
-          account_type: bankAccount.account_type,
-          bank_account_no: bankAccount.bank_account_no,
-        },
+      const existingBankAccount = await prisma.bank.findFirst({
+        where: { bank: bankAccount.bank },
       });
 
-      createdBankAccounts.push(createdBankAccount);
+      if (!existingBankAccount) {
+        const createdBankAccount = await prisma.bank.create({
+          data: {
+            account_name: bankAccount.account_name,
+            bank: bankAccount.bank,
+            account_type: bankAccount.account_type,
+            bank_account_no: bankAccount.bank_account_no,
+          },
+        });
+
+        console.log('createdBankAccount:', createdBankAccount);
+
+        createdBankAccounts.push(createdBankAccount);
+      }
     }
+
+    console.log('createdBankAccounts:', createdBankAccounts);
 
     return {
       success: true,

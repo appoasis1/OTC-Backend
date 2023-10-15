@@ -339,12 +339,12 @@
     };
 
     const loadData = async () => {
-        // await itemStore.getItems();
-        // await bankStore.getBanks();
-        // await costStore.getCostCenters();
-        // await currencyStore.getCurrency(); 
-        // await customerStore.getCustomers();
-        // await seriesStore.getSeries();
+        await itemStore.getItems();
+        await bankStore.getBanks();
+        await costStore.getCostCenters();
+        await currencyStore.getCurrency(); 
+        await customerStore.getCustomers();
+        await seriesStore.getSeries();
         //from DB
         await itemStore.listItems();
         await bankStore.listAccounts();
@@ -572,10 +572,15 @@
         console.log(index.value);
         console.log(itemsTable.value);
         const item = itemsTable.value[index.value];
+    // function assignDialogValues(){
+    //     chargeable_mileage.value = item.chargeable_mileage;
+    //     duration.value = item.duration;
+    // }
+        
 
         if (item) {
             item.rate = rate.value;
-            item.chargeable_mileage = chargeable_mileage.value;
+            item.chargeable_mileage = ini.value;
             item.opening_mileage = opening_mileage.value;
             item.closing_mileage = closing_mileage.value;
             item.actual_mileage = actual_milege.value;
@@ -590,12 +595,14 @@
                 item.quantity = duration.value;
             }
             item.amount = rate.value * item.quantity;
+
+            
         }
 
         calculateTotal();
         editDialog.value = false;
         rate.value = null;
-        chargeable_mileage.value = null;
+        ini.value = null;
         opening_mileage.value = null;
         closing_mileage.value = null;
         actual_milege.value = null;
@@ -606,12 +613,24 @@
         duration.value = null;
         selectedTax.value = null;
         is_taxable.value = false;
+
+        
         };
 
     const openModal = (myIndex) => {
         index.value = myIndex;
+        const item = itemsTable.value[index.value];
+        duration.value = item.duration;
+        ini.value = item.chargeable_mileage;
+        opening_mileage.value = item.opening_mileage;
+        closing_mileage.value = item.closing_mileage;
+        actual_milege.value = item.actual_mileage;
+        total_free_mileage.value = item.total_free_mileage;
+        rate.value = item.rate;
+        date_incoming.value = item.date_incoming;
+        date_outgoing.value = item.date_outgoing;
         editDialog.value = true
-        console.log("my index", myIndex)
+        //console.log("my index", myIndex)
     }
 
     const getCurrencySymbol = async () => {

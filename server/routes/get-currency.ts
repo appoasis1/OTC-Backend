@@ -19,6 +19,19 @@ export default defineEventHandler(async (event) => {
     const createdCurrencies = [];
 
     for (const currency of currenciesData) {
+      if (!currency.name) {
+        continue;
+      }
+
+      const existingCurrency = await prisma.currency.findFirst({
+        where: { name: currency.name },
+      });
+
+      if (existingCurrency) {
+        console.log(`Currency with name ${currency.name} already exists. Skipping creation.`);
+        continue;
+      }
+
       const createdCurrency = await prisma.currency.create({
         data: {
           name: currency.name,
