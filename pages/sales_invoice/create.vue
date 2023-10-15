@@ -147,7 +147,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Total Free Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="total_free_mileage" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
@@ -157,7 +157,7 @@
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Chargeable Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="chargeable" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="ini" data-pc-section="root" id="customer_name" type="text">   
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
@@ -716,16 +716,22 @@
     });
 
     const chargeable = ref(0);
-    const calculateChargeableMileage = () => {
-        const total_free = Number(total_free_mileage.value);
-        const actual = Number(actual_milege.value);
-        // const chargeable = actual - total_free;
-        const _chargeable = Number(actual_milege.value) - Number(total_free_mileage.value);
-        chargeable.value = _chargeable;
-    }; 
+    const ini = ref(0);
+    // const calculateChargeableMileage = () => {
+    //     const total_free = Number(total_free_mileage.value);
+    //     const actual = Number(actual_milege.value);
+    //     // const chargeable = actual - total_free;
+    //     const _chargeable = Number(actual_milege.value) - Number(total_free_mileage.value);
+    //     chargeable.value = _chargeable;
+    // }; 
 
     watchEffect(() => {
-        calculateChargeableMileage();
+       // calculateChargeableMileage();
+       chargeable.value = Number(total_free_mileage.value) - Number(actual_milege.value);
+    });
+
+    watchEffect(() => {
+        ini.value = chargeable.value
     });
    
     const itemsNames = computed(() => {

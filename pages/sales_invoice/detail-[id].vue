@@ -9,13 +9,13 @@
                             <div class="d-flex justify-content-end mb-3">
                                 <Button on @click="printPreview" label="Print" icon="pi pi-save" class="ml-3" />  
 
-<Button on @click="deleteInvoice" label="Delete" severity="danger" icon="pi pi-trash" class="ml-3" />
+                                <Button on @click="deleteInvoice" label="Delete" severity="danger" icon="pi pi-trash" class="ml-3" />
                  
                   </div>
 
                             <div class="surface-card p-4 shadow-2 border-round">
                                 <div class="font-medium text-3xl text-900 mb-3">Sales Invoice</div>
-                                <div class="text-500 mb-5">Egestas ultricies.</div>
+                                <div class="text-500 mb-5"> {{  data.name }} </div>
                                 <ul class="list-none p-0 m-0 border-top-1 border-300">
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
