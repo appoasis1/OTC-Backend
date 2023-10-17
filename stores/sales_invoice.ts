@@ -55,7 +55,9 @@ export const useInvoiceStore = defineStore('invoice', {
                 total_charges: parseFloat(this.total_charges),
                 non_taxable_amount: parseFloat(this.non_taxable_amount),
                 advance_payment: parseFloat(this.advance_payment),
-                amount_due: parseFloat(this.amount_due)
+                amount_due: parseFloat(this.amount_due),
+                destination: this.destination,
+                posting_date: this.posting_date
             },
              config = {
                 method: 'post',

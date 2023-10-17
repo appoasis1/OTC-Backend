@@ -5,6 +5,7 @@ import axios from "axios";
 export const useTermStore = defineStore('terms', {
     state: () => ({
         term: "",
+        termList: []
     }),
     actions: {
         async createTerm() {
@@ -41,17 +42,17 @@ export const useTermStore = defineStore('terms', {
             return result;
         },
 
-        async listInvoice() {
+        async listTerms() {
             try {
-              const invoiceList = await $fetch('/invoice/list', {
+              const termList = await $fetch('/term-list', {
                 method: "GET",
                 headers: { "Content-Type": "application/json" },
               });
           
-              this.invoiceList = invoiceList;
-              console.log('store invoices ------>', invoiceList); 
+              this.termList = termList;
+              console.log('store invoices ------>', termList); 
               
-              return invoiceList;
+              return termList;
             } catch (error) {
               console.error(error);
               throw error;

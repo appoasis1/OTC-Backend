@@ -19,7 +19,7 @@
                                                 <div class="field mb-4 col-12 md:col-4">
                                                     <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Valid Until</label><Calendar v-model="posting_date" showIcon /></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Valid Until</label><Calendar v-model="valid_until" showIcon /></div>
                                                    
                                                    
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
@@ -39,11 +39,11 @@
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                        Cost excluding VAT: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ taxable_amount.toFixed(2) }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat.toFixed(2) }} <br><br>
-                                                                                    Cost Inclusive of VAT: &nbsp; &nbsp; &nbsp; $ {{ non_taxable_amount.toFixed(2) }} <br><br>
-                                                                                    Non Taxable Amount:&nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_charges.toFixed(2) }} <br><br>
-                                                                                    Total Cost: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ advance_payment }} <br><br>
+                                                                                        Cost excluding VAT: &nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_cost_excluding_vat }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ formatted_vat }} <br><br>
+                                                                                    Cost Inclusive of VAT: &nbsp; &nbsp; &nbsp; $ {{ formatted_cost_including_vat }} <br><br>
+                                                                                    Non Taxable Amount:&nbsp; &nbsp; &nbsp; &nbsp; $ {{ formatted_non_taxable_amount }} <br><br>
+                                                                                    Total Cost: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ formatted_total_costs }} <br><br>
                                                                                     
                                                                                     </h4>
                                                                                 </div>
@@ -234,13 +234,14 @@
     import { useCurrencyStore } from '~/stores/currency';
     import { useCustomerStore } from '~/stores/customers';
     import { useSeriesStore } from '~/stores/series';
-    import { useInvoiceStore } from '~/stores/sales_invoice';
+    import { useTermStore } from '~/stores/term';
+    import { useQuotationStore } from '~/stores/quotation';
     import { ref } from 'vue';
     import { useRouter } from 'vue-router';
     import axios from "axios";
 
     const router = useRouter();
-    const invoiceStore = useInvoiceStore();
+    const quotationStore = useQuotationStore();
     const toast = useToast();
     const itemStore = useItemStore();
     const bankStore = useBankStore();
@@ -248,47 +249,50 @@
     const currencyStore = useCurrencyStore();
     const customerStore = useCustomerStore();
     const seriesStore = useSeriesStore();
+    const termStore = useTermStore();
    
     //Sales Invoice data
-    let selectedCustomer = storeToRefs(invoiceStore).selectedCustomer;
-    let selectedCurrency = storeToRefs(invoiceStore).currency;
-    let selectedSeries = storeToRefs(invoiceStore).series;
-    let selectedAccount = storeToRefs(invoiceStore).selectedAccount;
-    let selectedTerm = storeToRefs(invoiceStore).selectedTerm;
-    let selectedCost = storeToRefs(invoiceStore).cost_centre;
+    let selectedCustomer = storeToRefs(quotationStore).selectedCustomer;
+    let selectedCurrency = storeToRefs(quotationStore).currency;
+    let selectedSeries = storeToRefs(quotationStore).series;
+    let selectedAccount = storeToRefs(quotationStore).selectedAccount;
+    let selectedTerm = storeToRefs(quotationStore).selectedTerm;
+    const invoiceName = storeToRefs(quotationStore).name;
+    let selectedCost = storeToRefs(quotationStore).cost_centre;
     let selectedItem = ref()
-    let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
+    let selectedVehicle = storeToRefs(quotationStore).selectedVehicle;
     let vehicleType = ref();
     let selectedTax = ref();
     const taxes = ref([14.5, 15]);
-    const date = storeToRefs(invoiceStore).date;
-    const posting_date = storeToRefs(invoiceStore).posting_date;
-    const due_date = storeToRefs(invoiceStore).due_date;
+    const date = storeToRefs(quotationStore).date;
+    const posting_date = storeToRefs(quotationStore).posting_date;
+    const valid_until = storeToRefs(quotationStore).valid_until;
 
-    const date_incoming = storeToRefs(invoiceStore).date_incoming;
-    const date_outgoing = storeToRefs(invoiceStore).date_outgoing;
-    const opening_mileage = storeToRefs(invoiceStore).opening_mileage;
-    const closing_mileage = storeToRefs(invoiceStore).closing_mileage;
+    const date_incoming = storeToRefs(quotationStore).date_incoming;
+    const date_outgoing = storeToRefs(quotationStore).date_outgoing;
+    const opening_mileage = storeToRefs(quotationStore).opening_mileage;
+    const closing_mileage = storeToRefs(quotationStore).closing_mileage;
     const actual_milege = ref(0);
-    const total_free_mileage = storeToRefs(invoiceStore).total_free_mileage;
+    const total_free_mileage = storeToRefs(quotationStore).total_free_mileage;
     const chargeable_mileage = ref(0);
     const duration =  ref(0);
     const rate = ref(0);
+    const symbol = ref();
     const itemsTable = ref([]);
-    const taxable_amount = storeToRefs(invoiceStore).taxable_amount;
-    const total_charges = storeToRefs(invoiceStore).total_charges;
-    const non_taxable_amount = storeToRefs(invoiceStore).non_taxable_amount;
-    const advance_payment = storeToRefs(invoiceStore).advance_payment;
-    const amount_due = storeToRefs(invoiceStore).amount_due;
-    const vat = storeToRefs(invoiceStore).vat
-    const itemList = storeToRefs(invoiceStore).items;
-    const uom = storeToRefs(invoiceStore).uom;
-    const number = ref(0);
+    const cost_excluding_vat = storeToRefs(quotationStore).cost_excluding_vat;
+    const cost_including_vat = storeToRefs(quotationStore).cost_including_vat;
+    const non_taxable_amount = storeToRefs(quotationStore).non_taxable_amount;
+    const total_costs= storeToRefs(quotationStore).total_costs;
+    const amount_due = storeToRefs(quotationStore).amount_due;
+    const vat = storeToRefs(quotationStore).vat
+    const itemList = storeToRefs(quotationStore).items;
+    const uom = storeToRefs(quotationStore).uom;
     const is_taxable = ref(false);
-
+    const term = storeToRefs(termStore).term;                                          
     //dialog states
     const addDialog = ref(false);
     const editDialog = ref(false);
+    const addTerm = ref(false);
 
     let customers = ref([]);
     let currencies = ref([]);
@@ -297,25 +301,23 @@
     let cost_centers = ref([]);
     let accounts = ref([]);
     let items = ref([]);
-
-    let terms = [
-        "1.Mileage is limited to **km per day excess mileage will be charged at $** per km travelled. 2.Quotation includes fuel. "
-         
-     ];
+    let termList = ref([]);
 
     const printPreview = () => {
+        retrieveItemData();
         const invoiceData = {
             selectedCustomer: selectedCustomer.value,
             selectedSeries: selectedSeries.value,
             selectedAccount: selectedAccount.value,
             date: date.value,
+            name: invoiceName.value,
             vat: vat.value,
-            taxable_amount: taxable_amount.value,
+            cost_excluding_vat: cost_excluding_vat.value,
             non_taxable_amount: non_taxable_amount.value,
-            amount_due: amount_due.value,
-            total_charges: total_charges.value,
-            advance_payment: advance_payment.value,
-            items: itemData.value
+            total_costs: total_costs.value,
+            cost_including_vat: cost_including_vat.value,
+            items: itemList.value,
+            terms: selectedTerm.value
 
         };
 
@@ -328,12 +330,12 @@
     };
 
     const loadData = async () => {
-        // await itemStore.getItems();
-        // await bankStore.getBanks();
-        // await costStore.getCostCenters();
-        // await currencyStore.getCurrency(); 
-        // await customerStore.getCustomers();
-        // await seriesStore.getSeries();
+        await itemStore.getItems();
+        await bankStore.getBanks();
+        await costStore.getCostCenters();
+        await currencyStore.getCurrency(); 
+        await customerStore.getCustomers();
+        await seriesStore.getSeries();
         //from DB
         await itemStore.listItems();
         await bankStore.listAccounts();
@@ -341,6 +343,7 @@
         await currencyStore.listCurrency();
         await customerStore.listCustomers();
         await seriesStore.listSeries();
+        await termStore.listTerms();
 
         customers.value = await customerStore.customerList.data;
         currencies.value = await currencyStore.currencyList.data;
@@ -348,6 +351,7 @@
         series.value = await seriesStore.series.data;
         cost_centers.value = await costStore.costList.data;
         accounts.value = await bankStore.accountsList.data;
+        termList.value = await termStore.termList.data;
     
     };
 
@@ -359,6 +363,48 @@
 
     const accountNames = computed(() => {
         return accounts.value.map(account => account.bank);
+    });
+
+  
+
+    const formatted_cost_excluding_vat = computed(() => {
+        const value = Number(cost_excluding_vat.value);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_vat = computed(() => {
+        const value = Number(vat.value);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_non_taxable_amount = computed(() => {
+        const value = Number(non_taxable_amount.value);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_total_costs = computed(() => {
+        const value = Number(total_costs.value);
+        if (isNaN(value)) {
+            return null;
+        }
+        return value.toFixed(2);
+    });
+
+    const formatted_cost_including_vat = computed(() => {
+        const value = Number(cost_including_vat.value);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
     });
 
     const currencyNames = computed(() => {
@@ -387,9 +433,8 @@
             vehicle: selectedVehicle.value,
             vehicle_type: vehicleType.value,
             quantity: 1,
-            rate: 0.00, 
-            amount: 0.00 ,
-            number: 1,
+            rate: 0.00.toFixed(2), 
+            amount: 0.00.toFixed(2),
             chargeable_mileage: 0,
             opening_mileage: 0,
             closing_mileage: 0,
@@ -400,8 +445,7 @@
             date_incoming: 0,
             duration: 0
         };
-
-    
+   
         const getItemData = async () => {
           
           var data = JSON.stringify({
@@ -446,38 +490,40 @@
         addDialog.value = false;
         selectedItem.value = null;
         selectedVehicle.value = null;
-        calculateTotal();
+        //calculateTotal();
         retrieveItemData();
     };
 
-    const calculateTotal = () =>  {
-        non_taxable_amount.value = 0;
-        vat.value = 0;
-        amount_due.value = 0;
-        total_charges.value = 0;
-        taxable_amount.value = 0;
+    const calculateTotal = () => {
+        non_taxable_amount.value = Number(0);
+        // vat.value = Number(0);
+        amount_due.value = Number(0);
+        total_costs.value = Number(0);
+        //taxable_amount.value = Number(0);
 
-        if (is_taxable.value === true){
+        if (is_taxable.value === true) {
             for (const item of itemsTable.value) {
-                let tax = (selectedTax.value/100) * item.amount;
+                let tax = Number((selectedTax.value / 100)) * Number(item.amount);
                 vat.value += tax;
-                taxable_amount.value += (item.amount + tax);
-                non_taxable_amount.value += 0;
-                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
-                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
-           }   
+                //taxable_amount.value += Number(item.amount + tax);
+                non_taxable_amount.value += Number(0);
+            }
+            vat.value = vat.value;
+           // taxable_amount.value = taxable_amount.value;
+            non_taxable_amount.value = non_taxable_amount.value;
 
         } else {
-            
-               for (const item of itemsTable.value) {
-                vat.value = 0;
-                taxable_amount.value += 0;
-                non_taxable_amount.value += item.amount;
-                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
-                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
-                }
+            for (const item of itemsTable.value) {
+               // taxable_amount.value += Number(0);
+                non_taxable_amount.value += Number(item.amount);
+            }
+            vat.value = vat.value;
+           // taxable_amount.value = taxable_amount.value;
+            non_taxable_amount.value = non_taxable_amount.value;
         }
-     
+
+       // total_charges.value = Number(non_taxable_amount.value + taxable_amount.value + vat.value);
+       // amount_due.value = Number(total_charges.value - advance_payment.value);
     }
 
     const itemData = ref([]);
@@ -485,27 +531,26 @@
         itemData.value = itemsTable.value.map(item => {
             const data = {
             item: item.item,
-            vehicle: item.vehicle,
-            
+            vehicle: item.vehicle, 
             quantity: item.quantity,
             rate: item.rate,
             amount: item.amount,
+            vehicle_type: item.vehicle_type,
             chargeable_mileage: item.chargeable_mileage,
             opening_mileage: item.opening_mileage,
             closing_mileage: item.closing_mileage,
             actual_milege: item.actual_milege,
             total_free_mileage: item.total_free_mileage,
             uom: item.uom,
-            number: item.number,
             date_outgoing: item.date_outgoing,
             date_incoming: item.date_incoming,
             duration: item.duration
 
             };
-           // console.log(data);
+            
             return data;
         });
-
+        console.log("my items are here", itemData.value);
         itemList.value = itemData.value;
         //console.log(itemList.value);
     }
@@ -519,13 +564,12 @@
 
         if (item) {
             item.rate = rate.value;
-            item.chargeable_mileage = chargeable_mileage.value;
+            item.chargeable_mileage = ini.value;
             item.opening_mileage = opening_mileage.value;
             item.closing_mileage = closing_mileage.value;
             item.actual_mileage = actual_milege.value;
             item.total_free_mileage = total_free_mileage.value;
             item.uom = uom.value;
-            item.number = number.value;
             item.date_incoming = date_incoming.value;
             item.date_outgoing = date_outgoing.value;
             item.duration = duration.value;
@@ -537,10 +581,9 @@
             item.amount = rate.value * item.quantity;
         }
 
-        calculateTotal();
         editDialog.value = false;
         rate.value = null;
-        chargeable_mileage.value = null;
+        ini.value = null;
         opening_mileage.value = null;
         closing_mileage.value = null;
         actual_milege.value = null;
@@ -550,14 +593,105 @@
         date_outgoing.value = null;
         duration.value = null;
         selectedTax.value = null;
-        is_taxable.value = false;
-        };
+        is_taxable.value = false;    
+    };
 
     const openModal = (myIndex) => {
         index.value = myIndex;
+        const item = itemsTable.value[index.value];
+        duration.value = item.duration;
+        ini.value = item.chargeable_mileage;
+        opening_mileage.value = item.opening_mileage;
+        closing_mileage.value = item.closing_mileage;
+        actual_milege.value = item.actual_mileage;
+        total_free_mileage.value = item.total_free_mileage;
+        rate.value = item.rate;
+        date_incoming.value = item.date_incoming;
+        date_outgoing.value = item.date_outgoing;
         editDialog.value = true
-        console.log("my index", myIndex)
+        //console.log("my index", myIndex)
     }
+
+    const getCurrencySymbol = async () => {
+          
+          var data = JSON.stringify({
+              "selectedCurrency": selectedCurrency.value,
+          });
+
+          var config = {
+              method: 'post',
+              url: '/currency-detail/',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+              data: data
+          };
+
+          const result: any = await axios(config).then(function (response) {
+              console.log(JSON.stringify(response.data.data));
+              
+                  symbol.value = response.data.data.symbol;
+                 console.log(symbol.value);
+              
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+        }
+
+    watchEffect(() => {
+        getCurrencySymbol();
+    });
+
+    watchEffect(() => {
+        calculateTotal();
+    });
+
+    const generateName = async () => {
+          
+          var data = JSON.stringify({
+              "selectedSeries": selectedSeries.value,
+          });
+
+          var config = {
+              method: 'post',
+              url: '/quotation/get-name/',
+              headers: { 
+                  'Content-Type': 'application/json'
+              },
+              data: data
+          };
+
+          const result: any = await axios(config).then(function (response) {
+   
+                invoiceName.value = response.data.name;
+                 //console.log("The name is ", invoiceName.value);
+              
+              return {
+                  data: response.data,
+                  success: true
+                  }
+          })
+          .catch(function (error) {
+              console.log(error);
+              return {
+                  success: false
+                  }
+          });
+          return result;
+        }
+
+    watchEffect(() => {
+        generateName();
+    });
 
     const calculateDuration = () => {
         const incoming = new Date(date_incoming.value);
@@ -584,16 +718,15 @@
     });
 
     const chargeable = ref(0);
-    const calculateChargeableMileage = () => {
-        const total_free = Number(total_free_mileage.value);
-        const actual = Number(actual_milege.value);
-        // const chargeable = actual - total_free;
-        const _chargeable = Number(actual_milege.value) - Number(total_free_mileage.value);
-        chargeable.value = _chargeable;
-    }; 
+    const ini = ref(0);
 
     watchEffect(() => {
-        calculateChargeableMileage();
+       // calculateChargeableMileage();
+       chargeable.value =  Number(actual_milege.value) - Number(total_free_mileage.value);
+    });
+
+    watchEffect(() => {
+        ini.value = chargeable.value
     });
    
     const itemsNames = computed(() => {
@@ -606,12 +739,18 @@
         return items.value.map(item => item.item_code);
     });
 
+    const terms = computed(() => {
+   
+        return termList.value.map(term => term.term);
+    });
+
 
     const createInvoice = async () => {
+        retrieveItemData();
         if (!selectedCustomer.value) {
             toast.add({
             severity: 'warn',
-            summary: 'Create Invoice',
+            summary: 'Create Quotation',
             detail: 'No customer selected. Please select a customer.',
             life: 2500
             });
@@ -621,30 +760,58 @@
         if (!selectedCost.value) {
             toast.add({
             severity: 'warn',
-            summary: 'Create Invoice',
+            summary: 'Quotation',
             detail: 'No cost center selected. Please select a cost center.',
             life: 2500
             });
             return;
         }
-
-        let result: any = await invoiceStore.createInvoice();
+        console.log("Heyy my items are items are here,", itemList.value);
+        let result: any = await quotationStore.createQuotation();
 
         if (result?.data?.success) {
             const invoiceId = result.data.data.id;
 
-            router.push(`/sales_invoice/detail-${invoiceId}`);
+            router.push(`/quotation/detail-${invoiceId}`);
             toast.add({
             severity: 'success',
-            summary: 'Create Invoice',
-            detail: 'Invoice was created successfully',
+            summary: 'Create Quotation',
+            detail: 'Quotation was created successfully',
             life: 6000
             });
         } else {
             toast.add({
             severity: 'warn',
-            summary: 'Create Invoice',
-            detail: `Invoice creation failed: ${result?.data?.message}`,
+            summary: 'Create Quotation',
+            detail: `Quotation creation failed: ${result?.data?.message}`,
+            life: 6000
+            });
+            console.log('error', result?.data?.error);
+        }
+    }
+
+    const createTerm = async () => {
+ 
+        let result: any = await termStore.createTerm();
+
+        addTerm.value = false;
+        term.value = null;
+
+        if (result?.data?.success) {
+    
+            
+            //router.push(`/sales_invoice/create`);
+            toast.add({
+            severity: 'success',
+            summary: '',
+            detail: 'Terms and conditions created successfully',
+            life: 6000
+            });
+        } else {
+            toast.add({
+            severity: 'warn',
+            summary: '',
+            detail: `Terms creation failed: ${result?.data?.message}`,
             life: 6000
             });
             console.log('error', result?.data?.error);

@@ -307,11 +307,7 @@
     let cost_centers = ref([]);
     let accounts = ref([]);
     let items = ref([]);
-
-    let terms = [
-        "1.Mileage is limited to **km per day excess mileage will be charged at $** per km travelled. 2.Quotation includes fuel. "
-         
-     ];
+    let termList = ref([]);
 
     const printPreview = () => {
         retrieveItemData();
@@ -320,13 +316,15 @@
             selectedSeries: selectedSeries.value,
             selectedAccount: selectedAccount.value,
             date: date.value,
+            name: invoiceName.value,
             vat: vat.value,
             taxable_amount: taxable_amount.value,
             non_taxable_amount: non_taxable_amount.value,
             amount_due: amount_due.value,
             total_charges: total_charges.value,
             advance_payment: advance_payment.value,
-            items: itemList.value
+            items: itemList.value,
+            terms: selectedTerm.value
 
         };
 
@@ -352,6 +350,7 @@
         await currencyStore.listCurrency();
         await customerStore.listCustomers();
         await seriesStore.listSeries();
+        await termStore.listTerms();
 
         customers.value = await customerStore.customerList.data;
         currencies.value = await currencyStore.currencyList.data;
@@ -359,6 +358,7 @@
         series.value = await seriesStore.series.data;
         cost_centers.value = await costStore.costList.data;
         accounts.value = await bankStore.accountsList.data;
+        termList.value = await termStore.termList.data;
     
     };
 
@@ -375,7 +375,7 @@
     const formatted_advance_payment = computed(() => {
         const value = Number(advance_payment.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null; 
         }
         return value.toFixed(2);
     });
@@ -383,7 +383,7 @@
     const formatted_taxable_amount = computed(() => {
         const value = Number(taxable_amount.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null; 
         }
         return value.toFixed(2);
     });
@@ -391,7 +391,7 @@
     const formatted_vat = computed(() => {
         const value = Number(vat.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null; 
         }
         return value.toFixed(2);
     });
@@ -399,7 +399,7 @@
     const formatted_non_taxable_amount = computed(() => {
         const value = Number(non_taxable_amount.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null; 
         }
         return value.toFixed(2);
     });
@@ -407,7 +407,7 @@
     const formatted_total_charges = computed(() => {
         const value = Number(total_charges.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null;
         }
         return value.toFixed(2);
     });
@@ -415,7 +415,7 @@
     const formatted_amount_due = computed(() => {
         const value = Number(amount_due.value);
         if (isNaN(value)) {
-            return null; // or return a default value
+            return null; 
         }
         return value.toFixed(2);
     });
@@ -503,38 +503,40 @@
         addDialog.value = false;
         selectedItem.value = null;
         selectedVehicle.value = null;
-        calculateTotal();
+        //calculateTotal();
         retrieveItemData();
     };
 
-    const calculateTotal = () =>  {
-        non_taxable_amount.value = 0;
-        vat.value = 0;
-        amount_due.value = 0;
-        total_charges.value = 0;
-        taxable_amount.value = 0;
+    const calculateTotal = () => {
+        non_taxable_amount.value = Number(0);
+        // vat.value = Number(0);
+        amount_due.value = Number(0);
+        total_charges.value = Number(0);
+        //taxable_amount.value = Number(0);
 
-        if (is_taxable.value === true){
+        if (is_taxable.value === true) {
             for (const item of itemsTable.value) {
-                let tax = (selectedTax.value/100) * item.amount;
+                let tax = Number((selectedTax.value / 100)) * Number(item.amount);
                 vat.value += tax;
-                taxable_amount.value += (item.amount + tax);
-                non_taxable_amount.value += 0;
-                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
-                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
-           }   
+                taxable_amount.value += Number(item.amount + tax);
+                non_taxable_amount.value += Number(0);
+            }
+            vat.value = vat.value;
+            taxable_amount.value = taxable_amount.value;
+            non_taxable_amount.value = non_taxable_amount.value;
 
         } else {
-            
-               for (const item of itemsTable.value) {
-                vat.value = 0;
-                taxable_amount.value += 0;
-                non_taxable_amount.value += item.amount;
-                total_charges.value += (non_taxable_amount.value + taxable_amount.value + vat.value);
-                amount_due.value += (non_taxable_amount.value + taxable_amount.value + vat.value - advance_payment.value);
-                }
+            for (const item of itemsTable.value) {
+                taxable_amount.value += Number(0);
+                non_taxable_amount.value += Number(item.amount);
+            }
+            vat.value = vat.value;
+            taxable_amount.value = taxable_amount.value;
+            non_taxable_amount.value = non_taxable_amount.value;
         }
-     
+
+        total_charges.value = Number(non_taxable_amount.value + taxable_amount.value + vat.value);
+        amount_due.value = Number(total_charges.value - advance_payment.value);
     }
 
     const itemData = ref([]);
@@ -572,11 +574,6 @@
         console.log(index.value);
         console.log(itemsTable.value);
         const item = itemsTable.value[index.value];
-    // function assignDialogValues(){
-    //     chargeable_mileage.value = item.chargeable_mileage;
-    //     duration.value = item.duration;
-    // }
-        
 
         if (item) {
             item.rate = rate.value;
@@ -595,11 +592,8 @@
                 item.quantity = duration.value;
             }
             item.amount = rate.value * item.quantity;
-
-            
         }
 
-        calculateTotal();
         editDialog.value = false;
         rate.value = null;
         ini.value = null;
@@ -612,10 +606,8 @@
         date_outgoing.value = null;
         duration.value = null;
         selectedTax.value = null;
-        is_taxable.value = false;
-
-        
-        };
+        is_taxable.value = false;    
+    };
 
     const openModal = (myIndex) => {
         index.value = myIndex;
@@ -670,6 +662,10 @@
 
     watchEffect(() => {
         getCurrencySymbol();
+    });
+
+    watchEffect(() => {
+        calculateTotal();
     });
 
     const generateName = async () => {
@@ -736,17 +732,10 @@
 
     const chargeable = ref(0);
     const ini = ref(0);
-    // const calculateChargeableMileage = () => {
-    //     const total_free = Number(total_free_mileage.value);
-    //     const actual = Number(actual_milege.value);
-    //     // const chargeable = actual - total_free;
-    //     const _chargeable = Number(actual_milege.value) - Number(total_free_mileage.value);
-    //     chargeable.value = _chargeable;
-    // }; 
 
     watchEffect(() => {
        // calculateChargeableMileage();
-       chargeable.value = Number(total_free_mileage.value) - Number(actual_milege.value);
+       chargeable.value =  Number(actual_milege.value) - Number(total_free_mileage.value);
     });
 
     watchEffect(() => {
@@ -761,6 +750,11 @@
     const vehicles = computed(() => {
    
         return items.value.map(item => item.item_code);
+    });
+
+    const terms = computed(() => {
+   
+        return termList.value.map(term => term.term);
     });
 
 
@@ -812,6 +806,9 @@
     const createTerm = async () => {
  
         let result: any = await termStore.createTerm();
+
+        addTerm.value = false;
+        term.value = null;
 
         if (result?.data?.success) {
     

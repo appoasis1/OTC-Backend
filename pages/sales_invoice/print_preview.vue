@@ -30,8 +30,8 @@
                 <h1 style="color: red;">
                  Fiscal Tax Invoice
                 </h1>
-                Invoice Number: MIUSB001 <br>
-                Invoice Date: 11 October 2023 <br>
+                Invoice Number: {{ invoiceData.name }} <br>
+                Invoice Date: {{ formatDate(invoiceData.date) }} <br>
                 Business Partner Number: 0300068944 <br>
                 VAT Number: 10070328 <br>
                 Vendor Number (SPB):  712357
@@ -46,7 +46,7 @@
 
                         </th>
                         <th style="color: black;">
-                            CUSTOMER DETAILS
+                            <b>CUSTOMER DETAILS</b>
                         </th>
                         <th>
 
@@ -82,15 +82,7 @@
                             
                         </td>
 
-                        <td style="width:10%; border-right: 2px solid black;">
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                        </td>
-
-                        <td>
+                       <td>
                             <b>
                             VAT Number : <br>
                             Order Number : <br>
@@ -141,10 +133,10 @@
                         <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle_type !== null">{{ item.vehicle_type }}</span></td>
                         <td style="border-right: 2px solid black;"><span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.vehicle }}</span></td>
                         <td style="border-right: 2px solid black;">
-                            <span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.quantity }} {{ item.uom }}</span>
+                            <span style="padding-left: 7px;">{{ item.quantity }}</span>   <span style="padding-left: 5px;" v-if="item.vehicle !== null">{{ item.uom }}</span>
                         </td>
-                        <td style="border-right: 2px solid black; text-align: right;">$ {{ item.rate }}</td>
-                        <td style="text-align: right;">$ {{ item.amount }}</td>
+                        <td style="border-right: 2px solid black; text-align: right;"><span style="padding-right: 7px;"> $ {{ item.rate }}</span></td>
+                        <td style="text-align: right;"><span style="padding-right: 7px;">$ {{ item.amount }}</span></td>
                         </tr>
                 </tbody>
             </table>
@@ -154,23 +146,27 @@
     <div style="display: flex; justify-content: space-between; border: 2px solid black; border-top: none; padding-inline: 10px; padding-bottom: 30px; ">
         <section>
           <b style="text-decoration: underline;">  STANDARD TERMS & CONDITIONS </b> <br>
-            1.200km free mileage per day and excess charged at 70c per km travelled <br>
-          <b>  2.Quotation excludes fuel, vehicle to be delivered with full tank and returned with full tank  </b> <br>
-       <b>     3.Payment is made upfront <br>
-            4.Quotation is in USD <br>
-            5.Quotation valid for 30 days </b> <br>
-          <b>  6.Copy of driver's licence, proof of residence(city council bill) or passport and a refundable deposit of $400  </b>
+        <br>
+          <b>  {{ invoiceData.terms }} </b> <br> <br>
+          <b style="text-decoration: underline;">  BANKING DETAILS</b> <br> <br>
+          <b>  Bank Name: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;{{ invoiceData.selectedAccount }} </b> <br>
+          <b>  Account Number:&nbsp;&nbsp; {{ accountNumber }} </b> <br>
+          <b>  Account Name:&nbsp; &nbsp; &nbsp; {{ accountName }} </b> <br>
+          <b>  Type of Account:&nbsp; &nbsp; {{ accountType }} </b> <br>
+
       <br>
       <br>
      
         </section>
+
+        
         <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
-          <b>  Taxable Amount &nbsp; $ {{ invoiceData.taxable_amount }} <br>
-            VAT &nbsp; $ {{ vat }} <br>
-            Non Taxable Amount &nbsp; $ {{ non_taxable_amount }} <br>
-            Total Charges &nbsp; $ {{ total_charges }} <br>
-            Advance Payment &nbsp; $ {{ advance_payment }} <br>
-            Amount Due &nbsp; $ {{ amount_due }} <br>
+          <b>  Taxable Amount &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; $ {{ taxable_amount }} <br>
+            VAT &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;   $ {{ vat }} <br>
+            Non Taxable Amount &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; $ {{ non_taxable_amount }} <br>
+            Total Charges &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  $ {{ total_charges }} <br>
+            Advance Payment &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;  $ {{ advance_payment }} <br>
+            Amount Due &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; $ {{ amount_due }} <br>
         </b>
 
         </section>
@@ -201,11 +197,12 @@
     const accountName = ref(null);
     const accountType = ref(null);
     const accountNumber = ref(null);
-    const formattedAddress = ref(null)
+    const formattedAddress = ref(null);
     const invoiceData = ref({
         selectedCustomer: null,
         selectedSeries: null,
         selectedAccount: null,
+        name: null,
         date: null,
         terms: null,
         vat: 0,
@@ -215,7 +212,7 @@
         advance_payment: 0,
         total_charges: 0,
         items: null
-        });
+    });
 
     const route = useRoute();
     
@@ -239,6 +236,22 @@
 
     // const taxable_amount = computed(() => {
     //     return invoiceData.value.taxable_amount.toFixed(2);
+    // });
+
+    const taxable_amount = computed(() => {
+        const value = Number(invoiceData.value.taxable_amount);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    // const rate = computed(() => {
+    //     const value = Number(invoiceData.value.items.item.rate);
+    //     if (isNaN(value)) {
+    //         return null; 
+    //     }
+    //     return value.toFixed(2);
     // });
 
     const advance_payment = computed(() => {

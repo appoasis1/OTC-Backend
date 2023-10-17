@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
   const response = {};
 
   try {
-    const lastRecord = await prisma.quotation.findFirst({
+    const lastRecord = await prisma.invoice.findFirst({
       orderBy: { created_at: 'desc' },
     });
 

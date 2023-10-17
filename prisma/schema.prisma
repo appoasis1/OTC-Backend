@@ -78,16 +78,19 @@ model Invoice {
 
 model Quotation {
   id                String         @id @default(cuid())
+  created_at          DateTime       @default(now())
   name              String?
   number            String?
   cost_center      String?
   series           String?
   currency         String?
   date              DateTime?
+  valid_until       DateTime?
   customer         String?
   bank              String? 
-  taxable_amount    Float?
-  total_charges     Float?
+  cost_excluding_vat    Float?
+  cost_including_vat    Float?
+  total_costs     Float?
   non_taxable_amount Float?
   advance_payment    Float?
   amount_due         Float?

@@ -14,13 +14,13 @@
                   </div>
 
                             <div class="surface-card p-4 shadow-2 border-round">
-                                <div class="font-medium text-3xl text-900 mb-3">Sales Invoice</div>
+                                <div class="font-medium text-3xl text-900 mb-3">Quotation</div>
                                 <div class="text-500 mb-5"> {{  data.name }} </div>
                                 <ul class="list-none p-0 m-0 border-top-1 border-300">
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
-                                        <div class="text-500 w-full md:w-2 font-medium">Taxable Amount</div>
-                                        <div class="text-900 w-full md:w-10">$ {{taxable_amount }}</div>
+                                        <div class="text-500 w-full md:w-2 font-medium">Cost Excluding VAT</div>
+                                        <div class="text-900 w-full md:w-10">$ {{ cost_ex_vat }}</div>
                                     </li>
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap">
@@ -29,13 +29,8 @@
                                     </li>
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
-                                        <div class="text-500 w-full md:w-2 font-medium">Advance Payment</div>
-                                        <div class="text-900 w-full md:w-10"> $ {{ advance_payment }}</div>
-                                    </li>
-
-                                    <li class="flex align-items-center py-3 px-2 flex-wrap">
-                                        <div class="text-500 w-full md:w-2 font-medium">Amount Due </div>
-                                        <div class="text-900 w-full md:w-10 line-height-3">$ {{  amount_due }} </div>
+                                        <div class="text-500 w-full md:w-2 font-medium">Cost Including VAT</div>
+                                        <div class="text-900 w-full md:w-10"> $ {{ cost_in_vat }}</div>
                                     </li>
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
@@ -45,13 +40,9 @@
 
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap">
-                                        <div class="text-500 w-full md:w-2 font-medium">Total Charges</div>
-                                        <div class="text-900 w-full md:w-10 line-height-3"> $ {{total_charges }}</div>
+                                        <div class="text-500 w-full md:w-2 font-medium">Total Costs</div>
+                                        <div class="text-900 w-full md:w-10 line-height-3"> $ {{total_costs }}</div>
                                     </li>
-
-
-
-
 
 
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
@@ -69,14 +60,9 @@
                                         <div class="text-900 w-full md:w-10"> {{ data.currency }}</div>
                                     </li>
 
-
-                                    <li class="flex align-items-center py-3 px-2 flex-wrap">
-                                        <div class="text-500 w-full md:w-2 font-medium">Advanced Payment</div>
-                                        <div class="text-900 w-full md:w-10 line-height-3">$ {{ advance_payment }}</div>
-                                    </li>
                                     <li class="flex align-items-center py-3 px-2 flex-wrap surface-ground">
-                                        <div class="text-500 w-full md:w-2 font-medium">Posting Time</div>
-                                        <div class="text-900 w-full md:w-10">{{ data.posting_time }}</div>
+                                        <div class="text-500 w-full md:w-2 font-medium">Valid Until</div>
+                                        <div class="text-900 w-full md:w-10">{{ data.valid_until }}</div>
                                     </li>
                                     <li class="flex align-items-center py-3 px-2 flex-wrap">
                                         <div class="text-500 w-full md:w-2 font-medium">Date</div>
@@ -175,13 +161,13 @@
 
 <script setup lang="ts">
 import { storeToRefs } from "pinia";
-import { useInvoiceStore } from '~/stores/sales_invoice';
+import { useQuotationStore } from '~/stores/quotation';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from "axios";
 
 const router = useRouter();
-const invoiceStore = useInvoiceStore();
+const quotationStore = useQuotationStore();
 const data = ref({
     customer: null,
     cost_center: null,
@@ -191,38 +177,37 @@ const data = ref({
     bank: null,
     date: null,
     terms: null,
+    valid_until: null,
     vat: 0,
     non_taxable_amount: 0,
     amount_due: 0,
-    taxable_amount: 0,
-    advance_payment: 0,
+    cost_excluding_vat: 0,
+    cost_including_vat: 0,
+    total_costs: 0,
     total_charges: 0,
     items: null
 });
 
 
-const taxable_amount = computed(() => {
-    return data.value.taxable_amount.toFixed(2);
+const cost_ex_vat = computed(() => {
+    return data.value.cost_excluding_vat.toFixed(2);
 });
 
 const vat = computed(() => {
     return data.value.vat.toFixed(2);
 });
 
-const amount_due = computed(() => {
-    return data.value.amount_due.toFixed(2);
+const cost_in_vat = computed(() => {
+    return data.value.cost_including_vat.toFixed(2);
 });
 
 const non_taxable_amount = computed(() => {
     return data.value.non_taxable_amount.toFixed(2);
 });
 
-const advance_payment = computed(() => {
-    return data.value.advance_payment.toFixed(2);
-});
 
-const total_charges = computed(() => {
-    return data.value.total_charges.toFixed(2);
+const total_costs = computed(() => {
+    return data.value.total_costs.toFixed(2);
 });
 
     const formatDate = (value) => {
@@ -249,7 +234,7 @@ const { params: { id } } = useRoute()
 //console.log("njnjnjn",id)
 
 onMounted(async () => {
-    let result = await invoiceStore.detailInvoice(id)
+    let result = await quotationStore.detailQuote(id)
 
     // console.log("mbilimbi",result)
     data.value = result.data.invoice
@@ -267,18 +252,17 @@ const printPreview = () => {
         date: data.value.date,
         vat: data.value.vat,
         name: data.value.name,
-        taxable_amount: taxable_amount.value,
+        cost_excluding_vat: data.cost_excluding_vat.value,
         non_taxable_amount: data.value.non_taxable_amount,
-        amount_due: data.value.amount_due,
-        total_charges: data.value.total_charges,
-        advance_payment: data.value.advance_payment,
+        cost_including_vat: data.value.cost_including_vat,
+        total_costs: data.value.total_costs,
         items: data.value.items,
         terms: data.value.terms
 
     };
 
     router.push({
-        path: '/sales_invoice/print_preview',
+        path: '/quotation/print_preview',
         query: {
             invoiceData: JSON.stringify(invoiceData)
         }
@@ -292,7 +276,7 @@ const deleteInvoice = async () => {
     });
     var config = {
         method: 'post',
-        url: '/invoice/delete',
+        url: '/quotation/delete',
         headers: {
             'Content-Type': 'application/json'
         },
@@ -315,7 +299,7 @@ const deleteInvoice = async () => {
         });
 
     if (result.success) {
-        router.push('/sales_invoice/list');
+        router.push('/quotation/list');
     }
     return result;
 }

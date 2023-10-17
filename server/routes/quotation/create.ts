@@ -1,7 +1,7 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const { name, number, date, customer, bank, currency, cost_centre, series, items, taxable_amount, total_charges, non_taxable_amount, advance_payment, amount_due, selectedTerm } = await readBody(event);
+  const { name, number, date, customer, bank, currency, valid_until, cost_centre, series, items, vat, cost_excluding_vat, cost_including_vat, total_costs, non_taxable_amount, selectedTerm } = await readBody(event);
 
   let json = items.map((item) => ({
     item: item.item,
@@ -31,11 +31,12 @@ export default defineEventHandler(async (event) => {
         date: date,
         customer: customer,
         bank: bank,
-        taxable_amount: taxable_amount,
-        total_charges: total_charges,
+        cost_including_vat: cost_including_vat,
+        total_costs: total_costs,
+        valid_until: valid_until,
         non_taxable_amount: non_taxable_amount,
-        advance_payment: advance_payment,
-        amount_due: amount_due,
+        cost_excluding_vat: cost_excluding_vat,
+        vat: vat,
         items: json,
         terms: selectedTerm,
 
