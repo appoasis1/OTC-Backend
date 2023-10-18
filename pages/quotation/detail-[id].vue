@@ -180,11 +180,9 @@ const data = ref({
     valid_until: null,
     vat: 0,
     non_taxable_amount: 0,
-    amount_due: 0,
     cost_excluding_vat: 0,
     cost_including_vat: 0,
     total_costs: 0,
-    total_charges: 0,
     items: null
 });
 
@@ -231,15 +229,14 @@ const total_costs = computed(() => {
 
 const { params: { id } } = useRoute()
 
-//console.log("njnjnjn",id)
 
 onMounted(async () => {
     let result = await quotationStore.detailQuote(id)
 
-    // console.log("mbilimbi",result)
+    
     data.value = result.data.invoice
 
-    // console.log('micnjcnjncd',invoiceData.value)
+
 
 
 });
@@ -252,7 +249,7 @@ const printPreview = () => {
         date: data.value.date,
         vat: data.value.vat,
         name: data.value.name,
-        cost_excluding_vat: data.cost_excluding_vat.value,
+        cost_excluding_vat: data.value.cost_excluding_vat,
         non_taxable_amount: data.value.non_taxable_amount,
         cost_including_vat: data.value.cost_including_vat,
         total_costs: data.value.total_costs,
@@ -299,7 +296,7 @@ const deleteInvoice = async () => {
         });
 
     if (result.success) {
-        router.push('/quotation/list');
+        router.push('/list');
     }
     return result;
 }

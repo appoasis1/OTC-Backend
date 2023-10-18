@@ -3,47 +3,6 @@
       <section class="section">
         <div class="container-fluid pt-5">
           <div class="grid">
-          <div class="col-12 lg:col-4 p-3">
-            <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
-              <div class="flex align-items-center justify-content-between">
-                <div>
-                  <span class="text-3xl text-900 font-bold">{{ invoiceCount }}</span>
-                  <p class="mt-2 mb-0 text-600 text-xl">Sales Invoices</p>
-                </div>
-                <div>
-                  <img src="https://blocks.primevue.org/images/blocks/illustration/stats-illustration-4.svg">
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-12 lg:col-4 p-3">
-            <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
-              <div class="flex align-items-center justify-content-between">
-                <div>
-                  <span class="text-3xl text-900 font-bold">2</span>
-                  <p class="mt-2 mb-0 text-600 text-xl">Sales Orders</p>
-                </div>
-                <div>
-                  <img src="https://blocks.primevue.org/images/blocks/illustration/stats-illustration-5.svg">
-                </div>
-              </div>
-            </div>
-          </div>
-       
-        
-          <div class="col-12 lg:col-4 p-3">
-            <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
-              <div class="flex align-items-center justify-content-between">
-                <div>
-                  <span class="text-3xl text-900 font-bold">3</span>
-                  <p class="mt-2 mb-0 text-600 text-xl">Qutoations</p>
-                </div>
-                <div>
-                  <img src="https://blocks.primevue.org/images/blocks/illustration/stats-illustration-6.svg">
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="col-12 lg:col-12 p-3">
             <div class="flex flex-column md:flex-row gap-3 md:align-items-center bg-primary border-round-xl p-3">
           <div class="flex flex-column align-items-center md:w-8rem">
@@ -60,23 +19,23 @@
           <div class="flex-1 gap-3 flex flex-column sm:flex-row">
             <div class="flex-1 flex justify-content-center align-items-center bg-primary-400 shadow-1 p-3 border-round-md">
               <div class="text-center">
-                <i class="pi pi-eye text-4xl mb-2"></i>
+                <i class="pi pi-book text-4xl mb-2"></i>
                 <div class="text-sm font-semibold mb-2">Sales Invoices</div>
                 <span class="font-semibold">{{ invoiceCount }}</span>
               </div>
             </div>
             <div class="flex-1 flex justify-content-center align-items-center bg-primary-400 shadow-1 p-3 border-round-md">
               <div class="text-center">
-                <i class="pi pi-users text-4xl mb-2"></i>
-                <div class="text-sm font-semibold mb-2">Sales Orders</div>
-                <span class="font-semibold">3</span>
+                <i class="pi pi-book text-4xl mb-2"></i>
+                <div class="text-sm font-semibold mb-2">Quotations</div>
+                <span class="font-semibold">{{ quotaionCount }}</span>
               </div>
             </div>
             <div class="flex-1 flex justify-content-center align-items-center bg-primary-400 shadow-1 p-3 border-round-md">
               <div class="text-center">
-                <i class="pi pi-heart text-4xl mb-2"></i>
-                <div class="text-sm font-semibold mb-2">Sales Orders</div>
-                <span class="font-semibold">4</span>
+                <i class="pi pi-users text-4xl mb-2"></i>
+                <div class="text-sm font-semibold mb-2">Users</div>
+                <span class="font-semibold">{{ userCount }}</span>
               </div>
             </div>
           </div>
@@ -94,7 +53,7 @@ import axios from 'axios';
 
 const invoiceCount = ref(0);
 const quotaionCount = ref(0);
-const orderCount = ref(0);
+const userCount = ref(0);
 
 onMounted(() => {
         
@@ -156,11 +115,11 @@ onMounted(() => {
           return result;
           }
 
-          const getOrders= async () => {
+          const getUsers= async () => {
           
           var config = {
               method: 'post',
-              url: '/order/list',
+              url: '/users/all',
               headers: { 
                   'Content-Type': 'application/json'
               },
@@ -169,7 +128,7 @@ onMounted(() => {
           const result: any = await axios(config).then(function (response) {
             //console.log(JSON.stringify(response.data.data));
             for (let i in response.data.data){
-                 orderCount.value += 1;
+                 userCount.value += 1;
             }
               return {
                   data: response.data,
@@ -184,7 +143,7 @@ onMounted(() => {
           });
           return result;
           }
-            getOrders();
+            getUsers();
             getQuotations();
             getInvoices();
 

@@ -26,16 +26,17 @@
                 <br>
                 <br>
             </section>
-            <section style="width: 100%; text-align: right;">
-                <h1 style="color: red;">
-                 Fiscal Tax Invoice
+            <section style="width: 100%; text-align: right; padding: 10px;">
+                <h1 style="color: red; font-size: 24px; margin: 0;">
+                    Fiscal Tax Invoice
                 </h1>
-                Invoice Number: {{ invoiceData.name }} <br>
-                Invoice Date: {{ formatDate(invoiceData.date) }} <br>
-                Business Partner Number: 0300068944 <br>
-                VAT Number: 10070328 <br>
-                Vendor Number (SPB):  712357
-                 <br>
+                <p style="margin-top: 10px;">
+                    Invoice Number: {{ invoiceData.name }} <br>
+                    Invoice Date: {{ formatDate(invoiceData.date) }} <br>
+                    Business Partner Number: 0300068944 <br>
+                    VAT Number: 10070328 <br>
+                    Vendor Number (SPB): 712357
+                </p>
             </section>
         </div>
         <div>
@@ -157,7 +158,7 @@
       <br>
       <br>
      
-        </section>
+    </section>
 
         
         <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
@@ -421,6 +422,48 @@ const printHTML = async () => {
 
     .p-dialog-mask.p-component-overlay.p-component-overlay-enter {
         z-index: 1101 !important;
+    }
+
+    @media only screen and (max-width: 767px) {
+        section {
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 20px;
+        }
+        
+        p {
+            margin-top: 5px;
+        }
+    }
+    
+    @media only screen and (min-width: 768px) and (max-width: 1px) {
+        section {
+            padding: 15px;
+        }
+        
+        h1 {
+            font-size: 22px;
+        }
+        
+        p {
+            margin-top: 15px;
+        }
+    }
+    
+    @media only screen and (min-width: 1024px) {
+        section {
+            padding: 20px;
+        }
+        
+        h1 {
+            font-size: 24px;
+        }
+        
+        p {
+            margin-top: 20px;
+        }
     }
 </style>
 

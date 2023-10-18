@@ -30,9 +30,9 @@
                 <h1 style="color: red;">
                  HIRE QUOTE
                 </h1>
-                Quote Number: SAL-QTN-2023-
-                00011 <br>
-                Quote Date: 2023-10-07 <br>
+                Quote Number: {{ invoiceData.name }}
+                <br>
+                Quote Date: {{ formatDate(invoiceData.date) }}<br>
                
                
                  <br>
@@ -49,25 +49,18 @@
                             CUSTOMER DETAILS
                         </th>
                         <th>
-
+                            
                         </th>
 
-                        <th>
-
+                        <th style="color: black;">
+                            CONTACT PERSON
                         </th>
                     </tr>
                 </thead>
 
                 <tbody>
                     <tr>
-                        <td style="width: 15%; border-right: 2px solid black;">
-                            Customer name:  <br>
-                            <br>
-                            <br>
-                            <br>
-                            <br>
-                            Contact Person: 
-                        </td>
+                       
 
                         <td style="border-right: 2px solid black;">
                             Netone <br>
@@ -78,7 +71,7 @@
                             
                         </td>
 
-                        <td style="width:10%; border-right: 2px solid black;">
+                        <td style="width:50%; border-right: 2px solid black;">
                             <br>
                             <br>
                             <br>
@@ -88,8 +81,8 @@
 
                         <td>
                             <b>
-                            VAT Number : <br>
-                            Order Number : <br>
+                            Murare Investments Car Rental <br>
+                            
                             </b>
                              <br>
                             <br>
@@ -150,23 +143,25 @@ Cost of Hire
     <div style="display: flex; justify-content: space-between; border: 2px solid black; border-top: none; padding-inline: 10px; padding-bottom: 30px; ">
         <section>
           <b style="text-decoration: underline;">  STANDARD TERMS & CONDITIONS </b> <br>
-            1.200km free mileage per day and excess charged at 70c per km travelled <br>
-          <b>  2.Quotation excludes fuel, vehicle to be delivered with full tank and returned with full tank  </b> <br>
-       <b>     3.Payment is made upfront <br>
-            4.Quotation is in USD <br>
-            5.Quotation valid for 30 days </b> <br>
-          <b>  6.Copy of driver's licence, proof of residence(city council bill) or passport and a refundable deposit of $400  </b>
+        <br>
+          <b>  {{ invoiceData.terms }} </b> <br> <br>
+          <b style="text-decoration: underline;">  BANKING DETAILS</b> <br> <br>
+          <b>  Bank Name: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp;{{ invoiceData.selectedAccount }} </b> <br>
+          <b>  Account Number:&nbsp;&nbsp; {{ accountNumber }} </b> <br>
+          <b>  Account Name:&nbsp; &nbsp; &nbsp; {{ accountName }} </b> <br>
+          <b>  Type of Account:&nbsp; &nbsp; {{ accountType }} </b> <br>
+
       <br>
       <br>
      
-        </section>
+    </section>
         <section style="border-left: 2px solid black; border-bottom: 2px solid black; padding:12px; margin-right: 13.3%">
-          <b>  Cost excluding VAT &nbsp; $ 50.00 <br>
-            VAT @15%&nbsp; $ 0.00 <br>
-            Cost inclusive of VAT &nbsp; $  4,038.00 <br>
-            Non taxable amount &nbsp; $ 50.00 <br>
+          <b>  Cost excluding VAT &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; $ {{ cost_excluding_vat }} <br>
+            VAT @15%&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;$ {{ vat }} <br>
+            Cost inclusive of VAT &nbsp; &nbsp;  &nbsp; &nbsp;&nbsp; $  {{ cost_including_vat }} <br>
+            Non taxable amount &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; $ {{ non_taxable_amount }} <br>
             Total Costs
-             &nbsp; $ 50.00<br>
+             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; $ {{ total_costs }}<br>
            
         </b>
 
@@ -204,12 +199,13 @@ Cost of Hire
         selectedSeries: null,
         selectedAccount: null,
         date: null,
+        terms: null,
+        name: null,
         vat: 0,
         non_taxable_amount: 0,
-        amount_due: 0,
-        taxable_amount:0,
-        advance_payment: 0,
-        total_charges: 0,
+        cost_excluding_vat: 0,
+        cost_including_vat:0,
+        total_costs: 0,
         items: null
         });
 
@@ -224,6 +220,47 @@ Cost of Hire
     const formattedDate = `${day} ${month} ${year}`;
     return formattedDate;
     };
+
+    const vat = computed(() => {
+        const value = Number(invoiceData.value.vat);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const non_taxable_amount = computed(() => {
+        const value = Number(invoiceData.value.non_taxable_amount);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const cost_excluding_vat = computed(() => {
+        const value = Number(invoiceData.value.cost_excluding_vat);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const cost_including_vat = computed(() => {
+        const value = Number(invoiceData.value.cost_including_vat);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
+    const total_costs = computed(() => {
+        const value = Number(invoiceData.value.total_costs);
+        if (isNaN(value)) {
+            return null; 
+        }
+        return value.toFixed(2);
+    });
+
 
     onMounted(() => {
         if (Array.isArray(route.query.invoiceData)) {

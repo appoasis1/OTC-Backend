@@ -1,31 +1,22 @@
 <template>
   <header class="header">
-      <div class="container-fluid">
-        <div class="row">
-          <div class=" col-4">
-            <div class="header-left d-flex align-items-center">
-              <div class="menu-toggle-btn mr-20">
-                <button
-                  id="menu-toggle"
-                  class="main-btn btn-hover btn-outline"
-                >
-                  <i class="pi pi-chevron-left me-2"></i> Menu
-                </button>
-              </div>
-            </div> 
-          </div>
-          <div class="col-4 splitbutton">
-            <Button type="button" :label="full_date()" icon="pi pi-calendar" class="p-button-warning"/>
-            <Button type="button" :label="full_time()" icon="pi pi-clock" class="p-button-warning"/>
-         </div>
-         
-          <div class="col-4 splitbutton">
+            <div class="bg-indigo-500 py-3 px-5 flex align-items-center justify-content-between relative lg:static" style="min-height: 100px; ">
+               <a class="cursor-pointer block lg:hidden text-indigo-50 p-ripple" data-pd-ripple="true" data-pd-styleclass="true"><i class="pi pi-bars text-4xl"></i><span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></a>
+               <div class="align-items-center flex-grow-1 justify-content-between hidden lg:flex absolute lg:static w-full bg-indigo-500 left-0 top-100 z-1 shadow-2 lg:shadow-none">
+                  <ul class="list-none p-0 m-0 flex lg:align-items-center select-none flex-column lg:flex-row">
+                     <li><a href="/" class="flex px-6 p-3 lg:px-3 lg:py-2 align-items-center text-indigo-100 hover:text-indigo-50 hover:bg-indigo-600 font-medium border-round cursor-pointer transition-colors transition-duration-150 p-ripple" data-pd-ripple="true"><i class="pi pi-home mr-2"></i><span  style="font-size: large;">Home</span><span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></a></li>
+                     <li>
+                        <a href="/sales_invoice/list" class="flex px-6 p-3 lg:px-3 lg:py-2 align-items-center text-indigo-100 hover:text-indigo-50 hover:bg-indigo-600 font-medium border-round cursor-pointer transition-colors transition-duration-150 p-ripple" data-pd-ripple="true" data-pd-styleclass="true"><i class="pi pi-book mr-2"></i><span style="font-size: large;">Sales Invoice</span><span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></a>
+                        <ul class="list-none py-3 px-6 m-0 lg:px-0 lg:py-0 border-round shadow-0 lg:border-1 border-50 lg:shadow-2 lg:absolute surface-overlay hidden origin-top w-full lg:w-15rem cursor-pointer">   
+                        </ul>
+                     </li>
+                     <li><a href="/list" class="flex px-6 p-3 lg:px-3 lg:py-2 align-items-center text-indigo-100 hover:text-indigo-50 hover:bg-indigo-600 font-medium border-round cursor-pointer transition-colors transition-duration-150 p-ripple" data-pd-ripple="true"><i class="pi pi-book mr-2"></i><span style="font-size: large;">Quotation</span><span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></a></li>
+                     <li><a href="/admin/register" class="flex px-6 p-3 lg:px-3 lg:py-2 align-items-center text-indigo-100 hover:text-indigo-50 hover:bg-indigo-600 font-medium border-round cursor-pointer transition-colors transition-duration-150 p-ripple" data-pd-ripple="true"><i class="pi pi-users mr-2"></i><span  style="font-size: large;">Users</span><span role="presentation" aria-hidden="true" data-p-ink="true" data-p-ink-active="false" class="p-ink" data-pc-name="ripple" data-pc-section="root"></span></a></li>
+                  </ul>
              
-              <SplitButton :label="`${full_name()} (${account_type})`" icon="pi pi-user" :model="user_info"></SplitButton>
-              
-          </div>
-        </div>
-      </div>
+               </div>
+            </div>
+           
       <Dialog header="Password Change" v-model:visible="passwordChange" :breakpoints="{'960px': '75vw', '640px': '90vw'}" :style="{width: '50vw'}" :modal="true">
           <div class="col-12 md:col-4">
               <div class="p-inputgroup">
@@ -185,6 +176,180 @@ const user_info = ref([
 <style scoped>
 .splitbutton {
   display: flex;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   justify-content: flex-end;
 }
 button.p-button.p-component.p-button-warning {

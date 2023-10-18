@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
   }));
 
-  const createInvoice = await prisma.invoice.create({
+  const createInvoice = await prisma.quotation.create({
       data: {
         name: name,
         number: number,

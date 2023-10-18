@@ -34,8 +34,8 @@
                                                                                                 </div>
                                                                         </div></div>
 
-                                                                        <div class=" mb-4 ml-220 col-6 md:col-3" style="margin-right: 120px;">
-                                                                            <div class="card flex flex-column align-items-center">
+                                                                        <div class="mb-4" style="display: flex; justify-content: flex-end; width: 100%; max-height: 20%; margin: -12% 0 0 0;">
+                                                                            <div class="card flex flex-column align-items-center mb-4" style="width: 25%">
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
@@ -115,49 +115,66 @@
 
                                                                                             <Dialog v-model:visible="editDialog" modal header="Edit Item" :style="{ width: '50vw' }">
                                                                                                 <div class="grid formgrid p-fluid">
+                                                                                                    <div class="mb-4 col-12 md:col-6">
+                                                                                                        Use Chargeable Mileage
+                                                                                                        <input
+                                                                                                                type="checkbox"
+                                                                                                                v-model="useChargeableMileage"
+                                                                                                                
+                                                                                                            />
+                                                                                                            </div>
+
+                                                                                                    <div class="mb-4 col-12 md:col-6">     
+                                                                                                        Use Duration
+                                                                                                    <input
+                                                                                                                type="checkbox"
+                                                                                                                v-model="useDuration"
+                                                                                                               
+                                                                                                            />
+                                                                                                           </div> 
                                                                                                <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Opening Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="opening_mileage" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" :disabled="disableMileage"  v-model="opening_mileage" data-pc-section="root" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Date Outgoing</label> 
-                                                                                                    <Calendar v-model="date_outgoing" showIcon />
+                                                                                                    <Calendar v-model="date_outgoing" :disabled="disableDurationFields" showIcon />
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Closing Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="closing_mileage" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" :disabled="disableMileage"  v-model="closing_mileage" data-pc-section="root" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Date Incoming</label> 
-                                                                                                    <Calendar v-model="date_incoming" showIcon />
+                                                                                                    <Calendar v-model="date_incoming" :disabled="disableDurationFields" showIcon />
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Actual Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="actual_milege" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" :disabled="disableMileage" v-model="actual_milege" data-pc-section="root" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Duration</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="duration" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" :disabled="disableDurationFields" data-pc-name="inputtext" v-model="duration" data-pc-section="root" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Total Free Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" v-model="total_free_mileage" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" :disabled="disableMileage" data-pc-section="root" v-model="total_free_mileage" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Confirmed Quantity</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="duration" data-pc-section="root" id="customer_name" type="text">
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="confirmed_quantity" data-pc-section="root" id="customer_name" type="text">
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Chargeable Mileage</label> 
-                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" v-model="ini" data-pc-section="root" id="customer_name" type="text">   
+                                                                                                    <input class="p-inputtext p-component" data-pc-name="inputtext" :disabled="disableMileage" v-model="ini" data-pc-section="root" id="customer_name" type="text">   
                                                                                                 </div>
 
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
@@ -177,13 +194,9 @@
                                                                                                 <div class="field mb-4 col-12 md:col-6"> 
                                                                                                     <label for="company_name" class="font-medium text-900">Taxable?</label> 
                                                                                                   
-                                                                                                    <Checkbox v-model="is_taxable" :binary="true" />
+                                                                                                    <Checkbox :disabled="disableTax" v-model="is_taxable" :binary="true" />
                                                                                                     
                                                                                                 </div>
-
-                                                                                              
-
-                            
 
                                                                                                 </div>
                             
@@ -268,7 +281,7 @@
     let selectedItem = ref()
     let selectedVehicle = storeToRefs(invoiceStore).selectedVehicle;
     let vehicleType = ref();
-    let selectedTax = ref();
+    let selectedTax = ref(null);
     const taxes = ref([14.5, 15]);
     const date = storeToRefs(invoiceStore).date;
     const posting_date = storeToRefs(invoiceStore).posting_date;
@@ -282,6 +295,7 @@
     const total_free_mileage = storeToRefs(invoiceStore).total_free_mileage;
     const chargeable_mileage = ref(0);
     const duration =  ref(0);
+    const confirmed_quantity = ref(0);
     const rate = ref(0);
     const symbol = ref();
     const itemsTable = ref([]);
@@ -299,6 +313,36 @@
     const addDialog = ref(false);
     const editDialog = ref(false);
     const addTerm = ref(false);
+    const useDuration = ref(false);
+    const useChargeableMileage = ref(false)
+    const disableMileage = ref(false);
+    const disableDurationFields = ref(false);
+    const disableTax = ref(false);
+
+    watchEffect(() => {
+        disableDurationFields.value = useChargeableMileage.value;
+        disableMileage.value = useDuration.value;
+    });
+
+    watchEffect(() => {
+    if (useChargeableMileage.value === true && useDuration.value === false) {
+                    confirmed_quantity.value = ini.value;
+            } else if (useDuration.value === true && useChargeableMileage.value === false) {
+                confirmed_quantity.value = duration.value;
+        } else {
+            confirmed_quantity.value = 1;
+        }
+    });
+
+    watchEffect(() => {
+        if (selectedTax.value === null){
+            disableTax.value = true; 
+        } else {
+            disableTax.value = false;
+        }
+       
+    });
+
 
     let customers = ref([]);
     let currencies = ref([]);
@@ -576,6 +620,7 @@
         const item = itemsTable.value[index.value];
 
         if (item) {
+           
             item.rate = rate.value;
             item.chargeable_mileage = ini.value;
             item.opening_mileage = opening_mileage.value;
@@ -589,7 +634,7 @@
             if (Number.isNaN(duration.value)){
                 item.quantity = 1;
             } else {
-                item.quantity = duration.value;
+                item.quantity = confirmed_quantity.value;
             }
             item.amount = rate.value * item.quantity;
         }

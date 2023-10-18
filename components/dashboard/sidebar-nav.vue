@@ -5,7 +5,7 @@
         <img width="160" src="/images/murare.png" alt="Murare" style="margin-top: 10%; margin-bottom: 5px;">
       </div>
       <nav  class="sidebar-nav">
-        <PanelMenu :model="admin_menus" />
+        
         <!-- <PanelMenu v-if="role === 'HR_OFFICER'" :model="officer_menus" />
         <PanelMenu v-if="role === 'HR_DIRECTOR'" :model="approval_menus"/>
         <PanelMenu v-if="role === 'HR_MANAGER'" :model="approval_menus"/>

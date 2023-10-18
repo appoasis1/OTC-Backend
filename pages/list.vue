@@ -21,7 +21,7 @@
                                     </a>
                                 </div>
   
-                                    <DataTable :value="quotations" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"
+                                    <DataTable :value="invoices" lazy paginator :first="0" :rows="10" v-model:filters="filters" ref="dt" dataKey="id"
   
                                           filterDisplay="row"
   
@@ -52,9 +52,9 @@
                                             {{slotProps.data.cost_center}}
                                         </template>
                                         </Column>
-                                        <Column field="invoices.series" header="Amount Due" filterField="representative.name" sortable>
+                                        <Column field="invoices.series" header="Total Costs" filterField="representative.name" sortable>
                                             <template #body="slotProps">
-                                                {{slotProps.data.amount_due}}
+                                               $ {{slotProps.data.total_costs.toFixed(2)}}
                                         </template>
                                         </Column>
   
@@ -78,7 +78,7 @@
     import { useRouter } from 'vue-router';
 
     const router = useRouter();
-    let quotations =ref([]);
+    let invoices =ref([]);
     let id = ref();
 
     onMounted(async () => {
@@ -87,7 +87,8 @@
 
             var config = {
               method: 'post',
-              url: '/quotationn/list',
+              url: '/quotation/list',
+              
               headers: { 
                   'Content-Type': 'application/json'
               },
@@ -96,7 +97,7 @@
 
             const result: any = await axios(config).then(function (response) {
               console.log(JSON.stringify(response.data));
-              quotations.value = response.data.data;
+              invoices.value = response.data.data;
               id.value = response.data.data.id;
               console.log(id.value);
               return {
@@ -123,7 +124,7 @@
         };
 
         router.push({
-        path: '/sales_invoice/' + id.value,
+        path: '/quotation/' + id.value,
         query: {
         invoiceID: JSON.stringify(invoiceId)
      }
