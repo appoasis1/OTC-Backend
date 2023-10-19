@@ -9,6 +9,7 @@ export const useInvoiceStore = defineStore('invoice', {
         date: new Date(),
         posting_date: "",
         due_date: "",
+        f_due_date: "",
         date_incoming: "",
         date_outgoing: "",
         opening_mileage: "",
@@ -27,6 +28,7 @@ export const useInvoiceStore = defineStore('invoice', {
         currency: "",
         cost_centre: "",
         series: "",
+        destination: "",
         taxable_amount: 0,
         non_taxable_amount: 0,
         vat: 0,
@@ -57,7 +59,8 @@ export const useInvoiceStore = defineStore('invoice', {
                 advance_payment: parseFloat(this.advance_payment),
                 amount_due: parseFloat(this.amount_due),
                 destination: this.destination,
-                posting_date: this.posting_date
+                posting_date: this.posting_date,
+                due_date: this.f_due_date
             },
              config = {
                 method: 'post',

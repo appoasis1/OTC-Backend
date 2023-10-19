@@ -4,7 +4,7 @@ export default defineEventHandler(async (event) => {
   const response = {}
   const {id} = await readBody(event)
   try {
-    console.log("iiiiiii",id)
+    // console.log("iiiiiii",id)
     let invoice = await prisma.invoice.findUnique({
 
       where: { 

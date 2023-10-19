@@ -20,7 +20,7 @@
                                                     <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="posting_date" showIcon /></div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
+                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input v-model="destination" class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="due_date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
@@ -286,6 +286,7 @@
     const date = storeToRefs(invoiceStore).date;
     const posting_date = storeToRefs(invoiceStore).posting_date;
     const due_date = storeToRefs(invoiceStore).due_date;
+    const f_due_date = storeToRefs(invoiceStore).f_due_date;
 
     const date_incoming = storeToRefs(invoiceStore).date_incoming;
     const date_outgoing = storeToRefs(invoiceStore).date_outgoing;
@@ -308,7 +309,8 @@
     const itemList = storeToRefs(invoiceStore).items;
     const uom = storeToRefs(invoiceStore).uom;
     const is_taxable = ref(false);
-    const term = storeToRefs(termStore).term;                                          
+    const term = storeToRefs(termStore).term;        
+    let destination = storeToRefs(invoiceStore).destination;                                  
     //dialog states
     const addDialog = ref(false);
     const editDialog = ref(false);
@@ -323,6 +325,11 @@
         disableDurationFields.value = useChargeableMileage.value;
         disableMileage.value = useDuration.value;
     });
+
+
+    // watchEffect(() => {
+    //   f_due_date.value = new Date(due_date.value).toISOString().slice(0, 10);
+    // });
 
     watchEffect(() => {
     if (useChargeableMileage.value === true && useDuration.value === false) {
@@ -473,7 +480,7 @@
     });
 
     const costNames = computed(() => {
-        return cost_centers.value.map(cost_center => cost_center.cost_center_name);
+        return cost_centers.value.map(cost_center => cost_center.name);
     });
 
 
@@ -599,8 +606,8 @@
             actual_milege: item.actual_milege,
             total_free_mileage: item.total_free_mileage,
             uom: item.uom,
-            date_outgoing: item.date_outgoing,
-            date_incoming: item.date_incoming,
+            date_outgoing:  new Date(item.date_outgoing).toISOString().slice(0, 10),
+            date_incoming: new Date(item.date_incoming).toISOString().slice(0, 10),
             duration: item.duration
 
             };
@@ -802,8 +809,8 @@
         return termList.value.map(term => term.term);
     });
 
-
     const createInvoice = async () => {
+        //postToERP();
         retrieveItemData();
         if (!selectedCustomer.value) {
             toast.add({

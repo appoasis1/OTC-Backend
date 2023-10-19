@@ -1,4 +1,5 @@
 import { prisma } from "~~/prisma/db";
+import axios from "axios";
 
 export default defineEventHandler(async (event) => {
   const { name, number, date, customer, bank, currency, valid_until, cost_centre, series, items, vat, cost_excluding_vat, cost_including_vat, total_costs, non_taxable_amount, selectedTerm } = await readBody(event);
@@ -20,6 +21,42 @@ export default defineEventHandler(async (event) => {
     duration: item.duration
 
   }));
+
+  
+  const postToERP = async () => {
+    console.log("The postToERP function was called");      
+          var data = JSON.stringify({
+            "customer": customer, 
+            "valid_till": valid_until, 
+            "cost_center": cost_centre,
+            "currency" : currency,
+            "items" : items,
+            "bank" : bank,
+            "naming_series": name,
+           
+          });
+          let config = {
+      method: 'post',
+      maxBodyLength: Infinity,
+      url: 'https://murarecarrental.frappe.cloud/api/method/create-quotation',
+      headers: { 
+      'Content-Type': 'application/json', 
+      'Cookie': 'full_name=Guest; sid=Guest; system_user=yes; user_id=Guest; user_image='
+      },
+      data : data
+      };
+
+      axios.request(config)
+      .then((response) => {
+      console.log(JSON.stringify("Invoice was sent", response.data));
+      })
+      .catch((error) => {
+      console.log(error);
+      });
+  }
+  console.log("Before calling postToERP");
+  await postToERP();
+  console.log("After calling postToERP");
 
   const createInvoice = await prisma.quotation.create({
       data: {

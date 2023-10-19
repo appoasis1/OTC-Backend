@@ -465,7 +465,7 @@
     });
 
     const costNames = computed(() => {
-        return cost_centers.value.map(cost_center => cost_center.cost_center_name);
+        return cost_centers.value.map(cost_center => cost_center.name);
     });
 
 
