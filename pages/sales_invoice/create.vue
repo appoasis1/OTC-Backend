@@ -17,9 +17,9 @@
                                             <div class="field mb-4 col-12 md:col-4">
                                                 <label for="company_name" class="font-medium text-900">Series</label><DropDown v-model="selectedSeries" :options="seriesNames"  placeholder="Select Naming Series" class="w-full md:w-34rem" /></div>
                                                 <div class="field mb-4 col-12 md:col-4">
-                                                    <label for="invoice_id" class="font-medium text-900">Date</label><Calendar v-model="date" showIcon /></div>
+                                                    <label for="invoice_id" class="font-medium text-900">Posting Date</label><Calendar v-model="date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Customer</label><DropDown v-model="selectedCustomer" :options="customerNames"  placeholder="Select Customer" class="w-full md:w-34rem" /> </div>
-                                                    <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Posting Time</label><Calendar v-model="posting_date" showIcon /></div>
+                                                   
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Destination</label><input v-model="destination" class="p-inputtext p-component" data-pc-name="inputtext" data-pc-section="root" id="customer_name" type="text"></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Payment Due Date</label><Calendar v-model="due_date" showIcon /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
@@ -34,17 +34,17 @@
                                                                                                 </div>
                                                                         </div></div>
 
-                                                                        <div class="mb-4" style="display: flex; justify-content: flex-end; width: 100%; max-height: 20%; margin: -12% 0 0 0;">
+                                                                        <div class="mb-4" style="display: flex; justify-content: flex-end; width: 100%; max-height: 20%; margin: -12% 0 0 0; margin-top: -7%;">
                                                                             <div class="card flex flex-column align-items-center mb-4" style="width: 25%">
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_taxable_amount }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_vat }} <br><br>
-                                                                                    Non Taxable Amount: {{ symbol }} {{ formatted_non_taxable_amount }} <br><br>
-                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_total_charges }} <br><br>
-                                                                                    Advance Payment: &nbsp; &nbsp;{{ symbol }} {{ formatted_advance_payment }} <br><br>
-                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_amount_due }}
+                                                                                    Taxable Amount: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_taxable_amount }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_vat }} <br><br>
+                                                                                    Non Taxable Amount:&nbsp; &nbsp;&nbsp;&nbsp; {{ symbol }} {{ formatted_non_taxable_amount }} <br><br>
+                                                                                    Total Charges:&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; {{ symbol }} {{ formatted_total_charges }} <br><br>
+                                                                                    Advance Payment: &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;{{ symbol }} {{ formatted_advance_payment }} <br><br>
+                                                                                    Amount Due: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_amount_due }}
                                                                                     </h4>
                                                                                 </div>
                                                                                 </div>

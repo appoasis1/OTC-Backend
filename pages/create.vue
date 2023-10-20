@@ -24,26 +24,28 @@
                                                    
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_name" class="font-medium text-900">Banking Details</label><DropDown v-model="selectedAccount" :options="accountNames"  placeholder="Select Bank Account" class="w-full md:w-34rem" /></div>
                                                     <div class="field mb-4 col-12 md:col-4"><label for="customer_email" class="font-medium text-900">Cost Center</label><DropDown v-model="selectedCost" :options="costNames"  placeholder="Select Cost Center" class="w-full md:w-34rem" /></div>
+                                                    
+                                                    
                                                     <div class="field mb-4 col-12 md:col-4"></div>
                                                         <div class="field mb-4 col-12 md:col-4"></div>
                                                                 <div class="surface-border border-top-1 opacity-50 mb-4 col-12">
                                                                 </div>
-                                                                <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3"><div class="flex align-content-center">  <div class="field mb-4 col-12 md:col-6"> 
+                                                                <div class="field mb-4 col-6 md:col-3"><label for="quantity" class="font-medium text-900">Currency</label><DropDown v-model="selectedCurrency" :options="currencyNames"  placeholder="Select Currency" class="w-full md:w-34rem" /></div><div class="field mb-4 col-6 md:col-3">
                                                                                                     
                                                                                                     
-                                                                                                </div>
-                                                                        </div></div>
+                                                                                                
+                                                                        </div>
 
-                                                                        <div class=" mb-4 ml-220 col-6 md:col-3" style="margin-right: 120px;">
-                                                                            <div class="card flex flex-column align-items-center">
+                                                                        <div class="mb-4" style="display: flex; justify-content: flex-end; width: 100%; max-height: 20%; margin: -12% 0 0 0; margin-top: -6%;">
+                                                                            <div class="card flex flex-column align-items-center mb-4" style="width: 25%">
                                                                                 <div class="flex flex-wrap gap-2 mb-8" style="height: 270px;">
                                                                                 <div style="padding-left: 10px; padding-top: 40px; padding-bottom: 1px;">
                                                                                     <h4 style="font-family: Arial, sans-serif; font-size: 22px; font-weight: normal; color: #0e0a0a;">
-                                                                                        Cost excluding VAT: &nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_cost_excluding_vat }} <br><br>
-                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_vat }} <br><br>
-                                                                                    Cost Inclusive of VAT: &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_cost_including_vat }} <br><br>
-                                                                                    Non Taxable Amount:&nbsp; &nbsp; &nbsp; &nbsp; {{ symbol }} {{ formatted_non_taxable_amount }} <br><br>
-                                                                                    Total Cost: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_total_costs }} <br><br>
+                                                                                        Cost excluding VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ symbol }} {{ formatted_cost_excluding_vat }} <br><br>
+                                                                                    VAT: &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_vat }} <br><br>
+                                                                                    Cost Inclusive of VAT: &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; {{ symbol }} {{ formatted_cost_including_vat }} <br><br>
+                                                                                    Non Taxable Amount:&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; {{ symbol }} {{ formatted_non_taxable_amount }} <br><br>
+                                                                                    Total Cost: &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{{ symbol }} {{ formatted_total_costs }} <br><br>
                                                                                     
                                                                                     </h4>
                                                                                 </div>
@@ -572,7 +574,7 @@
             non_taxable_amount.value = non_taxable_amount.value;
         }
 
-       total_costs.value = Number(non_taxable_amount.value + taxable_amount.value + vat.value);
+       total_costs.value = Number(non_taxable_amount.value + cost_excluding_vat.value + vat.value);
        
     }
 
