@@ -555,25 +555,25 @@
             for (const item of itemsTable.value) {
                 let tax = Number((selectedTax.value / 100)) * Number(item.amount);
                 vat.value += tax;
-                //taxable_amount.value += Number(item.amount + tax);
+                cost_including_vat.value += Number(item.amount + tax);
                 non_taxable_amount.value += Number(0);
             }
             vat.value = vat.value;
-           // taxable_amount.value = taxable_amount.value;
+            cost_including_vat.value = cost_including_vat.value;
             non_taxable_amount.value = non_taxable_amount.value;
 
         } else {
             for (const item of itemsTable.value) {
-               // taxable_amount.value += Number(0);
+                cost_excluding_vat.value += Number(0);
                 non_taxable_amount.value += Number(item.amount);
             }
             vat.value = vat.value;
-           // taxable_amount.value = taxable_amount.value;
+            cost_excluding_vat.value = cost_excluding_vat.value;
             non_taxable_amount.value = non_taxable_amount.value;
         }
 
-       // total_charges.value = Number(non_taxable_amount.value + taxable_amount.value + vat.value);
-       // amount_due.value = Number(total_charges.value - advance_payment.value);
+       total_costs.value = Number(non_taxable_amount.value + taxable_amount.value + vat.value);
+       
     }
 
     const itemData = ref([]);
