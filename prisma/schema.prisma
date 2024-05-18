@@ -1,4 +1,4 @@
-generator client  {
+generator client {
   provider = "prisma-client-js"
 }
 
@@ -7,154 +7,140 @@ generator erd {
 }
 
 datasource db {
-
   provider = "mysql"
 
-  url      = env("DATABASE_URL")
-
-}
-model User {
-  id                String         @id @default(cuid())
-  email              String         @unique
-  username           String         @unique
-  name               String?
-  title              String?      
-  surname            String?
-  phone              String?        @unique
-  age                Int?
-  password           String
-  profile            profile_type   @default(Admin)
-  salt               String
-  current_logged_in_at   DateTime
-  last_logged_in_at      DateTime
-  created_at          DateTime       @default(now())
-  updated_at          DateTime @updatedAt
-
-}
-enum profile_type {
-  Admin
-  Accountant
+  url = env("DATABASE_URL")
 }
 
-model Currency {
-  id                String         @id @default(cuid())
-  name    String?
-  fraction    String?
-  symbol   String?
+// schema.prisma
+
+// Define the Buyer model
+model Buyer {
+  buyer_id         Int                @id @default(autoincrement())
+  first_name       String?
+  last_name        String?
+  country          String?
+  password         String?
+  email            String?            @unique
+  phone            String?
+  address_line1    String?
+  address_line2    String?
+  gender           String?
+  profile_image    String?
+  updated_at         DateTime           @default(now())
+  created_at         DateTime           @default(now())
 }
 
-model Series {
-  id                String         @id @default(cuid())
-  naming_series    String?  
+// Define the Category model
+model Category {
+  category_id Int       @id @default(autoincrement())
+  name        String?
+  description String?
+  updated_at  DateTime  @default(now())
+  created_at  DateTime  @default(now())
+  status      String?
+  products    Product[]
 }
 
-model Cost {
-  id                String      @id @default(cuid())
-  name    String?
-  cost_center_name String?
-  parent_cost_center String?   
+// Define the Product model
+model Product {
+  product_id   Int       @id @default(autoincrement())
+  name         String?
+  price        Float?
+  updated_at   DateTime  @default(now())
+  created_at   DateTime  @default(now())
+  status       String?
+  image        String?
+  code         String?
+  quantity     Int?
+  min_order    String?
+  deliverred_in String?
+  vendor_name   String?
+  description  String?
+  manufacturer String?
+  vendor       Vendor?   @relation(fields: [vendor_id], references: [vendor_id])
+  vendor_id    Int?
+  category     Category? @relation(fields: [category_id], references: [category_id])
+  category_id  Int?
+  Short        Short[]
 }
 
-model Invoice {
-  id                String         @id @default(cuid())
-  created_at          DateTime       @default(now())
-  name              String?
-  number            String?
-  cost_center      String?
-  series           String?
-  currency         String?
-  date              DateTime?
-  customer         String?
-  bank              String? 
-  taxable_amount    Float?
-  total_charges     Float?
-  non_taxable_amount Float?
-  advance_payment    Float?
-  amount_due         Float?
-  vat                Float?
-  terms              String?
-  items              Json?
-}
-
+// Define the Quotation model
 model Quotation {
-  id                String         @id @default(cuid())
-  created_at          DateTime       @default(now())
-  name              String?
-  number            String?
-  cost_center      String?
-  series           String?
-  currency         String?
-  date              DateTime?
-  valid_until       DateTime?
-  customer         String?
-  bank              String? 
-  cost_excluding_vat    Float?
-  cost_including_vat    Float?
-  total_costs     Float?
-  non_taxable_amount Float?
-  advance_payment    Float?
-  amount_due         Float?
-  vat                Float?
+  quotation_id         Int               @id @default(autoincrement())
+  title                String?
+  number               Int?
+  updated_at           DateTime          @default(now())
+  created_at           DateTime          @default(now())
+  price                Float?
+  sub_total            Float?
+  total                Float?
+  quantity             Int?
+  terms_and_conditions String?
+  request_id Int?
+  buyer_id             Int?
+  vendor_id            Int?
+  items                Json?
+}
+
+// Define the QuotationRequest model
+model qRequest {
+  request_id Int         @id @default(autoincrement())
+  subject             String?
+  updated_at          DateTime    @default(now())
+  created_at          DateTime    @default(now())
+  total               Float?
+  quantity            Int?
+  status              String?
+  vendor_id           Int?
+  buyer_id            Int?
+  short_id            Int?
+  buyer               String?
+  items               Json?
+}
+
+// Define the Short model
+model Short {
+  short_id                            Int               @id @default(autoincrement())
+  updated_at                          DateTime          @default(now())
+  created_at                          DateTime          @default(now())
+  vendor                              Vendor?           @relation(fields: [vendor_id], references: [vendor_id])
+  vendor_id                           Int?
+  buyer_id                            Int
+  product                             Product?          @relation(fields: [product_id], references: [product_id])
+  product_id                          Int?
+  quotationRequestQuotationrequest_id Int?
+  items                            Json?
+  products                            String?
+  name                            String?
+  price                            String?
+   status                            String?
+   image                            String?
+    code         String?
+  quantity     Int?
+  description  String?
+  manufacturer String?
+  vendor_name String?
+}
+
+// Define the Vendor model
+model Vendor {
+  vendor_id          Int                @id @default(autoincrement())
+  first_name         String?
+  email              String?            @unique
+  password           String?
+  last_name          String?
+  business_name      String?
+  country            String?
   terms              String?
-  items              Json?
-}
-
-model Order {
-  id                String         @id @default(cuid())
-  name              String?
-  number            String?
-  cost_center      String?
-  series           String?
-  currency         String?
-  date              DateTime?
-  customer         String?
-  bank              String? 
-  taxable_amount    Float?
-  total_charges     Float?
-  non_taxable_amount Float?
-  advance_payment    Float?
-  amount_due         Float?
-  vat                Float?
-  terms              String?
-  items              Json?
-}
-// model Quotation {
-//   id      String    @id @default(cuid())
-//   name    String?
-//   number  String?
-
-// }
-
-model Customer {
-  id                String         @id @default(cuid())
-  name              String?
-  customer_name     String
-  email_id          String?
-  default_price_list String?
-  default_currency  String?
-  primary_address   String?
-  customer_primary_contact String?
-}
-
-
-model Bank {
-  id                String         @id @default(cuid())
-  account_name      String
-  bank              String
-  account_type      String?
-  bank_account_no   String?
-}
-
-model Terms {
-  id                String         @id @default(cuid())
-  term      String
-}
-
-model Item {
-  id                String         @id @default(cuid())
-  item_code         String?
-  item_name         String?
-  item_group        String?
-  stock_uom         String?
-  description       String?
+  gender             String?
+  phone              String?
+  address_line1      String?
+  address_line2      String?
+  profile_image      String?
+  business_logo      String?
+  updated_at         DateTime           @default(now())
+  created_at         DateTime           @default(now())
+  products           Product[]
+  Short              Short[]
 }

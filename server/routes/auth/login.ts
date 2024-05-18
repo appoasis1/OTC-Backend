@@ -2,89 +2,96 @@ import { createJwtToken } from "@/jwt/index";
 import { prisma } from "~~/prisma/db";
 import bcrypt from "bcrypt";
 
-export default defineEventHandler(async (event)=>{
-   const {email, password} = await readBody(event);
-//test comment
-   //Check if the user exists
-   if (!email) {
-      return {
-        message: "Email must be provided",
-        success: false
-      };
-    }
-   const  user = await prisma.user.findFirst({
+export default defineEventHandler(async (event) => {
+   const { email, password } = await readBody(event);
+
+   console.log(`Login attempt with email: ${email}`);
+
+   // Check if the user exists in the Vendor table
+   const vendor = await prisma.vendor.findFirst({
       where: {
-         
-           email: email,
-         //   AND: {
-         //    account_status: 'ACTIVE'
-         //   }
-         
-       }
+         email: email,
+      },
+   });
+
+   // Check if the user exists in the Buyer table
+   const buyer = await prisma.buyer.findFirst({
+      where: {
+         email: email,
+      },
    });
 
    const response = {};
 
-   if(user){
-      //Check if the password hash matched
-      const match = await bcrypt.compare(password, user.password);
-      
-      if(match){
-         //Successfully login
-         //Create a JWT token
-         const token = await createJwtToken();
+   // Compare the passwords if the user is found in either table
+   if (vendor || buyer) {
+      const user = vendor || buyer;
+      console.log(`User with email ${email} found in ${vendor ? 'Vendor' : 'Buyer'} table`);
 
+      // Compare the passwords
+      if (password === user.password) {
+         console.log(`User with email ${email} logged in successfully`);
+
+         // Successfully login
+         // Create a JWT token
+         const token = await createJwtToken();
+         console.log("the token is", token);
          setCookie(event, "token", token);
 
-         //Store his last Login IP Address and time
-         
-         const [userData, employeeData]  = await prisma.$transaction([
-            prisma.user.update({
+         // Store his last Login IP Address and time
+         if (vendor) {
+            await prisma.vendor.update({
                where: {
-                  email: email
+                  email: email,
                },
                data: {
-                  last_logged_in_at: new Date()
-               }
-            }),
-            prisma.user.findUnique({
-               where: {
-                  email: email
+                  updated_at: new Date(),
                },
-            })
-          ])
+            });
+         } else {
+            await prisma.buyer.update({
+               where: {
+                  email: email,
+               },
+               data: {
+                  updated_at: new Date(),
+               },
+            });
+         }
 
-         // const company_access = userData.company_access.at(0).access_list;
-         console.log({userData})
-         // @ts-ignore
-         // data ? data.map(item => item.name) : [],
+         // Fetch user data after updating
+         const userData = vendor
+            ? await prisma.vendor.findFirst({
+                 where: {
+                    email: email,
+                 },
+              })
+            : await prisma.buyer.findFirst({
+                 where: {
+                    email: email,
+                 },
+              });
 
-         response['user'] = userData
-         response['success'] = true
-         console.log("this is my user data and permissions",{userData})
-         //Store encrpted user daa in cookie
-         let filteredUserData = {
-            id: userData.id,
-            first_name: userData.name,
-            last_name: userData.surname,
-            username: userData.username,
+         response["user"] = userData;
+         response["success"] = true;
+
+         // Store encrypted user data in cookie
+         const filteredUserData = {
             email: userData.email,
-            
-          };
-         // setCookie(event, "user", JSON.stringify(userData));
+         };
          setCookie(event, "user", JSON.stringify(filteredUserData));
-         return response
-      }else{
-         response['message'] = `The user with email ${email} does not exist, is inactive or the password does not match`
-         response['success'] = false
-         return response
+      } else {
+         //console.log(`User with email ${email} provided incorrect password`);
+
+         response["message"] = `The user with email ${email} and password does not match`;
+         response["success"] = false;
       }
-   }else{
-      //Disconnect Prisma
-    
-         response['message'] = `The user with email ${email} does not exist, is inactive or the password does not match`
-         response['success'] = false
-         return response
+   } else {
+      //console.log(`User with email ${email} not found in Vendor or Buyer table`);
+
+      response["message"] = `The user with email ${email} does not exist or is inactive`;
+      response["success"] = false;
    }
 
+   return response;
 });

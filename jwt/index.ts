@@ -7,7 +7,7 @@ if(env.error){
     throw env.error
 }
 
-const { JWT_TOKEN_SECRET } = env.parsed;
+const JWT_TOKEN_SECRET = "dtfyghujikol"; // Replace with your actual secret key
 
 export const createJwtToken = async ()=>{
     return jwt.sign({success: true}, JWT_TOKEN_SECRET, {expiresIn: "30m"});
