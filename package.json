@@ -2,12 +2,12 @@
   "name": "nuxt-app",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+    "build": "nuxt build && prisma generate",
     "seed": "node prisma/seed.js",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "prisma migrate deploy && nuxt prepare"
   },
   "overrides": {
     "vue": "latest"
