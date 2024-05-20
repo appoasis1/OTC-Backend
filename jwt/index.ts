@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-const env = dotenv.config({path: '.env'});
+// const env = dotenv.config({path: '.env'});
 
-if(env.error){
-    throw env.error
-}
+// if(env.error){
+//     throw env.error
+// }
 
 const JWT_TOKEN_SECRET = "dtfyghujikol"; // Replace with your actual secret key
 
