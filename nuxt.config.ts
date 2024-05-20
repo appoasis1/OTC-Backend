@@ -8,6 +8,16 @@ export default defineNuxtConfig({
         strict: false
     },
 
+    security: {
+      corsHandler: {
+        origin: "*",
+        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+        preflight: {
+          statusCode: 204
+        },
+      },
+    },
+
     css: [
         "@andresouzaabreu/vue-data-table/dist/DataTable.css",
         'maz-ui/css/main.css',
@@ -20,6 +30,7 @@ export default defineNuxtConfig({
      ["formidable",
      '@pinia/nuxt',
      'nuxt-scheduler',
+     'nuxt-security',
     ],
     pinia: {
         autoImports: [
