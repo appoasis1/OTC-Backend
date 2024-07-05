@@ -19,7 +19,7 @@ export const checkJwtToken = async (token: string)=>{
             let { name, message } = err;
             return {
                 name: name,
-                message: message,
+                message: message,   
                 success: false
             }
         }

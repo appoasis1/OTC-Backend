@@ -528,7 +528,7 @@
                   success: true
                   }
           })
-          .catch(function (error) {
+          .catch(function (error) { 
               console.log(error);
               return {
                   success: false

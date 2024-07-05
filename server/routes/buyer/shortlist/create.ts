@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   let json = items.map((item) => ({
     name: item.name,
-    product_id: item.product_id,
+    price: item.price,
     quantity: item.quantity,
   }));
 

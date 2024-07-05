@@ -19,11 +19,11 @@ export default defineEventHandler(async (event) => {
     const info = await transporter.sendMail({
       from: '"Nyasha" <marion.hudson@ethereal.email>',
       to: "nyashakata1@gmail.com",
-      subject: "Email Test",
-      text: "Hello, I am testing this email to see if it is working.",
+      subject: "Your Quotation is Ready",
+      text: "Good day, you Nyasha has sent you a quotation for your products that you ordered via EBP",
       attachments: [
         {
-          filename: "document.pdf",
+          filename: "Quotation.pdf",
           content: pdf.split(";base64,").pop(),
           encoding: "base64",
         },
