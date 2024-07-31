@@ -19,7 +19,7 @@
         <div style="width: 100%; height: 100%; border: 1px solid black; padding: 10px;" >
         <div style="display: flex; justify-content: space-between;">
             <section style="width: 100%;">
-                <img src="/images/murare.png" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
+                <img src="" alt="logo" width="200" height="150" style="float: left; margin-right: 1200px;">
                 <br>
                 <br>
                 <br>
