@@ -1,17 +1,18 @@
+import { registerRuntimeCompiler } from "nuxt/dist/app/compat/capi";
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
     try {
         const { buyer_id } = await readBody(event);
 
-        const getQuotationList = await prisma.quotation.findMany({
+        const getRequestList = await prisma.qRequest.findMany({
             where: {
                 buyer_id: buyer_id,
             },
         });
-
+        
         return {
-            data: getQuotationList,
+            data: getRequestList,
             message: null,
             error: false,
             success: true,

@@ -1,23 +1,17 @@
 import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
-  const { title, number, price, sub_total, total, terms_and_conditions, request_id, buyer_id, vendor_id, } = await readBody(event);
-  const items = [
-    { product_id: 3, quantity: 2 },
-    { product_id: 1, quantity: 11 },
-    { product_id: 18, quantity: 2 },
-    // Add more items as needed
-  ];
+  const { title, number, image, price, sub_total, total, terms_and_conditions, request_id, buyer_id, vendor_id, items, supplier, address, phone, email, buyer } = await readBody(event);
   
   let json = items.map((item) => ({
-    product_id: item.product_id,
+    name: item.name,
+    price: item.price,
     quantity: item.quantity,
   }));
 
-
   const createQuotation = await prisma.quotation.create({
     data: {
-      title: title,
+      title: image,
       number: number,
       price: price,
       sub_total: sub_total,
@@ -27,6 +21,11 @@ export default defineEventHandler(async (event) => {
       vendor_id: vendor_id,
       buyer_id: buyer_id,
       items: json,
+      address: address,
+      email: email,
+      phone: phone,
+      supplier: supplier,
+      buyer: buyer,
     },
   }).catch((error) => {
     console.error(error);

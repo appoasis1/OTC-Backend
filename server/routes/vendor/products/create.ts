@@ -12,8 +12,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 export default defineEventHandler(async (event) => {
   const { name, price, status, code, quantity, description, manufacturer, image, vendor_name, vendor_id } = await readBody(event);
 
-  const defaultVendorId = 1; // ID of the default vendor
-
   const base64Image = image; // Assuming the base64 image data is in the "image" field
 
   // Decode the base64 image data

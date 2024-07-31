@@ -2,11 +2,11 @@ import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
     try {
-        const { buyer_id } = await readBody(event);
+        const { vendor_id } = await readBody(event);
 
         const getQuotationList = await prisma.quotation.findMany({
             where: {
-                buyer_id: buyer_id,
+                vendor_id: vendor_id,
             },
         });
 

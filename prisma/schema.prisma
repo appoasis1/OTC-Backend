@@ -81,6 +81,11 @@ model Quotation {
   buyer_id             Int?
   vendor_id            Int?
   items                Json?
+  supplier             String?
+  address              String?
+  phone                String?
+  email                String?
+  buyer                String?
 }
 
 // Define the QuotationRequest model
@@ -137,6 +142,7 @@ model Vendor {
   phone              String?
   address_line1      String?
   address_line2      String?
+  image        String?
   profile_image      String?
   business_logo      String?
   updated_at         DateTime           @default(now())
