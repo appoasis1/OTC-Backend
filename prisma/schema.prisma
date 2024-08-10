@@ -44,26 +44,28 @@ model Category {
 
 // Define the Product model
 model Product {
-  product_id   Int       @id @default(autoincrement())
-  name         String?
-  price        Float?
-  updated_at   DateTime  @default(now())
-  created_at   DateTime  @default(now())
-  status       String?
-  image        String?
-  code         String?
-  quantity     Int?
-  min_order    String?
+  product_id    Int       @id @default(autoincrement())
+  name          String?
+  price         Float?
+  updated_at    DateTime  @default(now())
+  created_at    DateTime  @default(now())
+  status        String?
+  image         String?
+  code          String?
+  quantity      Int?
+  min_order     String?
   deliverred_in String?
   vendor_name   String?
-  description  String?
-  manufacturer String?
-  vendor       Vendor?   @relation(fields: [vendor_id], references: [vendor_id])
-  vendor_id    Int?
-  category     Category? @relation(fields: [category_id], references: [category_id])
-  category_id  Int?
-  Short        Short[]
+  description   String?
+  manufacturer  String?
+  is_taxable    Boolean   @default(false) // Add this line
+  vendor        Vendor?   @relation(fields: [vendor_id], references: [vendor_id])
+  vendor_id     Int?
+  category      Category? @relation(fields: [category_id], references: [category_id])
+  category_id   Int?
+  Short         Short[]
 }
+
 
 // Define the Quotation model
 model Quotation {
@@ -86,6 +88,7 @@ model Quotation {
   phone                String?
   email                String?
   buyer                String?
+  ref_number           String?
 }
 
 // Define the QuotationRequest model

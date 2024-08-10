@@ -26,6 +26,7 @@ export default defineEventHandler(async (event) => {
     name: item.name,
     price: item.price,
     quantity: item.quantity,
+    taxable: item.taxable,
   }));
 
   if (existingShortList) {

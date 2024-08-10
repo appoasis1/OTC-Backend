@@ -10,7 +10,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 // ...
 
 export default defineEventHandler(async (event) => {
-  const { name, price, status, code, quantity, description, manufacturer, image, vendor_name, vendor_id } = await readBody(event);
+  const { name, price, status, code, quantity, description, manufacturer, image, vendor_name, vendor_id, is_taxable } = await readBody(event);
 
   const base64Image = image; // Assuming the base64 image data is in the "image" field
 
@@ -50,7 +50,8 @@ export default defineEventHandler(async (event) => {
         quantity: parseInt(quantity),
         description: description,   
         manufacturer: manufacturer,
-        vendor_id: vendor_id, // Set the default vendor ID for the product
+        vendor_id: vendor_id,
+        is_taxable: is_taxable ?? false,
       },
     });
 
