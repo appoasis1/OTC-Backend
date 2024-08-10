@@ -22,8 +22,6 @@
     "nuxt-security": "^2.0.0-beta.5",
     "prisma": "^5.2.0",
     "prisma-erd-generator": "^1.6.2",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "sass": "^1.68.0"
   },
   "dependencies": {
@@ -60,7 +58,6 @@
     "primeflex": "^3.2.1",
     "primeicons": "^5.0.0",
     "primevue": "^3.31.0",
-    "puppeteer": "^21.3.8",
     "qs": "^6.11.0",
     "quill": "^1.3.7",
     "sweetalert2": "^11.4.8",
