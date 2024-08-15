@@ -12,17 +12,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
-  if (existingShortList) {
-    console.log(`Shortlist with vendor_id ${vendor_id} and buyer_id ${buyer_id} exists.`);
-    return {
-      short_id: existingShortList.short_id, // Return the short_id of the existing shortlist
-      success: true,
-    };
-  } else {
-    console.log(`Shortlist with vendor_id ${vendor_id} and buyer_id ${buyer_id} does not exist.`);
-  }
-
-  let json = items.map((item) => ({
+  let newItems = items.map((item) => ({
     name: item.name,
     price: item.price,
     quantity: item.quantity,
@@ -30,13 +20,32 @@ export default defineEventHandler(async (event) => {
   }));
 
   if (existingShortList) {
-    // Shortlist already exists, update it
+    console.log(`Shortlist with vendor_id ${vendor_id} and buyer_id ${buyer_id} exists.`);
+    console.log("updating");
+    
+    // Combine existing items with new items
+    let updatedItems = [...existingShortList.items, ...newItems];
+
+    // Remove duplicates based on item name
+    updatedItems = updatedItems.reduce((acc, current) => {
+      const x = acc.find(item => item.name === current.name);
+      if (!x) {
+        return acc.concat([current]);
+      } else {
+        // If item already exists, update its properties
+        x.price = current.price;
+        x.quantity = current.quantity;
+        x.taxable = current.taxable;
+        return acc;
+      }
+    }, []);
+
     let updateShortList = await prisma.short.update({
       where: {
         short_id: existingShortList.short_id,
       },
       data: {
-        items: json,
+        items: updatedItems,
       },
     }).catch((error) => {
       console.error(error);
@@ -47,9 +56,12 @@ export default defineEventHandler(async (event) => {
 
     return {
       data: updateShortList,
+      short_id: existingShortList.short_id,
       success: true,
     };
   } else {
+    console.log(`Shortlist with vendor_id ${vendor_id} and buyer_id ${buyer_id} does not exist.`);
+    
     // Shortlist doesn't exist, create a new one
     const createShortList = await prisma.short.create({
       data: {
@@ -57,7 +69,7 @@ export default defineEventHandler(async (event) => {
         buyer_id: buyer_id,
         name: vendor_name,
         product_id: product_id,
-        items: json,
+        items: newItems,
       },
     }).catch((error) => {
       console.error(error);

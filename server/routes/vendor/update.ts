@@ -1,11 +1,25 @@
 import { prisma } from "~~/prisma/db";
-import axios from "axios";
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
-import fs from "fs";
-import path from "path";
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 
+// Get the directory name of the current module
 const __dirname = dirname(fileURLToPath(import.meta.url));
+
+// Initialize Firebase with your configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyDQwAzZIBUiaVlScOStpiTOi8t877_XKis",
+  authDomain: "otcebp.firebaseapp.com",
+  projectId: "otcebp",
+  storageBucket: "otcebp.appspot.com",
+  messagingSenderId: "904504797201",
+  appId: "1:904504797201:web:6fe5f312029f385a2fe9b0",
+  measurementId: "G-FDX0DZD70Q"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage(firebaseApp);
 
 export default defineEventHandler(async (event) => {
   const { vendor_id, firstName, lastName, email, phone, address, gender, password, image } = await readBody(event);
@@ -20,22 +34,24 @@ export default defineEventHandler(async (event) => {
     console.error("Error: No image data provided");
     return {
       success: false,
+      error: "No image data provided"
     };
   }
 
   try {
-    // Convert base64 data to a buffer
-    const imageBuffer = Buffer.from(base64Data, "base64");
-
     // Generate a unique filename for the image
     const filename = `${Date.now()}-${Math.floor(Math.random() * 10)}.jpg`; // Assuming JPEG format for the image
 
-    // Define the path where the image will be saved
-    const imagePath = path.join(__dirname, '..', '..', 'public/images', filename);
+    // Create a reference to the file location in Firebase Storage
+    const storageRef = ref(storage, `vendors/${filename}`);
 
-    // Save the image to the uploads folder
-    fs.writeFileSync(imagePath, imageBuffer);
+    // Upload the image to Firebase Storage
+    await uploadString(storageRef, base64Data, 'base64', { contentType: 'image/jpeg' });
 
+    // Get the download URL of the uploaded image
+    const downloadURL = await getDownloadURL(storageRef);
+
+    // Update the vendor information in the database with the download URL
     const updateVendor = await prisma.vendor.update({
       where: {
         vendor_id: parseInt(vendor_id),
@@ -43,7 +59,7 @@ export default defineEventHandler(async (event) => {
       data: {
         first_name: firstName,
         last_name: lastName,
-        image: filename,
+        image: downloadURL, // Save the Firebase Storage URL
         email: email,
         phone: phone,
         address_line1: address,
@@ -56,7 +72,7 @@ export default defineEventHandler(async (event) => {
       success: true
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error uploading image or updating vendor:", error);
     return {
       success: false,
       error: "An error occurred while processing the request"

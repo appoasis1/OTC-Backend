@@ -1,13 +1,24 @@
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import { prisma } from "~~/prisma/db";
-import fs from "fs";
-import path from "path";
+import { initializeApp } from "firebase/app";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 
 // Get the directory name of the current module
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// ...
+const firebaseConfig = {
+  apiKey: "AIzaSyDQwAzZIBUiaVlScOStpiTOi8t877_XKis",
+  authDomain: "otcebp.firebaseapp.com",
+  projectId: "otcebp",
+  storageBucket: "otcebp.appspot.com",
+  messagingSenderId: "904504797201",
+  appId: "1:904504797201:web:6fe5f312029f385a2fe9b0",
+  measurementId: "G-FDX0DZD70Q"
+};
+
+const firebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage(firebaseApp);
 
 export default defineEventHandler(async (event) => {
   const { name, price, status, code, quantity, description, manufacturer, image, vendor_name, vendor_id, is_taxable } = await readBody(event);
@@ -26,25 +37,25 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    // Convert base64 data to a buffer
-    const imageBuffer = Buffer.from(base64Data, "base64");
-
     // Generate a unique filename for the image
     const filename = `${Date.now()}-${Math.floor(Math.random() * 10)}.jpg`; // Assuming JPEG format for the image
 
-    // Define the path where the image will be saved
-    const imagePath = path.join(__dirname, '..', '..', 'public/images', filename);
+    // Create a reference to the file location in Firebase Storage
+    const storageRef = ref(storage, `products/${filename}`);
 
-    // Save the image to the uploads folder
-    fs.writeFileSync(imagePath, imageBuffer);
+    // Upload the image to Firebase Storage
+    await uploadString(storageRef, base64Data, 'base64', { contentType: 'image/jpeg' });
 
-    // Create product after the image has been saved
+    // Get the download URL of the uploaded image
+    const downloadURL = await getDownloadURL(storageRef);
+
+    // Create product after the image has been uploaded
     const createProduct = await prisma.product.create({
       data: {
         name: name,
         price: parseFloat(price),
         status: "active",
-        image: filename,
+        image: downloadURL, // Store the Firebase Storage URL instead of the filename
         vendor_name: vendor_name,
         code: code,
         quantity: parseInt(quantity),
@@ -64,7 +75,7 @@ export default defineEventHandler(async (event) => {
       success: true,
     };
   } catch (error) {
-    console.error("Error saving image or creating product:", error);
+    console.error("Error uploading image or creating product:", error);
     return {
       success: false,
     };

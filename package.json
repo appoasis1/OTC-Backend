@@ -37,6 +37,7 @@
     "dom-to-image": "^2.6.0",
     "dotenv": "^16.0.1",
     "file-type": "^18.5.0",
+    "firebase": "^10.12.5",
     "formidable": "^2.0.1",
     "fs": "^0.0.1-security",
     "h3-formidable": "^0.3.2",
