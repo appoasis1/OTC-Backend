@@ -12,6 +12,7 @@ export default defineEventHandler(async (event) => {
     },
   });
 
+  // Map the new items to the desired structure
   let newItems = items.map((item) => ({
     name: item.name,
     price: item.price,
@@ -22,7 +23,7 @@ export default defineEventHandler(async (event) => {
   if (existingShortList) {
     console.log(`Shortlist with vendor_id ${vendor_id} and buyer_id ${buyer_id} exists.`);
     console.log("updating");
-    
+
     // Combine existing items with new items
     let updatedItems = [...existingShortList.items, ...newItems];
 
@@ -40,12 +41,29 @@ export default defineEventHandler(async (event) => {
       }
     }, []);
 
+    // Combine existing product_id with new product_ids
+    let updatedProductIds = [
+      ...existingShortList.product_id, // Existing product_id JSON array
+      ...product_id, // New product_id array from the request
+    ];
+
+    // Remove duplicates from product_ids based on 'id'
+    updatedProductIds = updatedProductIds.reduce((acc, current) => {
+      const x = acc.find(item => item.id === current.id);
+      if (!x) {
+        return acc.concat([current]);
+      }
+      return acc;
+    }, []);
+
+    // Update the existing shortlist with new items and appended product_ids
     let updateShortList = await prisma.short.update({
       where: {
         short_id: existingShortList.short_id,
       },
       data: {
         items: updatedItems,
+        product_id: updatedProductIds, // Save the combined and deduplicated product_ids
       },
     }).catch((error) => {
       console.error(error);
@@ -68,7 +86,7 @@ export default defineEventHandler(async (event) => {
         vendor_id: vendor_id,
         buyer_id: buyer_id,
         name: vendor_name,
-        product_id: product_id,
+        product_id: product_id, // Directly assigning the JSON data
         items: newItems,
       },
     }).catch((error) => {

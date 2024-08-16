@@ -3,6 +3,7 @@ import { prisma } from "~~/prisma/db";
 export default defineEventHandler(async (event) => {
   const { product_ids } = await readBody(event);
 
+  // Ensure that product_ids is an array
   if (!Array.isArray(product_ids)) {
     return {
       error: "product_ids must be an array",
@@ -10,19 +11,23 @@ export default defineEventHandler(async (event) => {
     };
   }
 
+  // Retrieve all shortlists
   const existingShortLists = await prisma.short.findMany({
-    where: {
-      product_id: {
-        in: product_ids,
-      },
-    },
     select: {
       product_id: true,
     },
   });
 
-  const shortlistedProductIds = new Set(existingShortLists.map(item => item.product_id));
+  // Create a set of existing product IDs from the retrieved shortlists
+  const shortlistedProductIds = new Set(
+    existingShortLists.flatMap(shortlist => {
+      // Cast product_id to an array of objects
+      const products = shortlist.product_id as Array<{ id: number }>;
+      return products.map(product => product.id);
+    })
+  );
 
+  // Filter the incoming product_ids based on whether they exist in shortlistedProductIds
   const existingProducts = product_ids.filter(id => shortlistedProductIds.has(id));
   const nonExistingProducts = product_ids.filter(id => !shortlistedProductIds.has(id));
 

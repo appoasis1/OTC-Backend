@@ -63,7 +63,6 @@ model Product {
   vendor_id     Int?
   category      Category? @relation(fields: [category_id], references: [category_id])
   category_id   Int?
-  Short         Short[]
 }
 
 
@@ -115,8 +114,7 @@ model Short {
   vendor                              Vendor?           @relation(fields: [vendor_id], references: [vendor_id])
   vendor_id                           Int?
   buyer_id                            Int
-  product                             Product?          @relation(fields: [product_id], references: [product_id])
-  product_id                          Int?
+  product_id                          Json?
   quotationRequestQuotationrequest_id Int?
   items                            Json?
   products                            String?
