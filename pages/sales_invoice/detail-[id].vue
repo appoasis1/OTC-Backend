@@ -11,7 +11,7 @@
 
                                 <Button on @click="deleteInvoice" label="Delete" severity="danger" icon="pi pi-trash" class="ml-3" />
                  
-                  </div>
+                            </div>
 
                             <div class="surface-card p-4 shadow-2 border-round">
                                 <div class="font-medium text-3xl text-900 mb-3">Sales Invoice</div>

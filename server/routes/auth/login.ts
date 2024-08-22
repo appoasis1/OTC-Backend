@@ -21,11 +21,17 @@ export default defineEventHandler(async (event) => {
       },
    });
 
+   const admin = await prisma.admin.findFirst({
+      where: {
+         email: email,
+      },
+   });
+
    const response = {};
 
    // Compare the passwords if the user is found in either table
-   if (vendor || buyer) {
-      const user = vendor || buyer;
+   if (vendor || buyer || admin) {
+      const user = vendor || buyer || admin;
       console.log(`User with email ${email} found in ${vendor ? 'Vendor' : 'Buyer'} table`);
 
       // Compare the passwords
@@ -38,7 +44,6 @@ export default defineEventHandler(async (event) => {
          console.log("the token is", token);
          setCookie(event, "token", token);
 
-         // Store his last Login IP Address and time
          if (vendor) {
             await prisma.vendor.update({
                where: {
@@ -48,8 +53,17 @@ export default defineEventHandler(async (event) => {
                   updated_at: new Date(),
                },
             });
-         } else {
+         } else if (buyer){
             await prisma.buyer.update({
+               where: {
+                  email: email,
+               },
+               data: {
+                  updated_at: new Date(),
+               },
+            });
+         } else {
+            await prisma.admin.update({
                where: {
                   email: email,
                },
@@ -61,16 +75,23 @@ export default defineEventHandler(async (event) => {
 
          // Fetch user data after updating
          const userData = vendor
-            ? await prisma.vendor.findFirst({
-                 where: {
-                    email: email,
-                 },
-              })
-            : await prisma.buyer.findFirst({
-                 where: {
-                    email: email,
-                 },
-              });
+         ? await prisma.vendor.findFirst({
+             where: {
+               email: email,
+             },
+           })
+         : buyer
+         ? await prisma.buyer.findFirst({
+             where: {
+               email: email,
+             },
+           })
+         : await prisma.admin.findFirst({
+             where: {
+               email: email,
+             },
+           });
+       
 
          response["user"] = userData;
          response["success"] = true;
@@ -83,13 +104,13 @@ export default defineEventHandler(async (event) => {
       } else {
          //console.log(`User with email ${email} provided incorrect password`);
 
-         response["message"] = `The user with email ${email} and password does not match`;
+         response["message"] = `The email or password is incorrect`;
          response["success"] = false;
       }
    } else {
       //console.log(`User with email ${email} not found in Vendor or Buyer table`);
 
-      response["message"] = `The user with email ${email} does not exist or is inactive`;
+      response["message"] = `The email or password is incorrect`;
       response["success"] = false;
    }
 
