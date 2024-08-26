@@ -12,9 +12,6 @@ datasource db {
   url = env("DATABASE_URL")
 }
 
-// schema.prisma
-
-// Define the Buyer model
 model Buyer {
   buyer_id         Int                @id @default(autoincrement())
   first_name       String?
@@ -97,9 +94,29 @@ model Quotation {
   email                String?
   buyer                String?
   ref_number           String?
+  ordered    Boolean   @default(false) 
+  accepted             String?
 }
 
-// Define the QuotationRequest model
+model Order {
+  order_id         Int               @id @default(autoincrement())
+  title                String?
+  number               Int?
+  updated_at           DateTime          @default(now())
+  created_at           DateTime          @default(now())
+  buyer_id             Int?
+  vendor_id            Int?
+  items                Json?
+  supplier             String?
+  address              String?
+  phone                String?
+  email                String?
+  buyer                String?
+  accepted             String?
+  request_id Int?
+  quotation_id         Int?
+}
+
 model qRequest {
   request_id Int         @id @default(autoincrement())
   subject             String?
