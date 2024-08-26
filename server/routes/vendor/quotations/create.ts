@@ -6,7 +6,7 @@ function generateRefNumber(prefix = 'OTC', length = 8) {
 }
 
 export default defineEventHandler(async (event) => {
-  const { title, number, image, price, sub_total, total, terms_and_conditions, request_id, buyer_id, vendor_id, items, supplier, address, phone, email, buyer } = await readBody(event);
+  const { title, number, image, price, sub_total, total, terms_and_conditions, buyer_email, buyer_phone, request_id, buyer_id, vendor_id, items, supplier, address, phone, email, buyer } = await readBody(event);
   
   let json = items.map((item) => ({
     name: item.name,
@@ -15,7 +15,6 @@ export default defineEventHandler(async (event) => {
     taxable: item.taxable,
   }));
 
-  // Generate unique ref_number
   const ref_number = generateRefNumber();
 
   const createQuotation = await prisma.quotation.create({
@@ -34,6 +33,8 @@ export default defineEventHandler(async (event) => {
       email: email,
       phone: phone,
       supplier: supplier,
+      buyer_email: buyer_email,
+      buyer_phone: buyer_phone,
       buyer: buyer,
       ref_number: ref_number
     },

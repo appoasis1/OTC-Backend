@@ -88,6 +88,8 @@ model Quotation {
   buyer_id             Int?
   vendor_id            Int?
   items                Json?
+  buyer_email          String?
+  buyer_phone          String?
   supplier             String?
   address              String?
   phone                String?
@@ -130,6 +132,8 @@ model qRequest {
   short_id            Int?
   buyer               String?
   items               Json?
+  buyer_email String?
+  buyer_phone String?
 }
 
 // Define the Short model
@@ -153,6 +157,8 @@ model Short {
   description  String?
   manufacturer String?
   vendor_name String?
+  buyer_email String?
+  buyer_phone String?
 }
 
 // Define the Vendor model

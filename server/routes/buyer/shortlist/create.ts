@@ -2,7 +2,7 @@ import { prisma } from "~~/prisma/db";
 import axios from "axios";
 
 export default defineEventHandler(async (event) => {
-  const { vendor_id, buyer_id, items, vendor_name, product_id } = await readBody(event);
+  const { vendor_id, buyer_id, items, vendor_name, product_id, buyer_email, buyer_phone } = await readBody(event);
 
   // Check if a shortlist with the specified vendor_id and buyer_id exists
   const existingShortList = await prisma.short.findFirst({
@@ -88,6 +88,8 @@ export default defineEventHandler(async (event) => {
         name: vendor_name,
         product_id: product_id, // Directly assigning the JSON data
         items: newItems,
+        buyer_email: buyer_email,
+        buyer_phone: buyer_phone
       },
     }).catch((error) => {
       console.error(error);

@@ -2,7 +2,7 @@ import { prisma } from "~~/prisma/db";
 import axios from "axios";
 
 export default defineEventHandler(async (event) => {
-  const { name, number, date, customer, bank, currency, valid_until, cost_centre, series, items, vat, cost_excluding_vat, cost_including_vat, total_costs, non_taxable_amount, selectedTerm } = await readBody(event);
+  const { name, number, date, customer, bank, currency, valid_until, cost_centre, series, items, vat, cost_excluding_vat, buyer_email, buyer_phone cost_including_vat, total_costs, non_taxable_amount, selectedTerm } = await readBody(event);
 
   let json = items.map((item) => ({
     item: item.item,
@@ -74,6 +74,8 @@ export default defineEventHandler(async (event) => {
         non_taxable_amount: non_taxable_amount,
         cost_excluding_vat: cost_excluding_vat,
         vat: vat,
+        buyer_email: buyer_email,
+        buyer_phone: buyer_phone,
         items: json,
         terms: selectedTerm,
 

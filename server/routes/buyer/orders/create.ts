@@ -2,7 +2,7 @@ import { prisma } from "~~/prisma/db";
 
 export default defineEventHandler(async (event) => {
   try {
-    const { number, buyer_id, vendor_id, items, supplier, address, phone, email, buyer, request_id, quotation_id } = await readBody(event);
+    const { number, buyer_id, vendor_id, items, supplier, address, phone, email, buyer, request_id, quotation_id, buyer_email, buyer_phone } = await readBody(event);
     
     let json = items.map((item) => ({
       name: item.name,
@@ -26,6 +26,8 @@ export default defineEventHandler(async (event) => {
           request_id: request_id, 
           buyer: buyer,
           accepted: "pending",
+          buyer_email: buyer_email,
+          buyer_phone: buyer_phone
         },
       }),
       prisma.quotation.update({
